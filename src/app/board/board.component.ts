@@ -4,6 +4,7 @@ import { Piece } from '../models/piece';
 import { Pawn } from '../models/pawn';
 import { Color } from '../models/color';
 import { Rook } from '../models/rook';
+import { Bishop } from '../models/bishop';
 
 
 @Component({
@@ -59,10 +60,10 @@ export class BoardComponent implements OnInit {
     BoardComponent.pieces.push(new Rook(new Point(0, 0), Color.BLACK, 'rook-black.jpg'));
     BoardComponent.pieces.push(new Rook(new Point(0, 7), Color.BLACK, 'rook-black.jpg'));
     BoardComponent.pieces.push(new Rook(new Point(0, 1), Color.BLACK, 'knight-black.png'));
-    BoardComponent.pieces.push(new Rook(new Point(0, 2), Color.BLACK, 'bishop-black.png'));
+    BoardComponent.pieces.push(new Bishop(new Point(0, 2), Color.BLACK, 'bishop-black.png'));
     BoardComponent.pieces.push(new Rook(new Point(0, 3), Color.BLACK, 'king-black.png'));
     BoardComponent.pieces.push(new Rook(new Point(0, 4), Color.BLACK, 'queen-black.png'));
-    BoardComponent.pieces.push(new Rook(new Point(0, 5), Color.BLACK, 'bishop-black.png'));
+    BoardComponent.pieces.push(new Bishop(new Point(0, 5), Color.BLACK, 'bishop-black.png'));
     BoardComponent.pieces.push(new Rook(new Point(0, 6), Color.BLACK, 'knight-black.png'));
 
 
@@ -73,10 +74,10 @@ export class BoardComponent implements OnInit {
     BoardComponent.pieces.push(new Rook(new Point(7, 0), Color.WHITE, 'rook-white.png'));
     BoardComponent.pieces.push(new Rook(new Point(7, 7), Color.WHITE, 'rook-white.png'));
     BoardComponent.pieces.push(new Rook(new Point(7, 1), Color.WHITE, 'knight-white.png'));
-    BoardComponent.pieces.push(new Rook(new Point(7, 2), Color.WHITE, 'bishop-white.png'));
+    BoardComponent.pieces.push(new Bishop(new Point(7, 2), Color.WHITE, 'bishop-white.png'));
     BoardComponent.pieces.push(new Rook(new Point(7, 3), Color.WHITE, 'king-white.png'));
     BoardComponent.pieces.push(new Rook(new Point(7, 4), Color.WHITE, 'queen-white.png'));
-    BoardComponent.pieces.push(new Rook(new Point(7, 5), Color.WHITE, 'bishop-white.png'));
+    BoardComponent.pieces.push(new Bishop(new Point(7, 5), Color.WHITE, 'bishop-white.png'));
     BoardComponent.pieces.push(new Rook(new Point(7, 6), Color.WHITE, 'knight-white.png'));
   }
 
@@ -108,7 +109,6 @@ export class BoardComponent implements OnInit {
         this.activePiece = pieceClicked;
         this.selected = true;
         this.possibleMoves = pieceClicked.getPossibleMoves();
-        console.log(this.possibleMoves);
       }
     }
   }
@@ -124,7 +124,6 @@ export class BoardComponent implements OnInit {
     if (row > 7 || row < 0 || col > 7 || col < 0) {
       return false;
     }
-
     return !BoardComponent.pieces.some(e => e.point.col === col && e.point.row === row);
   }
 
@@ -162,7 +161,7 @@ export class BoardComponent implements OnInit {
     }
 
     piece.point = newPoint;
-    BoardComponent.pieces.push(piece);
+   // BoardComponent.pieces.push(piece);
     //    BoardComponent.pieces.delete(this.getPointByCoordinates(ySource, xSource));
     //  BoardComponent.pieces.set(new Point(yDest, xDest), piece);
   }

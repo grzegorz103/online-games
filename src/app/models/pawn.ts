@@ -14,19 +14,19 @@ export class Pawn extends Piece {
         let row = this.point.row;
         let col = this.point.col;
         if (this.color === Color.WHITE) {
-            if (!BoardComponent.isFieldTakenByEnemy(row - 1, col, Color.BLACK) || BoardComponent.isFieldEmpty(row - 1, col)) {
+            if (!BoardComponent.isFieldTakenByEnemy(row - 1, col, Color.BLACK) && BoardComponent.isFieldEmpty(row - 1, col)) {
                 possiblePoints.push(new Point(row - 1, col));
-                
-                if (!BoardComponent.isFieldTakenByEnemy(row - 2, col, Color.BLACK) || BoardComponent.isFieldEmpty(row - 2, col)) {
+
+                if (!BoardComponent.isFieldTakenByEnemy(row - 2, col, Color.BLACK) && BoardComponent.isFieldEmpty(row - 2, col)) {
                     possiblePoints.push(new Point(row - 2, col));
-                }   
+                }
             }
-            
+
         } else {
-            if (!BoardComponent.isFieldTakenByEnemy(row + 1, col, Color.WHITE) || BoardComponent.isFieldEmpty(row + 1, col)) {
+            if (!BoardComponent.isFieldTakenByEnemy(row + 1, col, Color.WHITE) && BoardComponent.isFieldEmpty(row + 1, col)) {
                 possiblePoints.push(new Point(row + 1, col));
 
-                if (!BoardComponent.isFieldTakenByEnemy(row + 2, col, Color.WHITE) || BoardComponent.isFieldEmpty(row + 2, col)) {
+                if (!BoardComponent.isFieldTakenByEnemy(row + 2, col, Color.WHITE) && BoardComponent.isFieldEmpty(row + 2, col)) {
                     possiblePoints.push(new Point(row + 2, col));
                 }
             }
