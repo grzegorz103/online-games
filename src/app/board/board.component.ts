@@ -111,7 +111,6 @@ export class BoardComponent implements OnInit {
         console.log(this.possibleMoves);
       }
     }
-
   }
 
   static isFieldTakenByEnemy(row: number, col: number, enemyColor: Color): boolean {
