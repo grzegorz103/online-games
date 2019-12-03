@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div id="board">
+                <div ngResizable id="drag" [rzMinWidth]="240" [rzMaxWidth]="2400" [rzMinHeight]="240"
+                    (mousedown)="onMouseDown($event)"  #dragRef [rzMaxHeight]="2400"
+                    [rzAspectRatio]="aspectRatio">
+                    <div *ngFor="let row of board; let i = index" class="board-row">
+                        <div *ngFor="let col of row; let j = index" class="board-col"
+                            [ngClass]="[((i + j) %2 === 0 ) ?  'bg-black' : 'bg-shine', isPointInPossibleMoves(i,j) ? 'possible-point' : '']">
+                            <div *ngIf="getPieceByPoint(i, j)" style="height:100%; width:100%">
+                                <div [style.background-image]="'url(assets/'+getPieceByPoint(i,j).image + ')'"
+                                    class="piece">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

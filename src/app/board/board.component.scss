@@ -1,0 +1,50 @@
+
+#board{
+    width:40vw;
+    height:40vw;
+    min-height:500px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  
+  .board-row{
+    display:block;
+    width: 100%;
+    height: 12.5%;
+  }
+  
+  .board-col{
+    display: inline-block;
+    width: 12.5%;
+    vertical-align: top;
+    cursor:default;
+    height: 100%;
+  }
+  
+  .bg-black{
+    background-color: rgba(0, 177, 0, 0.685);
+  }
+  
+  .bg-shine{
+    background-color: rgb(228, 214, 90);
+  }
+
+  .piece{
+      height:100%;
+      cursor:grab;
+      width:100%;
+   background-size:contain;
+  }
+  .piece::after{
+    content: '\200b';
+  }
+
+  #drag{
+      height:100%;
+     // border: 3px solid blue;
+      width:100%;
+  }
+
+  .possible-point{
+    background-color: red;
+  }
