@@ -13,4 +13,6 @@ export abstract class Piece {
     }
 
     abstract getPossibleMoves(): Point[];
+
+    abstract getPossibleCaptures(): Point[];
 }

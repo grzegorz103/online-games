@@ -26,11 +26,11 @@ export class BoardComponent implements OnInit {
   startX: any;
   startY: any;
   activePiece: Piece;
-  ngOnInit() {
-  }
+
   board: number[][];
   static pieces: Piece[];
   possibleMoves: Point[];
+  possibleCaptures: Point[];
 
   mouseX: number;
   mouseY: number;
@@ -42,6 +42,7 @@ export class BoardComponent implements OnInit {
   constructor() {
     this.board = [];
     this.possibleMoves = [];
+    this.possibleCaptures = [];
 
     for (var i: number = 0; i < 8; ++i) {
       this.board[i] = [];
@@ -51,6 +52,9 @@ export class BoardComponent implements OnInit {
     }
 
     this.addPieces();
+  }
+
+  ngOnInit() {
   }
 
   addPieces() {
@@ -102,10 +106,11 @@ export class BoardComponent implements OnInit {
 
     if (this.selected) {
       //   this.possibleMoves = activePiece.getPossibleMoves();
-      if (this.isPointInPossibleMoves(pointClicked)) {
+      if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
         this.movePiece(this.activePiece, pointClicked);
       }
       this.selected = false;
+      this.possibleCaptures = [];
       this.possibleMoves = [];
     } else {
       let pieceClicked = this.getPieceByPoint(pointClicked.row, pointClicked.col);
@@ -113,6 +118,7 @@ export class BoardComponent implements OnInit {
       if (pieceClicked) {
         this.activePiece = pieceClicked;
         this.selected = true;
+        this.possibleCaptures = pieceClicked.getPossibleCaptures();
         this.possibleMoves = pieceClicked.getPossibleMoves();
       }
     }
@@ -166,6 +172,8 @@ export class BoardComponent implements OnInit {
     }
 
     piece.point = newPoint;
+
+    this.checkIfPawnFirstMove(piece);
     // BoardComponent.pieces.push(piece);
     //    BoardComponent.pieces.delete(this.getPointByCoordinates(ySource, xSource));
     //  BoardComponent.pieces.set(new Point(yDest, xDest), piece);
@@ -175,7 +183,21 @@ export class BoardComponent implements OnInit {
     return this.possibleMoves.some(e => e.row === point.row && e.col === point.col);
   }
 
+  isPointInPossibleCaptures(point: Point): boolean {
+    return this.possibleCaptures.some(e => point.row && e.col === point.col);
+  }
+
   isXYInPossibleMoves(row: number, col: number): boolean {
     return this.possibleMoves.some(e => e.row === row && e.col === col);
+  }
+
+  isXYInPossibleCaptures(row: number, col: number): boolean {
+    return this.possibleCaptures.some(e => e.row === row && e.col === col);
+  }
+
+  checkIfPawnFirstMove(piece: Piece) {
+    if (piece instanceof Pawn) {
+      (piece as Pawn).isMovedAlready = true;
+    }
   }
 }

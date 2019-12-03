@@ -4,6 +4,9 @@ import { Color } from './color';
 import { BoardComponent } from '../board/board.component';
 
 export class Queen extends Piece {
+    getPossibleCaptures(): Point[] {
+        throw new Error("Method not implemented.");
+    }
     
     constructor(point: Point, color: Color, image: string) {
         super(point, color, image);

@@ -5,6 +5,8 @@ import { BoardComponent } from '../board/board.component';
 
 export class Pawn extends Piece {
 
+    isMovedAlready = false;
+
     constructor(point: Point, color: Color, image: string) {
         super(point, color, image);
     }
@@ -17,7 +19,7 @@ export class Pawn extends Piece {
             if (BoardComponent.isFieldEmpty(row - 1, col)) {
                 possiblePoints.push(new Point(row - 1, col));
 
-                if (BoardComponent.isFieldEmpty(row - 2, col)) {
+                if (!this.isMovedAlready && BoardComponent.isFieldEmpty(row - 2, col)) {
                     possiblePoints.push(new Point(row - 2, col));
                 }
             }
@@ -25,7 +27,7 @@ export class Pawn extends Piece {
             if (/*!BoardComponent.isFieldTakenByEnemy(row + 1, col, Color.WHITE) &&*/ BoardComponent.isFieldEmpty(row + 1, col)) {
                 possiblePoints.push(new Point(row + 1, col));
 
-                if (BoardComponent.isFieldEmpty(row + 2, col)) {
+                if (!this.isMovedAlready && BoardComponent.isFieldEmpty(row + 2, col)) {
                     possiblePoints.push(new Point(row + 2, col));
                 }
             }
@@ -33,11 +35,27 @@ export class Pawn extends Piece {
         return possiblePoints;
     }
 
-    checkMove(x: number, y: number) {
-        if (this.color === Color.BLACK) {
-            //    if(BoardComponent.is)
+    getPossibleCaptures(): Point[] {
+        let possiblePoints = [];
+        let row = this.point.row;
+        let col = this.point.col;
+        if (this.color === Color.WHITE) {
+            if (BoardComponent.isFieldTakenByEnemy(row - 1, col - 1, Color.BLACK)) {
+                possiblePoints.push(new Point(row - 1, col - 1));
+            }
+            if (BoardComponent.isFieldTakenByEnemy(row - 1, col + 1, Color.BLACK)) {
+                possiblePoints.push(new Point(row - + 1, col + 1));
+            }
         } else {
-
+            if (BoardComponent.isFieldTakenByEnemy(row + 1, col - 1, Color.WHITE)) {
+                possiblePoints.push(new Point(row + 1, col - 1));
+            }
+            if (BoardComponent.isFieldTakenByEnemy(row + 1, col + 1, Color.WHITE)) {
+                possiblePoints.push(new Point(row + 1, col + 1));
+            }
         }
+
+        return possiblePoints;
     }
+
 }

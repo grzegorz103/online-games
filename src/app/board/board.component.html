@@ -7,7 +7,7 @@
                     [rzAspectRatio]="aspectRatio">
                     <div *ngFor="let row of board; let i = index" class="board-row">
                         <div *ngFor="let col of row; let j = index" class="board-col"
-                            [ngClass]="[((i + j) %2 === 0 ) ?  'bg-black' : 'bg-shine', isXYInPossibleMoves(i,j) ? 'possible-point' : '']">
+                            [ngClass]="[((i + j) %2 === 0 ) ?  'bg-black' : 'bg-shine', isXYInPossibleMoves(i,j) ? 'possible-point' : '', isXYInPossibleCaptures(i,j) ? 'possible-capture' : '']">
                             <div *ngIf="getPieceByPoint(i, j)" style="height:100%; width:100%">
                                 <div [style.background-image]="'url(assets/'+getPieceByPoint(i,j).image + ')'"
                                     class="piece">
