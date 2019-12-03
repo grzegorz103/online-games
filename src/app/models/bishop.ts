@@ -17,7 +17,7 @@ export class Bishop extends Piece {
 
         if (this.color === Color.WHITE) {
             for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) { // lewa gorna przekatna
-                if (!BoardComponent.isFieldTakenByEnemy(i, j, Color.BLACK) && BoardComponent.isFieldEmpty(i, j)) {
+                if (BoardComponent.isFieldEmpty(i, j)) {
                     possiblePoints.push(new Point(i, j));
                 } else {
                     break;
@@ -25,15 +25,15 @@ export class Bishop extends Piece {
             }
 
             for (let i = row - 1, j = col + 1; i >= 0 && j < 8; --i, ++j) { // prawa gorna przekatna
-                if (!BoardComponent.isFieldTakenByEnemy(i, j, Color.BLACK) && BoardComponent.isFieldEmpty(i, j)) {
+                if (BoardComponent.isFieldEmpty(i, j)) {
                     possiblePoints.push(new Point(i, j));
                 } else {
                     break;
                 }
             }
 
-            for (let i = row + 1, j = col -1; i < 8 && j >= 0; ++i, --j) { // lewa dolna przekatna
-                if (!BoardComponent.isFieldTakenByEnemy(i, j, Color.BLACK) && BoardComponent.isFieldEmpty(i, j)) {
+            for (let i = row + 1, j = col - 1; i < 8 && j >= 0; ++i, --j) { // lewa dolna przekatna
+                if (BoardComponent.isFieldEmpty(i, j)) {
                     possiblePoints.push(new Point(i, j));
                 } else {
                     break;
@@ -41,7 +41,7 @@ export class Bishop extends Piece {
             }
 
             for (let i = row + 1, j = col + 1; i < 8 && j < 8; ++i, ++j) { // prawa dolna przekatna
-                if (!BoardComponent.isFieldTakenByEnemy(i, j, Color.BLACK) && BoardComponent.isFieldEmpty(i, j)) {
+                if (BoardComponent.isFieldEmpty(i, j)) {
                     possiblePoints.push(new Point(i, j));
                 } else {
                     break;
