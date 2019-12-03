@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-3" style="font-size: 25px">
             <div class="row" style="height:50%;">
-                Komputer
+                AI
             </div>
             <div class="row">
                 Gracz
@@ -17,7 +17,7 @@
                             [ngClass]="[((i + j) %2 === 0 ) ?  'bg-black' : 'bg-shine', isXYInPossibleMoves(i,j) ? 'possible-point' : '', isXYInPossibleCaptures(i,j) ? 'possible-capture' : '']">
                             <div *ngIf="getPieceByPoint(i, j)" style="height:100%; width:100%">
                                 <div [style.background-image]="'url(assets/'+getPieceByPoint(i,j).image + ')'"
-                                    class="piece">
+                                    [ngClass]="isKingChecked(getPieceByPoint(i,j)) ? 'king-check' : ''" class="piece">
                                 </div>
                             </div>
                         </div>

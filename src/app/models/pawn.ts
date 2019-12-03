@@ -44,7 +44,7 @@ export class Pawn extends Piece {
                 possiblePoints.push(new Point(row - 1, col - 1));
             }
             if (BoardComponent.isFieldTakenByEnemy(row - 1, col + 1, Color.BLACK)) {
-                possiblePoints.push(new Point(row - + 1, col + 1));
+                possiblePoints.push(new Point(row - 1, col + 1));
             }
         } else {
             if (BoardComponent.isFieldTakenByEnemy(row + 1, col - 1, Color.WHITE)) {

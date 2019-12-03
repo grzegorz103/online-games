@@ -37,6 +37,9 @@ export class BoardComponent implements OnInit {
 
   selected: boolean = false;
 
+  blackKingChecked = false;
+  whiteKingChecked = false;
+
   @ViewChild('dragRef', { static: false }) boardRef: ElementRef;
 
   constructor() {
@@ -105,6 +108,7 @@ export class BoardComponent implements OnInit {
     let pointClicked = this.getClickPoint(event);
 
     if (this.selected) {
+      
       //   this.possibleMoves = activePiece.getPossibleMoves();
       if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
         this.movePiece(this.activePiece, pointClicked);
@@ -203,10 +207,13 @@ export class BoardComponent implements OnInit {
   }
 
   computerMove() {
+    //if (this.isKingInCheck(Color.BLACK)) {
+
+    // }
     let blackPieces = BoardComponent.pieces
       .filter(e => e.color === Color.BLACK)
       .filter(e => e.getPossibleMoves().length > 0 || e.getPossibleCaptures().length > 0);
-  
+
     if (blackPieces.length > 0) {
       let randomPiece = blackPieces[Math.floor(Math.random() * blackPieces.length)];
       if (randomPiece.getPossibleCaptures().length > 0) {
@@ -214,6 +221,28 @@ export class BoardComponent implements OnInit {
       } else if (randomPiece.getPossibleMoves().length > 0) {
         this.movePiece(randomPiece, randomPiece.getPossibleMoves()[Math.floor(Math.random() * randomPiece.getPossibleCaptures().length)]);
       }
+
+      if (this.isKingInCheck(Color.WHITE)){
+        this.whiteKingChecked = true;
+        console.log('check');
+      }
+    }
+  }
+
+  isKingInCheck(color: Color): boolean {
+    let king = BoardComponent
+      .pieces
+      .find(e => e.color === color && e instanceof King);
+
+    if (king) {
+      return BoardComponent.pieces.some(e => e.getPossibleCaptures().some(e=>e.col === king.point.col && e.row === king.point.row) && e.color !== color);
+    }
+    return false;
+  }
+
+  isKingChecked(piece: Piece){
+    if(piece instanceof King){
+      return piece.color===Color.WHITE ? this.whiteKingChecked : this.blackKingChecked;
     }
   }
 }
