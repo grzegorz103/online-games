@@ -108,7 +108,6 @@ export class BoardComponent implements OnInit {
     let pointClicked = this.getClickPoint(event);
 
     if (this.selected) {
-      
       //   this.possibleMoves = activePiece.getPossibleMoves();
       if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
         this.movePiece(this.activePiece, pointClicked);
@@ -121,10 +120,17 @@ export class BoardComponent implements OnInit {
       let pieceClicked = this.getPieceByPoint(pointClicked.row, pointClicked.col);
 
       if (pieceClicked) {
-        this.activePiece = pieceClicked;
-        this.selected = true;
-        this.possibleCaptures = pieceClicked.getPossibleCaptures();
-        this.possibleMoves = pieceClicked.getPossibleMoves();
+        if (this.whiteKingChecked && (pieceClicked instanceof King)) {
+          this.activePiece = pieceClicked;
+          this.selected = true;
+          this.possibleCaptures = this.getPossibleCapturesWhenKingInCheck(Color.WHITE);
+          this.possibleMoves = this.getPossibleMovesWhenKingInCheck(Color.WHITE);
+        } else if (!this.whiteKingChecked) {
+          this.activePiece = pieceClicked;
+          this.selected = true;
+          this.possibleCaptures = pieceClicked.getPossibleCaptures();
+          this.possibleMoves = pieceClicked.getPossibleMoves();
+        }
       }
     }
   }
@@ -222,9 +228,11 @@ export class BoardComponent implements OnInit {
         this.movePiece(randomPiece, randomPiece.getPossibleMoves()[Math.floor(Math.random() * randomPiece.getPossibleCaptures().length)]);
       }
 
-      if (this.isKingInCheck(Color.WHITE)){
+      if (this.isKingInCheck(Color.WHITE)) {
         this.whiteKingChecked = true;
         console.log('check');
+      } else {
+        this.whiteKingChecked = false;
       }
     }
   }
@@ -235,14 +243,122 @@ export class BoardComponent implements OnInit {
       .find(e => e.color === color && e instanceof King);
 
     if (king) {
-      return BoardComponent.pieces.some(e => e.getPossibleCaptures().some(e=>e.col === king.point.col && e.row === king.point.row) && e.color !== color);
+      return BoardComponent.pieces.some(e => e.getPossibleCaptures().some(e => e.col === king.point.col && e.row === king.point.row) && e.color !== color);
     }
     return false;
   }
 
-  isKingChecked(piece: Piece){
-    if(piece instanceof King){
-      return piece.color===Color.WHITE ? this.whiteKingChecked : this.blackKingChecked;
+  isKingChecked(piece: Piece) {
+    if (piece instanceof King) {
+      return piece.color === Color.WHITE ? this.whiteKingChecked : this.blackKingChecked;
     }
+  }
+
+  getPossibleCapturesWhenKingInCheck(color: Color) {
+    let king = BoardComponent
+      .pieces
+      .find(e => e.color === color && e instanceof King);
+
+    let possiblePoints = [];
+
+    let row = king.point.row;
+    let col = king.point.col;
+
+    // lewo
+    if (BoardComponent.isFieldTakenByEnemy(row, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row, col - 1));
+    }
+
+    // prawo
+    if (BoardComponent.isFieldTakenByEnemy(row, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row, col + 1));
+    }
+
+    // dol
+    if (BoardComponent.isFieldTakenByEnemy(row + 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row + 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row + 1, col));
+    }
+
+    // gora
+    if (BoardComponent.isFieldTakenByEnemy(row - 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row - 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row - 1, col));
+    }
+
+    // lewo gora
+    if (BoardComponent.isFieldTakenByEnemy(row - 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row - 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row - 1, col - 1));
+    }
+    // prawo gora
+    if (BoardComponent.isFieldTakenByEnemy(row - 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row - 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row - 1, col + 1));
+    }
+
+    // lewo dol
+    if (BoardComponent.isFieldTakenByEnemy(row + 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row + 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row + 1, col - 1));
+    }
+    // prawo dol
+    if (BoardComponent.isFieldTakenByEnemy(row + 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row + 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row + 1, col + 1));
+    }
+
+    return possiblePoints;
+  }
+
+  //czy jest pod biciem
+  isFieldUnderAttack(row: number, col: number, color: Color) {
+    return BoardComponent.pieces
+      .filter(e => e.color === color)
+      .some(e => e.getPossibleMoves().some(f => f.col === col && f.row === row) || e.getPossibleCaptures().some(f => f.col === col && f.row === row));
+  }
+
+  getPossibleMovesWhenKingInCheck(color: Color) {
+    let king = BoardComponent
+      .pieces
+      .find(e => e.color === color && e instanceof King);
+
+    let possiblePoints = [];
+
+    let row = king.point.row;
+    let col = king.point.col;
+
+    // lewo
+    if (BoardComponent.isFieldEmpty(row, col - 1) && !this.isFieldUnderAttack(row, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row, col - 1));
+    }
+
+    // prawo
+    if (BoardComponent.isFieldEmpty(row, col + 1) && !this.isFieldUnderAttack(row, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row, col + 1));
+    }
+
+    // dol
+    if (BoardComponent.isFieldEmpty(row + 1, col) && !this.isFieldUnderAttack(row + 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row + 1, col));
+    }
+
+    // gora
+    if (BoardComponent.isFieldEmpty(row - 1, col) && !this.isFieldUnderAttack(row - 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row - 1, col));
+    }
+
+    // lewo gora
+    if (BoardComponent.isFieldEmpty(row - 1, col - 1) && !this.isFieldUnderAttack(row - 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row - 1, col - 1));
+    }
+    // prawo gora
+    if (BoardComponent.isFieldEmpty(row - 1, col + 1) && !this.isFieldUnderAttack(row - 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row - 1, col + 1));
+    }
+
+    // lewo dol
+    if (BoardComponent.isFieldEmpty(row + 1, col - 1) && !this.isFieldUnderAttack(row + 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row + 1, col - 1));
+    }
+    // prawo dol
+    if (BoardComponent.isFieldEmpty(row + 1, col + 1) && !this.isFieldUnderAttack(row + 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(new Point(row + 1, col + 1));
+    }
+    return possiblePoints;
   }
 }
