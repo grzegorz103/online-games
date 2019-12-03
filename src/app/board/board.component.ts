@@ -108,6 +108,7 @@ export class BoardComponent implements OnInit {
       //   this.possibleMoves = activePiece.getPossibleMoves();
       if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
         this.movePiece(this.activePiece, pointClicked);
+        this.computerMove();
       }
       this.selected = false;
       this.possibleCaptures = [];
@@ -198,6 +199,21 @@ export class BoardComponent implements OnInit {
   checkIfPawnFirstMove(piece: Piece) {
     if (piece instanceof Pawn) {
       (piece as Pawn).isMovedAlready = true;
+    }
+  }
+
+  computerMove() {
+    let blackPieces = BoardComponent.pieces
+      .filter(e => e.color === Color.BLACK)
+      .filter(e => e.getPossibleMoves().length > 0 || e.getPossibleCaptures().length > 0);
+  
+    if (blackPieces.length > 0) {
+      let randomPiece = blackPieces[Math.floor(Math.random() * blackPieces.length)];
+      if (randomPiece.getPossibleCaptures().length > 0) {
+        this.movePiece(randomPiece, randomPiece.getPossibleCaptures()[Math.floor(Math.random() * randomPiece.getPossibleCaptures().length)]);
+      } else if (randomPiece.getPossibleMoves().length > 0) {
+        this.movePiece(randomPiece, randomPiece.getPossibleMoves()[Math.floor(Math.random() * randomPiece.getPossibleCaptures().length)]);
+      }
     }
   }
 }
