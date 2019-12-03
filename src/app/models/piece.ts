@@ -15,4 +15,6 @@ export abstract class Piece {
     abstract getPossibleMoves(): Point[];
 
     abstract getPossibleCaptures(): Point[];
+
+    abstract getShootingInSameColor(): Point[]; // zwraca liste punktow ktore sa puste lub istnieje na nich pionek tego samego koloru
 }

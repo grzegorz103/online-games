@@ -4,6 +4,9 @@ import { Color } from './color';
 import { BoardComponent } from '../board/board.component';
 
 export class Queen extends Piece {
+    getShootingInSameColor(): Point[] {
+        throw new Error("Method not implemented.");
+    }
 
     constructor(point: Point, color: Color, image: string) {
         super(point, color, image);
@@ -143,7 +146,6 @@ export class Queen extends Piece {
         }
 
         for (let i = row - 1; i >= 0; --i) { // gora
-            console.log(i);
             if (BoardComponent.isFieldTakenByEnemy(i, col, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
                 possiblePoints.push(new Point(i, col));
                 break;
@@ -177,5 +179,5 @@ export class Queen extends Piece {
         }
         return possiblePoints;
     }
-    
+
 }

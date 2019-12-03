@@ -4,7 +4,7 @@ import { Point } from './point';
 import { BoardComponent } from '../board/board.component';
 
 export class Pawn extends Piece {
-
+  
     isMovedAlready = false;
 
     constructor(point: Point, color: Color, image: string) {
@@ -56,6 +56,10 @@ export class Pawn extends Piece {
         }
 
         return possiblePoints;
+    }
+
+    getShootingInSameColor(): Point[] {
+        throw new Error("Method not implemented.");
     }
 
 }

@@ -4,7 +4,7 @@ import { Point } from './point';
 import { BoardComponent } from '../board/board.component';
 
 export class Bishop extends Piece {
-
+  
     constructor(point: Point, color: Color, image: string) {
         super(point, color, image);
     }
@@ -98,6 +98,43 @@ export class Bishop extends Piece {
                     break;
                 }
             }
+        }
+
+        return possiblePoints;
+    }
+
+    getShootingInSameColor(): Point[] {
+       let possiblePoints = [];
+
+        let row = this.point.row;
+        let col = this.point.col;
+
+        for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) { // lewa gorna przekatna
+            possiblePoints.push(new Point(i, j));
+            if (BoardComponent.isFieldTakenByEnemy(i, j, this.color)) {
+               break;
+            } 
+        }
+
+        for (let i = row - 1, j = col + 1; i >= 0 && j < 8; --i, ++j) { // prawa gorna przekatna
+            possiblePoints.push(new Point(i, j));
+            if (BoardComponent.isFieldTakenByEnemy(i, j, this.color)) {
+               break;
+            } 
+        }
+
+        for (let i = row + 1, j = col - 1; i < 8 && j >= 0; ++i, --j) { // lewa dolna przekatna
+            possiblePoints.push(new Point(i, j));
+            if (BoardComponent.isFieldTakenByEnemy(i, j, this.color)) {
+               break;
+            } 
+        }
+
+        for (let i = row + 1, j = col + 1; i < 8 && j < 8; ++i, ++j) { // prawa dolna przekatna
+            possiblePoints.push(new Point(i, j));
+            if (BoardComponent.isFieldTakenByEnemy(i, j, this.color)) {
+               break;
+            } 
         }
 
         return possiblePoints;

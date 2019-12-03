@@ -118,8 +118,11 @@ export class BoardComponent implements OnInit {
       this.possibleMoves = [];
     } else {
       let pieceClicked = this.getPieceByPoint(pointClicked.row, pointClicked.col);
-
       if (pieceClicked) {
+
+        if (pieceClicked.color === Color.BLACK) {
+          return;
+        }
         if (this.whiteKingChecked && (pieceClicked instanceof King)) {
           this.activePiece = pieceClicked;
           this.selected = true;
@@ -176,13 +179,25 @@ export class BoardComponent implements OnInit {
 
   movePiece(piece: Piece, newPoint: Point) {
     let destPiece = BoardComponent.pieces.find(e => e.point.col === newPoint.col && e.point.row === newPoint.row);
+
     if (destPiece && piece.color != destPiece.color) {
       BoardComponent.pieces = BoardComponent.pieces.filter(e => e !== destPiece);
     } else if (destPiece && piece.color === destPiece.color) {
       return;
     }
 
-    piece.point = newPoint;
+    if (destPiece instanceof King ){
+      let squaresMoved = Math.abs(newPoint.col - piece.point.col);
+
+      if(squaresMoved > 1){
+        if(newPoint.col > 4){
+        //  this.getPieceByPoint(0,)
+        }else{
+
+        }
+      }
+    }
+      piece.point = newPoint;
 
     this.checkIfPawnFirstMove(piece);
     // BoardComponent.pieces.push(piece);
@@ -230,7 +245,6 @@ export class BoardComponent implements OnInit {
 
       if (this.isKingInCheck(Color.WHITE)) {
         this.whiteKingChecked = true;
-        console.log('check');
       } else {
         this.whiteKingChecked = false;
       }
