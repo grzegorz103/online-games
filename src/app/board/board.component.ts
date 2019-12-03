@@ -185,7 +185,7 @@ export class BoardComponent implements OnInit {
   }
 
   isPointInPossibleCaptures(point: Point): boolean {
-    return this.possibleCaptures.some(e => point.row && e.col === point.col);
+    return this.possibleCaptures.some(e => e.row === point.row && e.col === point.col);
   }
 
   isXYInPossibleMoves(row: number, col: number): boolean {
