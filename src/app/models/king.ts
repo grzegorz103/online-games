@@ -4,9 +4,6 @@ import { Point } from './point';
 import { BoardComponent } from '../board/board.component';
 
 export class King extends Piece {
-    getPossibleCaptures(): Point[] {
-        throw new Error("Method not implemented.");
-    }
 
     constructor(point: Point, color: Color, image: string) {
         super(point, color, image);
@@ -55,6 +52,53 @@ export class King extends Piece {
         if (BoardComponent.isFieldEmpty(row + 1, col + 1)) {
             possiblePoints.push(new Point(row + 1, col + 1));
         }
+        return possiblePoints;
+    }
+
+    getPossibleCaptures(): Point[] {
+        let possiblePoints = [];
+
+        let row = this.point.row;
+        let col = this.point.col;
+
+        // lewo
+        if (BoardComponent.isFieldTakenByEnemy(row, col - 1, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+            possiblePoints.push(new Point(row, col - 1));
+        }
+
+        // prawo
+        if (BoardComponent.isFieldTakenByEnemy(row, col + 1, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+            possiblePoints.push(new Point(row, col + 1));
+        }
+
+        // dol
+        if (BoardComponent.isFieldTakenByEnemy(row + 1, col, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+            possiblePoints.push(new Point(row + 1, col));
+        }
+
+        // gora
+        if (BoardComponent.isFieldTakenByEnemy(row - 1, col, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+            possiblePoints.push(new Point(row - 1, col));
+        }
+
+        // lewo gora
+        if (BoardComponent.isFieldTakenByEnemy(row - 1, col - 1, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+            possiblePoints.push(new Point(row - 1, col - 1));
+        }
+        // prawo gora
+        if (BoardComponent.isFieldTakenByEnemy(row - 1, col + 1, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+            possiblePoints.push(new Point(row - 1, col + 1));
+        }
+
+        // lewo dol
+        if (BoardComponent.isFieldTakenByEnemy(row + 1, col - 1, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+            possiblePoints.push(new Point(row + 1, col - 1));
+        }
+        // prawo dol
+        if (BoardComponent.isFieldTakenByEnemy(row + 1, col + 1, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+            possiblePoints.push(new Point(row + 1, col + 1));
+        }
+        
         return possiblePoints;
     }
 
