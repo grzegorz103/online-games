@@ -68,7 +68,6 @@ export class Rook extends Piece {
         }
 
         for (let i = row - 1; i >= 0; --i) { // gora
-            console.log(i);
             if (BoardComponent.isFieldTakenByEnemy(i, col, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
                 possiblePoints.push(new Point(i, col));
                 break;
