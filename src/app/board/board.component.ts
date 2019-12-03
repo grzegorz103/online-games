@@ -102,7 +102,9 @@ export class BoardComponent implements OnInit {
 
     if (this.selected) {
       //   this.possibleMoves = activePiece.getPossibleMoves();
-      this.movePiece(this.activePiece, pointClicked);
+      if (this.isPointInPossibleMoves(pointClicked)) {
+        this.movePiece(this.activePiece, pointClicked);
+      }
       this.selected = false;
       this.possibleMoves = [];
     } else {
@@ -169,7 +171,11 @@ export class BoardComponent implements OnInit {
     //  BoardComponent.pieces.set(new Point(yDest, xDest), piece);
   }
 
-  isPointInPossibleMoves(row: number, col: number): boolean {
+  isPointInPossibleMoves(point: Point): boolean {
+    return this.possibleMoves.some(e => e.row === point.row && e.col === point.col);
+  }
+
+  isXYInPossibleMoves(row: number, col: number): boolean {
     return this.possibleMoves.some(e => e.row === row && e.col === col);
   }
 }
