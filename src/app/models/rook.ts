@@ -4,9 +4,6 @@ import { Point } from './point';
 import { BoardComponent } from '../board/board.component';
 
 export class Rook extends Piece {
-    getPossibleCaptures(): Point[] {
-        throw new Error("Method not implemented.");
-    }
 
     constructor(point: Point, color: Color, image: string) {
         super(point, color, image);
@@ -52,4 +49,59 @@ export class Rook extends Piece {
 
         return possiblePoints;
     }
+
+    getPossibleCaptures(): Point[] {
+        let possiblePoints = [];
+
+        let row = this.point.row;
+        let col = this.point.col;
+
+        for (let i = row + 1; i < 8; ++i) { // dol
+            if (BoardComponent.isFieldTakenByEnemy(i, col, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+                possiblePoints.push(new Point(i, col));
+                break;
+            } else {
+                if (!BoardComponent.isFieldEmpty(i, col)) {
+                    break;
+                }
+            }
+        }
+
+        for (let i = row - 1; i >= 0; --i) { // gora
+            console.log(i);
+            if (BoardComponent.isFieldTakenByEnemy(i, col, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+                possiblePoints.push(new Point(i, col));
+                break;
+            } else {
+                if (!BoardComponent.isFieldEmpty(i, col)) {
+                    break;
+                }
+            }
+        }
+
+        for (let j = col - 1; j >= 0; --j) { // lewo
+            if (BoardComponent.isFieldTakenByEnemy(row, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+                possiblePoints.push(new Point(row,j));
+                break;
+            } else {
+                if (!BoardComponent.isFieldEmpty(row,j)) {
+                    break;
+                }
+            }
+        }
+
+        for (let j = col + 1; j < 8; ++j) { // prawo
+            if (BoardComponent.isFieldTakenByEnemy(row, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+                possiblePoints.push(new Point(row, j));
+                break;
+            } else {
+                if (!BoardComponent.isFieldEmpty(row, j)) {
+                    break;
+                }
+            }
+        }
+
+        return possiblePoints;
+    }
+
 }

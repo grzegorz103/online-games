@@ -60,6 +60,10 @@ export class Bishop extends Piece {
             if (BoardComponent.isFieldTakenByEnemy(i, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
                 possiblePoints.push(new Point(i, j));
                 break;
+            } else {
+                if (!BoardComponent.isFieldEmpty(i, j)) {
+                    break;
+                }
             }
         }
 
@@ -67,6 +71,10 @@ export class Bishop extends Piece {
             if (BoardComponent.isFieldTakenByEnemy(i, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
                 possiblePoints.push(new Point(i, j));
                 break;
+            } else {
+                if (!BoardComponent.isFieldEmpty(i, j)) {
+                    break;
+                }
             }
         }
 
@@ -74,6 +82,10 @@ export class Bishop extends Piece {
             if (BoardComponent.isFieldTakenByEnemy(i, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
                 possiblePoints.push(new Point(i, j));
                 break;
+            } else {
+                if (!BoardComponent.isFieldEmpty(i, j)) {
+                    break;
+                }
             }
         }
 
@@ -81,6 +93,10 @@ export class Bishop extends Piece {
             if (BoardComponent.isFieldTakenByEnemy(i, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
                 possiblePoints.push(new Point(i, j));
                 break;
+            } else {
+                if (!BoardComponent.isFieldEmpty(i, j)) {
+                    break;
+                }
             }
         }
 
