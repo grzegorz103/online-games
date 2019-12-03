@@ -36,8 +36,23 @@ export class Knight extends Piece {
         }
 
         // lewo -> dol
-        if (BoardComponent.isFieldEmpty(row - 1, col + 2)) {
-            possiblePoints.push(new Point(row - 1, col + 2));
+        if (BoardComponent.isFieldEmpty(row + 1, col - 2)) {
+            possiblePoints.push(new Point(row + 1, col - 2));
+        }
+
+        // prawo -> dol
+        if (BoardComponent.isFieldEmpty(row + 1, col + 2)) {
+            possiblePoints.push(new Point(row + 1, col + 2));
+        }
+
+        // dol -> lewo
+        if (BoardComponent.isFieldEmpty(row + 2, col - 1)) {
+            possiblePoints.push(new Point(row + 2, col - 1));
+        }
+
+        // dol -> prawo
+        if (BoardComponent.isFieldEmpty(row + 2, col + 1)) {
+            possiblePoints.push(new Point(row + 2, col + 1));
         }
 
         return possiblePoints;

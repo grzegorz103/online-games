@@ -6,6 +6,8 @@ import { Color } from '../models/color';
 import { Rook } from '../models/rook';
 import { Bishop } from '../models/bishop';
 import { Knight } from '../models/knight';
+import { Queen } from '../models/queen';
+import { King } from '../models/king';
 
 
 @Component({
@@ -59,13 +61,13 @@ export class BoardComponent implements OnInit {
       BoardComponent.pieces.push(new Pawn(new Point(1, i), Color.BLACK, 'pawn-black.png'));
     }
     BoardComponent.pieces.push(new Rook(new Point(0, 0), Color.BLACK, 'rook-black.jpg'));
-    BoardComponent.pieces.push(new Rook(new Point(0, 7), Color.BLACK, 'rook-black.jpg'));
     BoardComponent.pieces.push(new Knight(new Point(0, 1), Color.BLACK, 'knight-black.png'));
     BoardComponent.pieces.push(new Bishop(new Point(0, 2), Color.BLACK, 'bishop-black.png'));
-    BoardComponent.pieces.push(new Rook(new Point(0, 3), Color.BLACK, 'king-black.png'));
-    BoardComponent.pieces.push(new Rook(new Point(0, 4), Color.BLACK, 'queen-black.png'));
+    BoardComponent.pieces.push(new Queen(new Point(0, 3), Color.BLACK, 'queen-black.png'));
+    BoardComponent.pieces.push(new King(new Point(0, 4), Color.BLACK, 'king-black.png'));
     BoardComponent.pieces.push(new Bishop(new Point(0, 5), Color.BLACK, 'bishop-black.png'));
     BoardComponent.pieces.push(new Knight(new Point(0, 6), Color.BLACK, 'knight-black.png'));
+    BoardComponent.pieces.push(new Rook(new Point(0, 7), Color.BLACK, 'rook-black.jpg'));
 
 
     // piony biale
@@ -73,13 +75,13 @@ export class BoardComponent implements OnInit {
       BoardComponent.pieces.push(new Pawn(new Point(6, i), Color.WHITE, 'pawn-white.png'));
     }
     BoardComponent.pieces.push(new Rook(new Point(7, 0), Color.WHITE, 'rook-white.png'));
-    BoardComponent.pieces.push(new Rook(new Point(7, 7), Color.WHITE, 'rook-white.png'));
     BoardComponent.pieces.push(new Knight(new Point(7, 1), Color.WHITE, 'knight-white.png'));
     BoardComponent.pieces.push(new Bishop(new Point(7, 2), Color.WHITE, 'bishop-white.png'));
-    BoardComponent.pieces.push(new Rook(new Point(7, 3), Color.WHITE, 'king-white.png'));
-    BoardComponent.pieces.push(new Rook(new Point(7, 4), Color.WHITE, 'queen-white.png'));
+    BoardComponent.pieces.push(new Queen(new Point(7, 3), Color.WHITE, 'queen-white.png'));
+    BoardComponent.pieces.push(new King(new Point(7, 4), Color.WHITE, 'king-white.png'));
     BoardComponent.pieces.push(new Bishop(new Point(7, 5), Color.WHITE, 'bishop-white.png'));
     BoardComponent.pieces.push(new Knight(new Point(7, 6), Color.WHITE, 'knight-white.png'));
+    BoardComponent.pieces.push(new Rook(new Point(7, 7), Color.WHITE, 'rook-white.png'));
   }
 
   getPieceByPoint(row: number, col: number): Piece {
@@ -162,7 +164,7 @@ export class BoardComponent implements OnInit {
     }
 
     piece.point = newPoint;
-   // BoardComponent.pieces.push(piece);
+    // BoardComponent.pieces.push(piece);
     //    BoardComponent.pieces.delete(this.getPointByCoordinates(ySource, xSource));
     //  BoardComponent.pieces.set(new Point(yDest, xDest), piece);
   }
