@@ -2,9 +2,10 @@ import { Piece } from './piece';
 import { Color } from './color';
 import { Point } from './point';
 import { BoardComponent } from '../board/board.component';
+import { King } from './king';
 
 export class Bishop extends Piece {
-  
+
     constructor(point: Point, color: Color, image: string) {
         super(point, color, image);
     }
@@ -103,38 +104,54 @@ export class Bishop extends Piece {
         return possiblePoints;
     }
 
-    getShootingInSameColor(): Point[] {
-       let possiblePoints = [];
+    getCoveredFields(): Point[] {
+        let possiblePoints = [];
 
         let row = this.point.row;
         let col = this.point.col;
 
         for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) { // lewa gorna przekatna
-            possiblePoints.push(new Point(i, j));
-            if (BoardComponent.isFieldTakenByEnemy(i, j, this.color)) {
-               break;
-            } 
+            if (BoardComponent.isFieldEmpty(i, j))
+                possiblePoints.push(new Point(i, j));
+            else {
+                if (!(BoardComponent.getPieceByField(i, j) instanceof King)) {
+                    possiblePoints.push(new Point(i, j));
+                    break;
+                }
+            }
         }
 
         for (let i = row - 1, j = col + 1; i >= 0 && j < 8; --i, ++j) { // prawa gorna przekatna
-            possiblePoints.push(new Point(i, j));
-            if (BoardComponent.isFieldTakenByEnemy(i, j, this.color)) {
-               break;
-            } 
+            if (BoardComponent.isFieldEmpty(i, j))
+                possiblePoints.push(new Point(i, j));
+            else {
+                if (!(BoardComponent.getPieceByField(i, j) instanceof King)) {
+                    possiblePoints.push(new Point(i, j));
+                    break;
+                }
+            }
         }
 
         for (let i = row + 1, j = col - 1; i < 8 && j >= 0; ++i, --j) { // lewa dolna przekatna
-            possiblePoints.push(new Point(i, j));
-            if (BoardComponent.isFieldTakenByEnemy(i, j, this.color)) {
-               break;
-            } 
+            if (BoardComponent.isFieldEmpty(i, j))
+                possiblePoints.push(new Point(i, j));
+            else {
+                if (!(BoardComponent.getPieceByField(i, j) instanceof King)) {
+                    possiblePoints.push(new Point(i, j));
+                    break;
+                }
+            }
         }
 
         for (let i = row + 1, j = col + 1; i < 8 && j < 8; ++i, ++j) { // prawa dolna przekatna
-            possiblePoints.push(new Point(i, j));
-            if (BoardComponent.isFieldTakenByEnemy(i, j, this.color)) {
-               break;
-            } 
+            if (BoardComponent.isFieldEmpty(i, j))
+                possiblePoints.push(new Point(i, j));
+            else {
+                if (!(BoardComponent.getPieceByField(i, j) instanceof King)) {
+                    possiblePoints.push(new Point(i, j));
+                    break;
+                }
+            }
         }
 
         return possiblePoints;

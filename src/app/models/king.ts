@@ -120,7 +120,8 @@ export class King extends Piece {
 
         return possiblePoints;
     }
-    getShootingInSameColor(): Point[] {
+    
+    getCoveredFields(): Point[] {
         let possiblePoints = [];
 
         let row = this.point.row;

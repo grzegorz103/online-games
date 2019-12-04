@@ -4,9 +4,6 @@ import { Color } from './color';
 import { BoardComponent } from '../board/board.component';
 
 export class Queen extends Piece {
-    getShootingInSameColor(): Point[] {
-        throw new Error("Method not implemented.");
-    }
 
     constructor(point: Point, color: Color, image: string) {
         super(point, color, image);
@@ -180,4 +177,8 @@ export class Queen extends Piece {
         return possiblePoints;
     }
 
+    getCoveredFields(): Point[] {
+        return [];
+    }
+ 
 }

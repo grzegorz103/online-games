@@ -2,13 +2,9 @@ import { Piece } from './piece';
 import { Color } from './color';
 import { Point } from './point';
 import { BoardComponent } from '../board/board.component';
+import { King } from './king';
 
 export class Rook extends Piece {
-
-
-    getShootingInSameColor(): Point[] {
-        throw new Error("Method not implemented.");
-    }
 
     constructor(point: Point, color: Color, image: string) {
         super(point, color, image);
@@ -101,6 +97,56 @@ export class Rook extends Piece {
             } else {
                 if (!BoardComponent.isFieldEmpty(row, j)) {
                     break;
+                }
+            }
+        }
+
+        return possiblePoints;
+    }
+
+
+    getCoveredFields(): Point[] {
+        let possiblePoints = [];
+
+        let row = this.point.row;
+        let col = this.point.col;
+        
+        for (let i = row + 1; i < 8; ++i) { // dol
+            if (BoardComponent.isFieldEmpty(i, col)){
+                possiblePoints.push(new Point(i, col));
+            } else {
+                if (!(BoardComponent.getPieceByField instanceof King)) {
+                    possiblePoints.push(new Point(i, col));
+                }
+            }
+        }
+
+        for (let i = row - 1; i >= 0; --i) { // gora
+            if (BoardComponent.isFieldEmpty(i, col)){
+                possiblePoints.push(new Point(i, col));
+            } else {
+                if (!(BoardComponent.getPieceByField instanceof King)) {
+                    possiblePoints.push(new Point(i, col));
+                }
+            }
+        }
+
+        for (let j = col - 1; j >= 0; --j) { // lewo
+            if (BoardComponent.isFieldEmpty(row, j)){
+                possiblePoints.push(new Point(row, j));
+            } else {
+                if (!(BoardComponent.getPieceByField instanceof King)) {
+                    possiblePoints.push(new Point(row, j));
+                }
+            }
+        }
+
+        for (let j = col + 1; j < 8; ++j) { // prawo
+            if (BoardComponent.isFieldEmpty(row, j)){
+                possiblePoints.push(new Point(row, j));
+            } else {
+                if (!(BoardComponent.getPieceByField instanceof King)) {
+                    possiblePoints.push(new Point(row, j));
                 }
             }
         }

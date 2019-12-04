@@ -186,18 +186,18 @@ export class BoardComponent implements OnInit {
       return;
     }
 
-    if (destPiece instanceof King ){
+    if (destPiece instanceof King) {
       let squaresMoved = Math.abs(newPoint.col - piece.point.col);
 
-      if(squaresMoved > 1){
-        if(newPoint.col > 4){
-        //  this.getPieceByPoint(0,)
-        }else{
+      if (squaresMoved > 1) {
+        if (newPoint.col > 4) {
+          //  this.getPieceByPoint(0,)
+        } else {
 
         }
       }
     }
-      piece.point = newPoint;
+    piece.point = newPoint;
 
     this.checkIfPawnFirstMove(piece);
     // BoardComponent.pieces.push(piece);
@@ -321,9 +321,17 @@ export class BoardComponent implements OnInit {
 
   //czy jest pod biciem
   isFieldUnderAttack(row: number, col: number, color: Color) {
-    return BoardComponent.pieces
+    const flatMap = (f, arr) => arr.reduce((x, y) => [...x, ...f(y)], [])
+
+    let array = BoardComponent.pieces
       .filter(e => e.color === color)
-      .some(e => e.getPossibleMoves().some(f => f.col === col && f.row === row) || e.getPossibleCaptures().some(f => f.col === col && f.row === row));
+      .map(e => e.getCoveredFields())
+
+    let flatted = ([].concat.apply([], array) as Point[])
+      .filter(e => e.row === row && e.col === col);
+    console.log(flatted);
+
+    return flatted.length > 0;
   }
 
   getPossibleMovesWhenKingInCheck(color: Color) {
@@ -374,5 +382,13 @@ export class BoardComponent implements OnInit {
       possiblePoints.push(new Point(row + 1, col + 1));
     }
     return possiblePoints;
+  }
+
+  static getPieceByField(row: number, col: number): Piece {
+    if (BoardComponent.isFieldEmpty(row, col)) {
+      return null;
+    }
+
+    BoardComponent.pieces.find(e => e.point.col === col && e.point.row === row);
   }
 }
