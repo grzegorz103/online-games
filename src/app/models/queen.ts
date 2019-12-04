@@ -188,7 +188,7 @@ export class Queen extends Piece {
             if (BoardComponent.isFieldEmpty(i, col)){
                 possiblePoints.push(new Point(i, col));
             } else {
-                if (!(BoardComponent.getPieceByField instanceof King)) {
+                if (!(BoardComponent.getPieceByField(i,col) instanceof King)) {
                     possiblePoints.push(new Point(i, col));
                     break;
                 }
@@ -199,7 +199,7 @@ export class Queen extends Piece {
             if (BoardComponent.isFieldEmpty(i, col)){
                 possiblePoints.push(new Point(i, col));
             } else {
-                if (!(BoardComponent.getPieceByField instanceof King)) {
+                if (!(BoardComponent.getPieceByField(i,col) instanceof King)) {
                     possiblePoints.push(new Point(i, col));
                     break;
                 }
@@ -210,7 +210,7 @@ export class Queen extends Piece {
             if (BoardComponent.isFieldEmpty(row, j)){
                 possiblePoints.push(new Point(row, j));
             } else {
-                if (!(BoardComponent.getPieceByField instanceof King)) {
+                if (!(BoardComponent.getPieceByField(row,j)instanceof King)) {
                     possiblePoints.push(new Point(row, j));
                     break;
                 }
@@ -221,7 +221,7 @@ export class Queen extends Piece {
             if (BoardComponent.isFieldEmpty(row, j)){
                 possiblePoints.push(new Point(row, j));
             } else {
-                if (!(BoardComponent.getPieceByField instanceof King)) {
+                if (!(BoardComponent.getPieceByField(row,j) instanceof King)) {
                     possiblePoints.push(new Point(row, j));
                     break;
                 }

@@ -73,6 +73,7 @@ export class Pawn extends Piece {
 
             possiblePoints.push(new Point(row + 1, col + 1));
         }
+        
         return possiblePoints;
     }
 

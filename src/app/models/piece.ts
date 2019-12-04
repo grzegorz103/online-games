@@ -5,6 +5,7 @@ export abstract class Piece {
     point: Point;
     color: Color;
     image: string;
+    checkPoints: Point[] = [];
 
     constructor(point: Point, color: Color, image: string) {
         this.color = color;
@@ -17,4 +18,5 @@ export abstract class Piece {
     abstract getPossibleCaptures(): Point[];
 
     abstract getCoveredFields(): Point[]; // zwraca liste punktow ktore sa puste lub istnieje na nich pionek tego samego koloru
+
 }

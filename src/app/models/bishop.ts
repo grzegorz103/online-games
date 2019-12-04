@@ -19,7 +19,12 @@ export class Bishop extends Piece {
         for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) { // lewa gorna przekatna
             if (BoardComponent.isFieldEmpty(i, j)) {
                 possiblePoints.push(new Point(i, j));
-            } else {
+            } //else if (BoardComponent.getPieceByField(i, j) instanceof King && (BoardComponent.getPieceByField(i, j).color !== this.color)){
+               // for( let a = row - 1, b = col - 1; a > i && j >= col; --a, --b){
+                 //   possiblePoints.push(new Point(i, j));
+             //   }
+           // }
+            else {
                 break;
             }
         }

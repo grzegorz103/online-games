@@ -115,7 +115,6 @@ export class BoardComponent implements OnInit {
           this.blackKingChecked = true;
         } else {
           this.blackKingChecked = false;
-          console.log('checkb');
         }
         this.computerMove();
       }
@@ -132,13 +131,18 @@ export class BoardComponent implements OnInit {
         if (this.whiteKingChecked && (pieceClicked instanceof King)) {
           this.activePiece = pieceClicked;
           this.selected = true;
-          this.possibleCaptures = this.getPossibleCapturesWhenKingInCheck(Color.WHITE);
-          this.possibleMoves = this.getPossibleMovesWhenKingInCheck(Color.WHITE);
+          this.possibleCaptures = this.getPossibleCapturesForKingInCheck(Color.WHITE);
+          this.possibleMoves = this.getPossibleMovesForKingInCheck(Color.WHITE);
         } else if (!this.whiteKingChecked) {
           this.activePiece = pieceClicked;
           this.selected = true;
           this.possibleCaptures = pieceClicked.getPossibleCaptures();
           this.possibleMoves = pieceClicked.getPossibleMoves();
+        } else if (this.whiteKingChecked && !(pieceClicked instanceof King)) {
+          this.activePiece = pieceClicked;
+          this.selected = true;
+          this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
+          this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
         }
       }
     }
@@ -237,6 +241,7 @@ export class BoardComponent implements OnInit {
     //if (this.isKingInCheck(Color.BLACK)) {
 
     // }
+
     let blackPieces = BoardComponent.pieces
       .filter(e => e.color === Color.BLACK)
       .filter(e => e.getPossibleMoves().length > 0 || e.getPossibleCaptures().length > 0);
@@ -261,9 +266,8 @@ export class BoardComponent implements OnInit {
     let king = BoardComponent
       .pieces
       .find(e => e.color === color && e instanceof King);
-console.log(king);
+
     if (king) {
-      console.log(BoardComponent.pieces.some(e => e.getPossibleCaptures().some(e => e.col === king.point.col && e.row === king.point.row) && e.color !== color));
       return BoardComponent.pieces.some(e => e.getPossibleCaptures().some(e => e.col === king.point.col && e.row === king.point.row) && e.color !== color);
     }
     return false;
@@ -275,7 +279,7 @@ console.log(king);
     }
   }
 
-  getPossibleCapturesWhenKingInCheck(color: Color) {
+  getPossibleCapturesForKingInCheck(color: Color) {
     let king = BoardComponent
       .pieces
       .find(e => e.color === color && e instanceof King);
@@ -286,40 +290,40 @@ console.log(king);
     let col = king.point.col;
 
     // lewo
-    if (BoardComponent.isFieldTakenByEnemy(row, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldTakenByEnemy(row, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !BoardComponent.isFieldUnderAttack(row, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row, col - 1));
     }
 
     // prawo
-    if (BoardComponent.isFieldTakenByEnemy(row, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldTakenByEnemy(row, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !BoardComponent.isFieldUnderAttack(row, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row, col + 1));
     }
 
     // dol
-    if (BoardComponent.isFieldTakenByEnemy(row + 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row + 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldTakenByEnemy(row + 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !BoardComponent.isFieldUnderAttack(row + 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row + 1, col));
     }
 
     // gora
-    if (BoardComponent.isFieldTakenByEnemy(row - 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row - 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldTakenByEnemy(row - 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !BoardComponent.isFieldUnderAttack(row - 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row - 1, col));
     }
 
     // lewo gora
-    if (BoardComponent.isFieldTakenByEnemy(row - 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row - 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldTakenByEnemy(row - 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !BoardComponent.isFieldUnderAttack(row - 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row - 1, col - 1));
     }
     // prawo gora
-    if (BoardComponent.isFieldTakenByEnemy(row - 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row - 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldTakenByEnemy(row - 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !BoardComponent.isFieldUnderAttack(row - 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row - 1, col + 1));
     }
 
     // lewo dol
-    if (BoardComponent.isFieldTakenByEnemy(row + 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row + 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldTakenByEnemy(row + 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !BoardComponent.isFieldUnderAttack(row + 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row + 1, col - 1));
     }
     // prawo dol
-    if (BoardComponent.isFieldTakenByEnemy(row + 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !this.isFieldUnderAttack(row + 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldTakenByEnemy(row + 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !BoardComponent.isFieldUnderAttack(row + 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row + 1, col + 1));
     }
 
@@ -327,21 +331,16 @@ console.log(king);
   }
 
   //czy jest pod biciem
-  isFieldUnderAttack(row: number, col: number, color: Color) {
-    const flatMap = (f, arr) => arr.reduce((x, y) => [...x, ...f(y)], [])
-
-    let array = BoardComponent.pieces
-      .filter(e => e.color === color)
-      .map(e => e.getCoveredFields())
-
-    let flatted = ([].concat.apply([], array) as Point[])
-      .filter(e => e.row === row && e.col === col);
-    console.log(flatted);
-
-    return flatted.length > 0;
+  static isFieldUnderAttack(row: number, col: number, color: Color) {
+    console.log(BoardComponent.pieces.filter(e => e.color === color).some(e =>
+      e.getCoveredFields().some(f => f.row === row && f.col === col)));
+      BoardComponent.pieces.forEach(e=>console.log(e.getCoveredFields()));
+    let found = false;
+    return BoardComponent.pieces.filter(e => e.color === color).some(e => e.getCoveredFields().some(f => f.col === col && f.row === row));
+    
   }
 
-  getPossibleMovesWhenKingInCheck(color: Color) {
+  getPossibleMovesForKingInCheck(color: Color) {
     let king = BoardComponent
       .pieces
       .find(e => e.color === color && e instanceof King);
@@ -352,40 +351,40 @@ console.log(king);
     let col = king.point.col;
 
     // lewo
-    if (BoardComponent.isFieldEmpty(row, col - 1) && !this.isFieldUnderAttack(row, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldEmpty(row, col - 1) && !BoardComponent.isFieldUnderAttack(row, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row, col - 1));
     }
 
     // prawo
-    if (BoardComponent.isFieldEmpty(row, col + 1) && !this.isFieldUnderAttack(row, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldEmpty(row, col + 1) && !BoardComponent.isFieldUnderAttack(row, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row, col + 1));
     }
 
     // dol
-    if (BoardComponent.isFieldEmpty(row + 1, col) && !this.isFieldUnderAttack(row + 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldEmpty(row + 1, col) && !BoardComponent.isFieldUnderAttack(row + 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row + 1, col));
     }
 
     // gora
-    if (BoardComponent.isFieldEmpty(row - 1, col) && !this.isFieldUnderAttack(row - 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldEmpty(row - 1, col) && !BoardComponent.isFieldUnderAttack(row - 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row - 1, col));
     }
 
     // lewo gora
-    if (BoardComponent.isFieldEmpty(row - 1, col - 1) && !this.isFieldUnderAttack(row - 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldEmpty(row - 1, col - 1) && !BoardComponent.isFieldUnderAttack(row - 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row - 1, col - 1));
     }
     // prawo gora
-    if (BoardComponent.isFieldEmpty(row - 1, col + 1) && !this.isFieldUnderAttack(row - 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldEmpty(row - 1, col + 1) && !BoardComponent.isFieldUnderAttack(row - 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row - 1, col + 1));
     }
 
     // lewo dol
-    if (BoardComponent.isFieldEmpty(row + 1, col - 1) && !this.isFieldUnderAttack(row + 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldEmpty(row + 1, col - 1) && !BoardComponent.isFieldUnderAttack(row + 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row + 1, col - 1));
     }
     // prawo dol
-    if (BoardComponent.isFieldEmpty(row + 1, col + 1) && !this.isFieldUnderAttack(row + 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+    if (BoardComponent.isFieldEmpty(row + 1, col + 1) && !BoardComponent.isFieldUnderAttack(row + 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
       possiblePoints.push(new Point(row + 1, col + 1));
     }
     return possiblePoints;
