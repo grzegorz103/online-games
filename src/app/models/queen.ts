@@ -2,6 +2,7 @@ import { Piece } from './piece';
 import { Point } from './point';
 import { Color } from './color';
 import { BoardComponent } from '../board/board.component';
+import { King } from './king';
 
 export class Queen extends Piece {
 
@@ -178,7 +179,101 @@ export class Queen extends Piece {
     }
 
     getCoveredFields(): Point[] {
-        return [];
+        let possiblePoints = [];
+
+        let row = this.point.row;
+        let col = this.point.col;
+        
+        for (let i = row + 1; i < 8; ++i) { // dol
+            if (BoardComponent.isFieldEmpty(i, col)){
+                possiblePoints.push(new Point(i, col));
+            } else {
+                if (!(BoardComponent.getPieceByField instanceof King)) {
+                    possiblePoints.push(new Point(i, col));
+                    break;
+                }
+            }
+        }
+
+        for (let i = row - 1; i >= 0; --i) { // gora
+            if (BoardComponent.isFieldEmpty(i, col)){
+                possiblePoints.push(new Point(i, col));
+            } else {
+                if (!(BoardComponent.getPieceByField instanceof King)) {
+                    possiblePoints.push(new Point(i, col));
+                    break;
+                }
+            }
+        }
+
+        for (let j = col - 1; j >= 0; --j) { // lewo
+            if (BoardComponent.isFieldEmpty(row, j)){
+                possiblePoints.push(new Point(row, j));
+            } else {
+                if (!(BoardComponent.getPieceByField instanceof King)) {
+                    possiblePoints.push(new Point(row, j));
+                    break;
+                }
+            }
+        }
+
+        for (let j = col + 1; j < 8; ++j) { // prawo
+            if (BoardComponent.isFieldEmpty(row, j)){
+                possiblePoints.push(new Point(row, j));
+            } else {
+                if (!(BoardComponent.getPieceByField instanceof King)) {
+                    possiblePoints.push(new Point(row, j));
+                    break;
+                }
+            }
+        }
+
+
+        for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) { // lewa gorna przekatna
+            if (BoardComponent.isFieldEmpty(i, j))
+                possiblePoints.push(new Point(i, j));
+            else {
+                if (!(BoardComponent.getPieceByField(i, j) instanceof King)) {
+                    possiblePoints.push(new Point(i, j));
+                    break;
+                }
+            }
+        }
+
+        for (let i = row - 1, j = col + 1; i >= 0 && j < 8; --i, ++j) { // prawa gorna przekatna
+            if (BoardComponent.isFieldEmpty(i, j))
+                possiblePoints.push(new Point(i, j));
+            else {
+                if (!(BoardComponent.getPieceByField(i, j) instanceof King)) {
+                    possiblePoints.push(new Point(i, j));
+                    break;
+                }
+            }
+        }
+
+        for (let i = row + 1, j = col - 1; i < 8 && j >= 0; ++i, --j) { // lewa dolna przekatna
+            if (BoardComponent.isFieldEmpty(i, j))
+                possiblePoints.push(new Point(i, j));
+            else {
+                if (!(BoardComponent.getPieceByField(i, j) instanceof King)) {
+                    possiblePoints.push(new Point(i, j));
+                    break;
+                }
+            }
+        }
+
+        for (let i = row + 1, j = col + 1; i < 8 && j < 8; ++i, ++j) { // prawa dolna przekatna
+            if (BoardComponent.isFieldEmpty(i, j))
+                possiblePoints.push(new Point(i, j));
+            else {
+                if (!(BoardComponent.getPieceByField(i, j) instanceof King)) {
+                    possiblePoints.push(new Point(i, j));
+                    break;
+                }
+            }
+        }
+
+        return possiblePoints;
     }
  
 }
