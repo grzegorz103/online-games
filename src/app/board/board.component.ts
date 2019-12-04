@@ -208,12 +208,13 @@ export class BoardComponent implements OnInit {
       }
     }
     piece.point = newPoint;
-
+    this.checkForPawnPromote(piece);
     this.checkIfPawnFirstMove(piece);
     // BoardComponent.pieces.push(piece);
     //    BoardComponent.pieces.delete(this.getPointByCoordinates(ySource, xSource));
     //  BoardComponent.pieces.set(new Point(yDest, xDest), piece);
   }
+
 
   isPointInPossibleMoves(point: Point): boolean {
     return this.possibleMoves.some(e => e.row === point.row && e.col === point.col);
@@ -334,10 +335,10 @@ export class BoardComponent implements OnInit {
   static isFieldUnderAttack(row: number, col: number, color: Color) {
     console.log(BoardComponent.pieces.filter(e => e.color === color).some(e =>
       e.getCoveredFields().some(f => f.row === row && f.col === col)));
-      BoardComponent.pieces.forEach(e=>console.log(e.getCoveredFields()));
+    BoardComponent.pieces.forEach(e => console.log(e.getCoveredFields()));
     let found = false;
     return BoardComponent.pieces.filter(e => e.color === color).some(e => e.getCoveredFields().some(f => f.col === col && f.row === row));
-    
+
   }
 
   getPossibleMovesForKingInCheck(color: Color) {
@@ -396,5 +397,19 @@ export class BoardComponent implements OnInit {
     }
 
     BoardComponent.pieces.find(e => e.point.col === col && e.point.row === row);
+  }
+
+  checkForPawnPromote(piece: Piece) {
+    if (!(piece instanceof Pawn)) {
+      return;
+    }
+
+    if (piece.color === Color.WHITE && piece.point.row === 0) {
+      BoardComponent.pieces = BoardComponent.pieces.filter(e => e !== piece);
+      BoardComponent.pieces.push(new Queen(piece.point, Color.WHITE, 'queen-white.png'));
+    } else if (piece.color === Color.BLACK && piece.point.row === 7) {
+      BoardComponent.pieces = BoardComponent.pieces.filter(e => e !== piece);
+      BoardComponent.pieces.push(new Queen(piece.point, Color.BLACK, 'queen-black.png'));
+    }
   }
 }
