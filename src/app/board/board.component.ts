@@ -111,6 +111,12 @@ export class BoardComponent implements OnInit {
       //   this.possibleMoves = activePiece.getPossibleMoves();
       if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
         this.movePiece(this.activePiece, pointClicked);
+        if (this.isKingInCheck(Color.BLACK)) {
+          this.blackKingChecked = true;
+        } else {
+          this.blackKingChecked = false;
+          console.log('checkb');
+        }
         this.computerMove();
       }
       this.selected = false;
@@ -255,8 +261,9 @@ export class BoardComponent implements OnInit {
     let king = BoardComponent
       .pieces
       .find(e => e.color === color && e instanceof King);
-
+console.log(king);
     if (king) {
+      console.log(BoardComponent.pieces.some(e => e.getPossibleCaptures().some(e => e.col === king.point.col && e.row === king.point.row) && e.color !== color));
       return BoardComponent.pieces.some(e => e.getPossibleCaptures().some(e => e.col === king.point.col && e.row === king.point.row) && e.color !== color);
     }
     return false;

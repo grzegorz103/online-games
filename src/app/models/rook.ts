@@ -117,6 +117,7 @@ export class Rook extends Piece {
             } else {
                 if (!(BoardComponent.getPieceByField instanceof King)) {
                     possiblePoints.push(new Point(i, col));
+                    break;
                 }
             }
         }
@@ -127,6 +128,7 @@ export class Rook extends Piece {
             } else {
                 if (!(BoardComponent.getPieceByField instanceof King)) {
                     possiblePoints.push(new Point(i, col));
+                    break;
                 }
             }
         }
@@ -137,6 +139,7 @@ export class Rook extends Piece {
             } else {
                 if (!(BoardComponent.getPieceByField instanceof King)) {
                     possiblePoints.push(new Point(row, j));
+                    break;
                 }
             }
         }
@@ -147,6 +150,7 @@ export class Rook extends Piece {
             } else {
                 if (!(BoardComponent.getPieceByField instanceof King)) {
                     possiblePoints.push(new Point(row, j));
+                    break;
                 }
             }
         }
