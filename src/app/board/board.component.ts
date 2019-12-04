@@ -139,10 +139,11 @@ export class BoardComponent implements OnInit {
           this.possibleCaptures = pieceClicked.getPossibleCaptures();
           this.possibleMoves = pieceClicked.getPossibleMoves();
         } else if (this.whiteKingChecked && !(pieceClicked instanceof King)) {
-          this.activePiece = pieceClicked;
-          this.selected = true;
-          this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
-          this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
+         // tu bede musial wybrac tylko te ruchy, ktore moga zablokowac szach
+          // this.activePiece = pieceClicked;
+         // this.selected = true;
+         // this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
+         // this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
         }
       }
     }
