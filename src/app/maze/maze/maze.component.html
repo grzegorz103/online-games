@@ -1,0 +1,14 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 bg-black" *ngIf="loaded">
+            <div id="maze">
+                <div *ngFor="let x of maze.points; let i = index" class="maze-row">
+                    <div *ngFor="let y of x; let j = index" class="maze-col">
+                        <div [ngClass]="[maze.points[i][j].isOccupied ? 'occupied-field' : 'free-field', isPlayerOnField(i,j) ? 'player' : '']">
+                            &nbsp;</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

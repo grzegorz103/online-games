@@ -9,11 +9,13 @@ import { BoardComponent } from './board/board.component';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { AngularDraggableModule } from 'angular2-draggable';
+import { MazeComponent } from './maze/maze/maze.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BoardComponent
+    BoardComponent,
+    MazeComponent
   ],
   imports: [
     BrowserModule,
