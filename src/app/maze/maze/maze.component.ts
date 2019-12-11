@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Maze } from '../models/maze';
 import { Player } from '../models/player';
 import { Computer } from '../models/computer';
@@ -115,4 +115,26 @@ export class MazeComponent implements OnInit {
     return neighbours;
   }
 
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    // event.key === 'ArrowUp'
+    switch (event.key) {
+      case 'ArrowUp':
+        if (this.player.row > 0 && this.maze.points[this.player.row - 1][this.player.col].isOccupied)
+          this.player.row -= 1;
+        break;
+      case 'ArrowDown':
+        if (this.player.row < 28 && this.maze.points[this.player.row + 1][this.player.col].isOccupied)
+          this.player.row += 1;
+        break;
+      case 'ArrowLeft':
+        if (this.player.col > 0 && this.maze.points[this.player.row][this.player.col - 1].isOccupied)
+          this.player.col -= 1;
+        break;
+      case 'ArrowRight':
+        if (this.player.col < 28 && this.maze.points[this.player.row][this.player.col + 1].isOccupied)
+          this.player.col += 1;
+        break;
+    }
+  }
 }
