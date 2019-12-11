@@ -28,6 +28,12 @@ export class MazeComponent implements OnInit {
     this.createPlayer();
     this.loaded = true;
     this.computer = new Computer();
+
+    do {
+      this.computer.row = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
+      this.computer.col = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
+    }
+    while (!this.maze.points[this.computer.row][this.computer.col].isOccupied);
     this.computerMove();
   }
 
@@ -55,7 +61,12 @@ export class MazeComponent implements OnInit {
     let move = 0;
 
     if (neighbours.some(e => e === this.computer.direction)) { // zmienic na if neighbours.length > 2 (gdy jest wiecej niz 2 mozliwe sciezzki)
-      move = this.computer.direction;
+      //    let random = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
+      if (neighbours.length > 2) {
+        move = neighbours[Math.floor(Math.random() * neighbours.length)];
+      } else {
+        move = this.computer.direction;
+      }
     } else {
       move = neighbours[Math.floor(Math.random() * neighbours.length)];
     }
@@ -74,10 +85,10 @@ export class MazeComponent implements OnInit {
         this.computer.col += 1;
         break;
     }
-    
+
     this.computer.direction = move;
 
-    setTimeout(()=>this.computerMove(), 100);
+    setTimeout(() => this.computerMove(), 100);
   }
 
   neighbours(point: Point): number[] {
