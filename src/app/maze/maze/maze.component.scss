@@ -1,13 +1,14 @@
 #maze{
-    width: 50vw;
-    height:50vw;
+    height:40vw;
+    width:40vw;
     background-color:black;
+    border: 2px solid blue;
 }
 
 .maze-row{
     display:block;
     width: 100%;
-    height: 3%;
+    height: 3.333%;
 }
 
 .maze-col{
@@ -16,7 +17,6 @@
     height:100%;
     vertical-align: top;
     cursor:default;
-   
 }
 
 .occupied-field{
