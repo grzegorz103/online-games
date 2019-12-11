@@ -68,11 +68,8 @@ export class MazeComponent implements OnInit {
       }
     } else {
       if (neighbours.length > 1) {
-       
         // jezeli jest wiecej niz 1 sasiad to bierzemy lewego lub prawego
         move = neighbours.filter(e => e !== this.oppositeDirections[this.computer.direction])[Math.floor(Math.random() * (neighbours.length - 1))];
-        console.log(move);
-        console.log(neighbours.filter(e => e !== this.oppositeDirections[this.computer.direction]) + 'aa');
       } else {
         move = neighbours[Math.floor(Math.random() * neighbours.length)];
       }
