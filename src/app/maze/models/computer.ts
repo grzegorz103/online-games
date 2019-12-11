@@ -1,6 +1,11 @@
-export class Computer{
-    row: number = 3;
-    col: number = 0;
+import { Point } from './point';
+
+export class Computer extends Point {
 
     direction = 0;
+
+    constructor(row: number, col: number, name: string){
+        super(row, col, name);
+    }
+    
 }

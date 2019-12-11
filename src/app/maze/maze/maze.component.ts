@@ -15,6 +15,7 @@ export class MazeComponent implements OnInit {
   maze: Maze;
   loaded = false;
   computer: Computer;
+  meta: Point;
   // gora dol lewo prawo
   oppositeDirections = [1, 0, 3, 2];
   UP = 0;
@@ -26,13 +27,8 @@ export class MazeComponent implements OnInit {
     this.maze = this.generateMaze();
     this.createPlayer();
     this.loaded = true;
-    this.computer = new Computer();
-
-    do {
-      this.computer.row = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
-      this.computer.col = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
-    }
-    while (!this.maze.points[this.computer.row][this.computer.col].isOccupied);
+    this.createComputer();
+    this.createMetaPoint();
     this.computerMove();
   }
 
@@ -43,8 +39,18 @@ export class MazeComponent implements OnInit {
     return new Maze();
   }
 
+  createComputer(){
+    let row, col;
+    do {
+      row = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
+      col = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
+    }
+    while (!this.maze.points[row][col].isOccupied);
+    this.computer = new Computer(row, col, 'Computer');
+  }
+
   createPlayer() {
-    this.player = new Player();
+    this.player = new Player(0, 0, 'Player');
   }
 
   isPlayerOnField(i: number, j: number) {
@@ -56,7 +62,7 @@ export class MazeComponent implements OnInit {
   }
 
   computerMove() {
-    let neighbours = this.neighbours(new Point(this.computer.row, this.computer.col));
+    let neighbours = this.neighbours(new Point(this.computer.row, this.computer.col, null));
     let move = 0;
 
     if (neighbours.some(e => e === this.computer.direction)) { // zmienic na if neighbours.length > 2 (gdy jest wiecej niz 2 mozliwe sciezzki)
@@ -90,14 +96,15 @@ export class MazeComponent implements OnInit {
     }
 
     this.computer.direction = move;
+    this.checkForWin(this.computer);
 
     setTimeout(() => this.computerMove(), 100);
   }
 
   neighbours(point: Point): number[] {
     let neighbours = [];
-    let x = point.x;
-    let y = point.y;
+    let x = point.row;
+    let y = point.col;
 
     if (this.computer.row > 0 && this.maze.points[x - 1][y].isOccupied) {
       neighbours.push(this.UP);
@@ -135,6 +142,29 @@ export class MazeComponent implements OnInit {
         if (this.player.col < 28 && this.maze.points[this.player.row][this.player.col + 1].isOccupied)
           this.player.col += 1;
         break;
+    }
+
+    this.checkForWin(this.player);
+  }
+
+  createMetaPoint() {
+    let x;
+    let y = 28;
+
+    do{
+      x = Math.floor(Math.random() * (28 - 1 + 1)) + 1
+    }while(!this.maze.points[x][x].isOccupied);
+
+    this.meta = new Point(x, y, null);
+  }
+
+  isMetaOnField(row: number, col: number){
+    return this.meta.row === row && this.meta.col === col;
+  }
+
+  checkForWin(point: Point){
+    if(point.row === this.meta.row && point.col === this.meta.col){
+      alert(point.name + ' has won the game!!!');
     }
   }
 }
