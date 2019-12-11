@@ -11,7 +11,7 @@ export class Maze {
         for (var i = 0; i < 30; ++i) {
             this.points[i] = [];
             for (var j = 0; j < 30; ++j) {
-                this.points[i][j] = new Point(i, j);
+                this.points[i][j] = new Point(i, j, null);
             }
         }
 
@@ -26,7 +26,7 @@ export class Maze {
 
         for (let neighbour of newArr) {
             if (neighbour && !neighbour.isOccupied) {
-                this.points[(point.x + neighbour.x) / 2][(point.y + neighbour.y) / 2].isOccupied = true;
+                this.points[(point.row + neighbour.row) / 2][(point.col + neighbour.col) / 2].isOccupied = true;
                 this.initGenerating(neighbour);
             }
         }
@@ -35,12 +35,12 @@ export class Maze {
 
     neighbours(point: Point): Point[] {
         let neighbours = [];
-        let x = point.x;
-        let y = point.y;
-        if (point.x > 1 && !this.points[x - 2][y].isOccupied) {
+        let x = point.row;
+        let y = point.col;
+        if (point.row > 1 && !this.points[x - 2][y].isOccupied) {
             neighbours.push(this.points[x - 2][y]);
         }
-        if (point.y > 1 && !this.points[x][y - 2].isOccupied) {
+        if (point.col > 1 && !this.points[x][y - 2].isOccupied) {
             neighbours.push(this.points[x][y - 2])
         }
         if (x < 28 && !this.points[x + 2][y].isOccupied) {

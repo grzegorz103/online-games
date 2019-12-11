@@ -13,6 +13,7 @@
 .maze-col{
     display: inline-block;
     width: 3.3%;
+    height:100%;
     vertical-align: top;
     cursor:default;
    
@@ -27,10 +28,23 @@
 .free-field{
     background-color: gray;
 } 
- .col::after{
-    content: '\200b';
+ .maze-col::after{
+   content: '\200b';
   }
 
 .player{
-    background-color: greenyellow;
+    background-color: peru;
+}
+
+.computer{
+    background-color: red;
+}
+
+.square{
+    height:100%;
+    width:100%;
+}
+
+.meta{
+    background-color: green;
 }
