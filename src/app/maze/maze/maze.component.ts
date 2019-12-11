@@ -15,9 +15,8 @@ export class MazeComponent implements OnInit {
   maze: Maze;
   loaded = false;
   computer: Computer;
-
   // gora dol lewo prawo
-  directions = [0, 1, 2, 3];
+  oppositeDirections = [1, 0, 3, 2];
   UP = 0;
   DOWN = 1;
   LEFT = 2;
@@ -63,14 +62,21 @@ export class MazeComponent implements OnInit {
     if (neighbours.some(e => e === this.computer.direction)) { // zmienic na if neighbours.length > 2 (gdy jest wiecej niz 2 mozliwe sciezzki)
       //    let random = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
       if (neighbours.length > 2) {
-        move = neighbours[Math.floor(Math.random() * neighbours.length)];
+        move = neighbours.filter(e => e !== this.oppositeDirections[this.computer.direction])[Math.floor(Math.random() * (neighbours.length - 1))];
       } else {
         move = this.computer.direction;
       }
     } else {
-      move = neighbours[Math.floor(Math.random() * neighbours.length)];
+      if (neighbours.length > 1) {
+       
+        // jezeli jest wiecej niz 1 sasiad to bierzemy lewego lub prawego
+        move = neighbours.filter(e => e !== this.oppositeDirections[this.computer.direction])[Math.floor(Math.random() * (neighbours.length - 1))];
+        console.log(move);
+        console.log(neighbours.filter(e => e !== this.oppositeDirections[this.computer.direction]) + 'aa');
+      } else {
+        move = neighbours[Math.floor(Math.random() * neighbours.length)];
+      }
     }
-
     switch (move) {
       case this.UP:
         this.computer.row -= 1;
