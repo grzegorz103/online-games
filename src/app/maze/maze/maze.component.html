@@ -1,13 +1,23 @@
 <div class="container mt-2">
     <div class="row">
         <div class="mx-auto bg-black" *ngIf="loaded">
+
             <div id="maze">
-                <div *ngFor="let x of maze.points; let i = index" class="maze-row">
+                <div *ngFor="let x of getMazePoints(); let i = index" class="maze-row">
                     <div *ngFor="let y of x; let j = index" class="maze-col">
                         <div
-                            [ngClass]="[maze.points[i][j].isOccupied ? 'occupied-field' : 'free-field', isPlayerOnField(i,j) ? 'player' : '', isComputerOnField(i,j) ? 'computer' : '', isMetaOnField(i, j) ? 'meta' : '']">
+                            [ngClass]="[getMazePoints()[i][j].isOccupied ? 'occupied-field' : 'free-field', isPlayerOnField(i,j) ? 'player' : '', isComputerOnField(i,j) ? 'computer' : '', isMetaOnField(i, j) ? 'meta' : '']">
                             &nbsp;</div>
                     </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mt-2 mx-auto">
+                    <mat-radio-group aria-label="Wybierz poziom trudności" (change)="changeDifficultLevel($event)">
+                        <mat-radio-button value="EASY" [checked]=true>Łatwy</mat-radio-button>
+                        <mat-radio-button value="HARD" class="ml-2">Trudny</mat-radio-button>
+                    </mat-radio-group>
                 </div>
             </div>
         </div>
