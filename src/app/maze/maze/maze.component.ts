@@ -5,6 +5,7 @@ import { Computer } from '../models/computer';
 import { Point } from '../models/point';
 import { Level } from '../models/levels/level';
 import { Hard } from '../models/levels/hard';
+import { Easy } from '../models/levels/easy';
 
 @Component({
   selector: 'app-maze',
@@ -30,7 +31,7 @@ export class MazeComponent implements OnInit {
     MazeComponent.maze = this.generateMaze();
     this.createPlayer();
     this.loaded = true;
-    this.level = new Hard();
+    this.level = new Easy();
     this.createComputer();
     this.createMetaPoint();
     this.computerMove();
@@ -138,7 +139,20 @@ export class MazeComponent implements OnInit {
     }
   }
 
-  getMazePoints(){
+  getMazePoints() {
     return MazeComponent.maze.points;
+  }
+
+  changeDifficultLevel(event) {
+    if (event) {
+      switch (event.value) {
+        case 'EASY':
+          this.level = new Easy();
+          break;
+        case 'HARD':
+          this.level = new Hard();console.log('hard')
+          break;
+      }
+    }
   }
 }
