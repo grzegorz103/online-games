@@ -15,17 +15,17 @@ import { Easy } from '../models/levels/easy';
 export class MazeComponent implements OnInit {
 
   player: Player;
-  static maze: Maze;
   loaded = false;
   computer: Computer;
   meta: Point;
-  // gora dol lewo prawo
+  level: Level;
+
+  static maze: Maze;
   static oppositeDirections = [1, 0, 3, 2];
   static UP = 0;
   static DOWN = 1;
   static LEFT = 2;
   static RIGHT = 3;
-  level: Level;
 
   constructor() {
     MazeComponent.maze = this.generateMaze();
@@ -49,8 +49,7 @@ export class MazeComponent implements OnInit {
     do {
       row = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
       col = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
-    }
-    while (!MazeComponent.maze.points[row][col].isOccupied);
+    } while (!MazeComponent.maze.points[row][col].isOccupied);
     this.computer = new Computer(row, col, 'Computer');
   }
 
@@ -150,7 +149,7 @@ export class MazeComponent implements OnInit {
           this.level = new Easy();
           break;
         case 'HARD':
-          this.level = new Hard(); console.log('hard')
+          this.level = new Hard();
           break;
       }
     }

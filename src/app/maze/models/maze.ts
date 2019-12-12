@@ -32,7 +32,6 @@ export class Maze {
         }
     }
 
-
     neighbours(point: Point): Point[] {
         let neighbours = [];
         let x = point.row;
