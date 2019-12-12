@@ -11,7 +11,6 @@ export class Hard extends Level {
             let move = 0;
 
             if (neighbours.some(e => e === computer.direction)) { // zmienic na if neighbours.length > 2 (gdy jest wiecej niz 2 mozliwe sciezzki)
-                //    let random = Math.floor(Math.random() * (100 - 1 + 1)) + 1;
                 if (neighbours.length > 2) {
                     move = neighbours.filter(e => e !== MazeComponent.oppositeDirections[computer.direction])[Math.floor(Math.random() * (neighbours.length - 1))];
                 } else {
@@ -19,7 +18,6 @@ export class Hard extends Level {
                 }
             } else {
                 if (neighbours.length > 1) {
-                    // jezeli jest wiecej niz 1 sasiad to bierzemy lewego lub prawego
                     move = neighbours.filter(e => e !== MazeComponent.oppositeDirections[computer.direction])[Math.floor(Math.random() * (neighbours.length - 1))];
                 } else {
                     move = neighbours[Math.floor(Math.random() * neighbours.length)];
