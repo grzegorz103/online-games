@@ -1,5 +1,8 @@
 # Chess and Maze app
-Features:
+## Live demo
+Live demo available at https://chess-online-de4ca.firebaseapp.com/
 
-Chess game with simple AI (unfinished yet)
-Maze game with two difficult levels - Easy and Hard
+## Features:
+
+Chess game with simple AI (unfinished yet)    
+Maze game with two difficult levels - Easy and Hard. Use WSAD to move
