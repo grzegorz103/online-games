@@ -25,21 +25,7 @@ export class Hard extends Level {
                     move = neighbours[Math.floor(Math.random() * neighbours.length)];
                 }
             }
-            switch (move) {
-                case MazeComponent.UP:
-                    computer.row -= 1;
-                    break;
-                case MazeComponent.DOWN:
-                    computer.row += 1;
-                    break;
-                case MazeComponent.LEFT:
-                    computer.col -= 1;
-                    break;
-                case MazeComponent.RIGHT:
-                    computer.col += 1;
-                    break;
-            }
-
+            MazeComponent.moveComputer(computer, move);
             computer.direction = move;
         }
     }

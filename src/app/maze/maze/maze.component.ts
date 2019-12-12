@@ -97,19 +97,19 @@ export class MazeComponent implements OnInit {
   handleKeyDown(event: KeyboardEvent) {
     // event.key === 'ArrowUp'
     switch (event.key) {
-      case 'ArrowUp':
+      case 'w':
         if (this.player.row > 0 && MazeComponent.maze.points[this.player.row - 1][this.player.col].isOccupied)
           this.player.row -= 1;
         break;
-      case 'ArrowDown':
+      case 's':
         if (this.player.row < 28 && MazeComponent.maze.points[this.player.row + 1][this.player.col].isOccupied)
           this.player.row += 1;
         break;
-      case 'ArrowLeft':
+      case 'a':
         if (this.player.col > 0 && MazeComponent.maze.points[this.player.row][this.player.col - 1].isOccupied)
           this.player.col -= 1;
         break;
-      case 'ArrowRight':
+      case 'd':
         if (this.player.col < 28 && MazeComponent.maze.points[this.player.row][this.player.col + 1].isOccupied)
           this.player.col += 1;
         break;
@@ -150,9 +150,26 @@ export class MazeComponent implements OnInit {
           this.level = new Easy();
           break;
         case 'HARD':
-          this.level = new Hard();console.log('hard')
+          this.level = new Hard(); console.log('hard')
           break;
       }
+    }
+  }
+
+  static moveComputer(computer: Computer, move: number) {
+    switch (move) {
+      case MazeComponent.UP:
+        computer.row -= 1;
+        break;
+      case MazeComponent.DOWN:
+        computer.row += 1;
+        break;
+      case MazeComponent.LEFT:
+        computer.col -= 1;
+        break;
+      case MazeComponent.RIGHT:
+        computer.col += 1;
+        break;
     }
   }
 }
