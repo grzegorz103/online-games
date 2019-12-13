@@ -29,7 +29,7 @@ export class MazeComponent implements OnInit {
   static LEFT = 2;
   static RIGHT = 3;
 
-  metaNode: Path;
+  static metaNode: Path;
   found: boolean;
   visited: Point[];
 
@@ -73,14 +73,14 @@ export class MazeComponent implements OnInit {
   }
 
   isPathOnField(i: number, j: number) {
-    if (!this.metaNode) return;
-    let node = this.metaNode.current;
+    if (!MazeComponent.metaNode) return;
+    let node = MazeComponent.metaNode.current;
     if (node.row === i && node.col === j) {
       return true;
     }
 
-    if (this.metaNode.previous) {
-      for (let prev = this.metaNode.previous; prev !== null; prev = prev.previous) {
+    if (MazeComponent.metaNode.previous) {
+      for (let prev = MazeComponent.metaNode.previous; prev !== null; prev = prev.previous) {
         if (prev.current.row === i && prev.current.col === j) {
           return true;
         }
@@ -110,6 +110,27 @@ export class MazeComponent implements OnInit {
     }
     if (y < 28 && MazeComponent.maze.points[x][y + 1].isOccupied) {
       neighbours.push(this.RIGHT);
+    }
+
+    return neighbours;
+  }
+
+  static neighboursFields(point: Point): Point[] {
+    let neighbours = [];
+    let x = point.row;
+    let y = point.col;
+
+    if (x > 0 && MazeComponent.maze.points[x - 1][y].isOccupied) {
+      neighbours.push(new Point(x - 1, y, null));
+    }
+    if (y > 0 && MazeComponent.maze.points[x][y - 1].isOccupied) {
+      neighbours.push(new Point(x, y - 1, null));
+    }
+    if (x < 28 && MazeComponent.maze.points[x + 1][y].isOccupied) {
+      neighbours.push(new Point(x + 1, y, null));
+    }
+    if (y < 28 && MazeComponent.maze.points[x][y + 1].isOccupied) {
+      neighbours.push(new Point(x, y + 1, null));
     }
 
     return neighbours;
@@ -167,24 +188,21 @@ export class MazeComponent implements OnInit {
 
   changeDifficultLevel(event) {
     if (event) {
+      this.visited = [];
+      MazeComponent.metaNode = null;
       switch (event.value) {
         case 'EASY':
-          this.visited = [];
-          this.metaNode = null;
           this.level = new Easy();
           break;
         case 'HARD':
-          this.visited = [];
-          this.metaNode = null;
           this.level = new Hard();
           break;
         case 'GODMODE':
-          this.visited = [];
           this.found = false;
-          this.metaNode = new Path(null, new Point(this.computer.row, this.computer.col, null));
-          this.calculateShortestPath(this.metaNode);
+          MazeComponent.metaNode = new Path(null, new Point(this.computer.row, this.computer.col, null));
+          this.calculateShortestPath(MazeComponent.metaNode);
           this.level = new Master();
-          console.log(this.metaNode);
+          console.log(MazeComponent.metaNode);
           break;
       }
     }
@@ -210,7 +228,7 @@ export class MazeComponent implements OnInit {
     if (this.found || this.visited.some(e => e.col === path.current.col && e.row === path.current.row)) return;
     this.visited.push(path.current);
     if (path.current.row === this.meta.row && path.current.col === this.meta.col) {
-      this.metaNode = path;
+      MazeComponent.metaNode = path;
       this.found = true;
     }
 

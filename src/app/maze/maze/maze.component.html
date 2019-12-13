@@ -6,7 +6,7 @@
                 <div *ngFor="let x of getMazePoints(); let i = index" class="maze-row">
                     <div *ngFor="let y of x; let j = index" class="maze-col">
                         <div
-                            [ngClass]="[getMazePoints()[i][j].isOccupied ? 'occupied-field' : 'free-field', isPlayerOnField(i,j) ? 'player' : '', isComputerOnField(i,j) ? 'computer' : '', isMetaOnField(i, j) ? 'meta' : '', isPathOnField(i,j) ? 'path' : '']">
+                            [ngClass]="[getMazePoints()[i][j].isOccupied ? 'occupied-field' : 'free-field', isPlayerOnField(i,j) ? 'player' : '', isComputerOnField(i,j) ? 'computer' : '', isMetaOnField(i, j) ? 'meta' : '']">
                             &nbsp;</div>
                     </div>
                 </div>
