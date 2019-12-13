@@ -52,12 +52,7 @@ export class MazeComponent implements OnInit {
   }
 
   createComputer() {
-    let row, col;
-    do {
-      row = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
-      col = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
-    } while (!MazeComponent.maze.points[row][col].isOccupied);
-    this.computer = new Computer(row, col, 'Computer');
+    this.computer = new Computer(0, 0, 'Computer');
   }
 
   createPlayer() {
@@ -163,7 +158,7 @@ export class MazeComponent implements OnInit {
 
     do {
       x = Math.floor(Math.random() * (28 - 1 + 1)) + 1
-    } while (!MazeComponent.maze.points[x][x].isOccupied);
+    } while (!MazeComponent.maze.points[x][y].isOccupied);
 
     this.meta = new Point(x, y, null);
   }
