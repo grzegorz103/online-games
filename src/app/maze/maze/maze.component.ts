@@ -158,7 +158,7 @@ export class MazeComponent implements OnInit {
 
     do {
       x = Math.floor(Math.random() * (28 - 1 + 1)) + 1
-    } while (!MazeComponent.maze.points[x][x].isOccupied);
+    } while (!MazeComponent.maze.points[x][y].isOccupied);
 
     this.meta = new Point(x, y, null);
   }
