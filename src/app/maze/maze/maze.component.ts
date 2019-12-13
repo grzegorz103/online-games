@@ -73,7 +73,7 @@ export class MazeComponent implements OnInit {
   }
 
   isPathOnField(i: number, j: number) {
-    if(!this.metaNode) return;
+    if (!this.metaNode) return;
     let node = this.metaNode.current;
     if (node.row === i && node.col === j) {
       return true;
@@ -169,12 +169,18 @@ export class MazeComponent implements OnInit {
     if (event) {
       switch (event.value) {
         case 'EASY':
+          this.visited = [];
+          this.metaNode = null;
           this.level = new Easy();
           break;
         case 'HARD':
+          this.visited = [];
+          this.metaNode = null;
           this.level = new Hard();
           break;
         case 'GODMODE':
+          this.visited = [];
+          this.found = false;
           this.metaNode = new Path(null, new Point(this.computer.row, this.computer.col, null));
           this.calculateShortestPath(this.metaNode);
           this.level = new Master();
@@ -201,7 +207,6 @@ export class MazeComponent implements OnInit {
     }
   }
   calculateShortestPath(path: Path) {
-    console.log(path);
     if (this.found || this.visited.some(e => e.col === path.current.col && e.row === path.current.row)) return;
     this.visited.push(path.current);
     if (path.current.row === this.meta.row && path.current.col === this.meta.col) {
