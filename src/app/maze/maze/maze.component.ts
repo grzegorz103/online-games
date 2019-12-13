@@ -6,6 +6,8 @@ import { Point } from '../models/point';
 import { Level } from '../models/levels/level';
 import { Hard } from '../models/levels/hard';
 import { Easy } from '../models/levels/easy';
+import { Master } from '../models/levels/master';
+import { Path } from '../models/path';
 
 @Component({
   selector: 'app-maze',
@@ -27,11 +29,16 @@ export class MazeComponent implements OnInit {
   static LEFT = 2;
   static RIGHT = 3;
 
+  metaNode: Path;
+  found: boolean;
+  visited: Point[];
+
   constructor() {
     MazeComponent.maze = this.generateMaze();
     this.createPlayer();
     this.loaded = true;
     this.level = new Easy();
+    this.visited = [];
     this.createComputer();
     this.createMetaPoint();
     this.computerMove();
@@ -63,6 +70,22 @@ export class MazeComponent implements OnInit {
 
   isComputerOnField(i: number, j: number) {
     return this.computer.row === i && this.computer.col === j;
+  }
+
+  isPathOnField(i: number, j: number) {
+    if(!this.metaNode) return;
+    let node = this.metaNode.current;
+    if (node.row === i && node.col === j) {
+      return true;
+    }
+
+    if (this.metaNode.previous) {
+      for (let prev = this.metaNode.previous; prev !== null; prev = prev.previous) {
+        if (prev.current.row === i && prev.current.col === j) {
+          return true;
+        }
+      }
+    }
   }
 
   computerMove() {
@@ -151,6 +174,12 @@ export class MazeComponent implements OnInit {
         case 'HARD':
           this.level = new Hard();
           break;
+        case 'GODMODE':
+          this.metaNode = new Path(null, new Point(this.computer.row, this.computer.col, null));
+          this.calculateShortestPath(this.metaNode);
+          this.level = new Master();
+          console.log(this.metaNode);
+          break;
       }
     }
   }
@@ -170,5 +199,39 @@ export class MazeComponent implements OnInit {
         computer.col += 1;
         break;
     }
+  }
+  calculateShortestPath(path: Path) {
+    console.log(path);
+    if (this.found || this.visited.some(e => e.col === path.current.col && e.row === path.current.row)) return;
+    this.visited.push(path.current);
+    if (path.current.row === this.meta.row && path.current.col === this.meta.col) {
+      this.metaNode = path;
+      this.found = true;
+    }
+
+    let neighbours = MazeComponent.neighbours(path.current);
+
+
+    neighbours.forEach(neighbour => {
+      let p = null;
+      switch (neighbour) {
+        case MazeComponent.UP:
+          p = new Path(path, new Point(path.current.row - 1, path.current.col, null));
+          this.calculateShortestPath(p)
+          break;
+        case MazeComponent.DOWN:
+          p = new Path(path, new Point(path.current.row + 1, path.current.col, null));
+          this.calculateShortestPath(p)
+          break;
+        case MazeComponent.LEFT:
+          p = new Path(path, new Point(path.current.row, path.current.col - 1, null));
+          this.calculateShortestPath(p)
+          break;
+        case MazeComponent.RIGHT:
+          p = new Path(path, new Point(path.current.row, path.current.col + 1, null));
+          this.calculateShortestPath(p)
+          break;
+      }
+    })
   }
 }
