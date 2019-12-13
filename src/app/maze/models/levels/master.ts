@@ -13,12 +13,13 @@ export class Master extends Level {
             computer.row = MazeComponent.metaNode.current.row;
             computer.col = MazeComponent.metaNode.current.col;
             return;
-        } else
+        } else {
             for (let prev = MazeComponent.metaNode.previous; prev !== null; prev = prev.previous) {
                 if (neighbours.some(e => e.row === prev.current.row && e.col === prev.current.col)) {
                     move = prev.current;
                 }
             }
+        }
         computer.col = move.col;
         computer.row = move.row;
 

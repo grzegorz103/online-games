@@ -74,13 +74,9 @@ export class MazeComponent implements OnInit {
 
   isPathOnField(i: number, j: number) {
     if (!MazeComponent.metaNode) return;
-    let node = MazeComponent.metaNode.current;
-    if (node.row === i && node.col === j) {
-      return true;
-    }
 
     if (MazeComponent.metaNode.previous) {
-      for (let prev = MazeComponent.metaNode.previous; prev !== null; prev = prev.previous) {
+      for (let prev = MazeComponent.metaNode; prev !== null; prev = prev.previous) {
         if (prev.current.row === i && prev.current.col === j) {
           return true;
         }
@@ -202,7 +198,6 @@ export class MazeComponent implements OnInit {
           MazeComponent.metaNode = new Path(null, new Point(this.computer.row, this.computer.col, null));
           this.calculateShortestPath(MazeComponent.metaNode);
           this.level = new Master();
-          console.log(MazeComponent.metaNode);
           break;
       }
     }
@@ -225,7 +220,8 @@ export class MazeComponent implements OnInit {
     }
   }
   calculateShortestPath(path: Path) {
-    if (this.found || this.visited.some(e => e.col === path.current.col && e.row === path.current.row)) return;
+    if (this.found || this.visited.some(e => e.col === path.current.col && e.row === path.current.row))
+      return;
     this.visited.push(path.current);
     if (path.current.row === this.meta.row && path.current.col === this.meta.col) {
       MazeComponent.metaNode = path;
@@ -233,7 +229,6 @@ export class MazeComponent implements OnInit {
     }
 
     let neighbours = MazeComponent.neighbours(path.current);
-
 
     neighbours.forEach(neighbour => {
       let p = null;
