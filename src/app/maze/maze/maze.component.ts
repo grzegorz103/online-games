@@ -8,6 +8,7 @@ import { Hard } from '../models/levels/hard';
 import { Easy } from '../models/levels/easy';
 import { Master } from '../models/levels/master';
 import { Path } from '../models/path';
+import { Engine } from '../models/levels/engine';
 
 @Component({
   selector: 'app-maze',
@@ -20,7 +21,8 @@ export class MazeComponent implements OnInit {
   loaded = false;
   computer: Computer;
   meta: Point;
-  level: Level;
+  // level: Level;
+  engine: Engine;
 
   static maze: Maze;
   static oppositeDirections = [1, 0, 3, 2];
@@ -37,7 +39,7 @@ export class MazeComponent implements OnInit {
     MazeComponent.maze = this.generateMaze();
     this.createPlayer();
     this.loaded = true;
-    this.level = new Easy();
+    //this.level = new Easy();
     this.visited = [];
     this.createComputer();
     this.createMetaPoint();
@@ -52,6 +54,8 @@ export class MazeComponent implements OnInit {
   }
 
   createComputer() {
+    this.engine = new Engine();
+    this.engine.setLevel(new Easy());
     this.computer = new Computer(0, 0, 'Computer');
   }
 
@@ -68,7 +72,9 @@ export class MazeComponent implements OnInit {
   }
 
   isPathOnField(i: number, j: number) {
-    if (!MazeComponent.metaNode) return;
+    if (!MazeComponent.metaNode) {
+      return;
+    }
 
     if (MazeComponent.metaNode.previous) {
       for (let prev = MazeComponent.metaNode; prev !== null; prev = prev.previous) {
@@ -80,7 +86,7 @@ export class MazeComponent implements OnInit {
   }
 
   computerMove() {
-    this.level.move(this.computer);
+    this.engine.move(this.computer);
     this.checkForWin(this.computer);
     setTimeout(() => this.computerMove(), 100);
   }
@@ -132,20 +138,24 @@ export class MazeComponent implements OnInit {
     // event.key === 'ArrowUp'
     switch (event.key) {
       case 'w':
-        if (this.player.row > 0 && MazeComponent.maze.points[this.player.row - 1][this.player.col].isOccupied)
+        if (this.player.row > 0 && MazeComponent.maze.points[this.player.row - 1][this.player.col].isOccupied) {
           this.player.row -= 1;
+        }
         break;
       case 's':
-        if (this.player.row < 28 && MazeComponent.maze.points[this.player.row + 1][this.player.col].isOccupied)
+        if (this.player.row < 28 && MazeComponent.maze.points[this.player.row + 1][this.player.col].isOccupied) {
           this.player.row += 1;
+        }
         break;
       case 'a':
-        if (this.player.col > 0 && MazeComponent.maze.points[this.player.row][this.player.col - 1].isOccupied)
+        if (this.player.col > 0 && MazeComponent.maze.points[this.player.row][this.player.col - 1].isOccupied) {
           this.player.col -= 1;
+        }
         break;
       case 'd':
-        if (this.player.col < 28 && MazeComponent.maze.points[this.player.row][this.player.col + 1].isOccupied)
+        if (this.player.col < 28 && MazeComponent.maze.points[this.player.row][this.player.col + 1].isOccupied) {
           this.player.col += 1;
+        }
         break;
     }
 
@@ -153,11 +163,11 @@ export class MazeComponent implements OnInit {
   }
 
   createMetaPoint() {
-    let x;
-    let y = 28;
+    let x: number;
+    const y = 28;
 
     do {
-      x = Math.floor(Math.random() * (28 - 1 + 1)) + 1
+      x = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
     } while (!MazeComponent.maze.points[x][y].isOccupied);
 
     this.meta = new Point(x, y, null);
@@ -183,18 +193,19 @@ export class MazeComponent implements OnInit {
       MazeComponent.metaNode = null;
       switch (event.value) {
         case 'EASY':
-          this.level = new Easy();
+          this.engine.setLevel(new Easy());
           break;
         case 'HARD':
-          this.level = new Hard();
+          this.engine.setLevel(new Hard());
           break;
         case 'GODMODE':
           this.found = false;
           MazeComponent.metaNode = new Path(null, new Point(this.computer.row, this.computer.col, null));
           this.calculateShortestPath(MazeComponent.metaNode);
-          this.level = new Master();
+          this.engine.setLevel(new Master());
           break;
       }
+      // diagramy przypadkow uzycia, aktywnosci, sekwencji
     }
   }
 
@@ -214,15 +225,16 @@ export class MazeComponent implements OnInit {
         break;
     }
   }
+
   calculateShortestPath(path: Path) {
-    if (this.found || this.visited.some(e => e.col === path.current.col && e.row === path.current.row))
+    if (this.found || this.visited.some(e => e.col === path.current.col && e.row === path.current.row)) {
       return;
+    }
     this.visited.push(path.current);
     if (path.current.row === this.meta.row && path.current.col === this.meta.col) {
       MazeComponent.metaNode = path;
       this.found = true;
     }
-
     let neighbours = MazeComponent.neighbours(path.current);
 
     neighbours.forEach(neighbour => {
@@ -230,21 +242,19 @@ export class MazeComponent implements OnInit {
       switch (neighbour) {
         case MazeComponent.UP:
           p = new Path(path, new Point(path.current.row - 1, path.current.col, null));
-          this.calculateShortestPath(p)
           break;
         case MazeComponent.DOWN:
           p = new Path(path, new Point(path.current.row + 1, path.current.col, null));
-          this.calculateShortestPath(p)
           break;
         case MazeComponent.LEFT:
           p = new Path(path, new Point(path.current.row, path.current.col - 1, null));
-          this.calculateShortestPath(p)
           break;
         case MazeComponent.RIGHT:
           p = new Path(path, new Point(path.current.row, path.current.col + 1, null));
-          this.calculateShortestPath(p)
           break;
       }
-    })
+
+      this.calculateShortestPath(p);
+    });
   }
 }

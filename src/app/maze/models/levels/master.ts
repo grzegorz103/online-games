@@ -6,7 +6,7 @@ import { Path } from '../path';
 
 export class Master extends Level {
     move(computer: Computer): void {
-        let neighbours = MazeComponent.neighboursFields(computer);
+        const neighbours = MazeComponent.neighboursFields(computer);
         let move: Point;
 
         if (neighbours.some(e => e.row === MazeComponent.metaNode.current.row && e.col === MazeComponent.metaNode.current.col)) {
