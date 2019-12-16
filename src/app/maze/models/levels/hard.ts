@@ -10,7 +10,7 @@ export class Hard extends Level {
             let neighbours = MazeComponent.neighbours(new Point(computer.row, computer.col, null));
             let move = 0;
 
-            if (neighbours.some(e => e === computer.direction)) { // zmienic na if neighbours.length > 2 (gdy jest wiecej niz 2 mozliwe sciezzki)
+            if (neighbours.some(e => e === computer.direction)) {
                 if (neighbours.length > 2) {
                     move = neighbours.filter(e => e !== MazeComponent.oppositeDirections[computer.direction])[Math.floor(Math.random() * (neighbours.length - 1))];
                 } else {
