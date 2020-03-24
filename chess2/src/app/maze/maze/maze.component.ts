@@ -3,12 +3,11 @@ import { Maze } from '../models/maze';
 import { Player } from '../models/player';
 import { Computer } from '../models/computer';
 import { Point } from '../models/point';
-import { Level } from '../models/levels/level';
 import { Hard } from '../models/levels/hard';
 import { Easy } from '../models/levels/easy';
-import { Master } from '../models/levels/master';
-import { Path } from '../models/path';
-import { Engine } from '../models/levels/engine';
+import {Engine} from "../models/levels/engine";
+import {Path} from "../models/path";
+import {Master} from "../models/levels/master";
 
 @Component({
   selector: 'app-maze',

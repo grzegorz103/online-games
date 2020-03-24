@@ -1,7 +1,7 @@
-import { Level } from './level';
 import { Computer } from '../computer';
 import { MazeComponent } from '../../maze/maze.component';
 import { Point } from '../point';
+import {Level} from "../level";
 
 export class Easy extends Level {
 
