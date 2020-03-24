@@ -1,0 +1,54 @@
+#maze{
+  height:40vw;
+  width:40vw;
+  background-color:black;
+  border: 2px solid blue;
+}
+
+.maze-row{
+  display:block;
+  width: 100%;
+  height: 3%;
+}
+
+.maze-col{
+  display: inline-block;
+  width: 3.3%;
+  height:100%;
+  vertical-align: top;
+  cursor:default;
+}
+
+.occupied-field{
+  background-color: black;
+
+}
+
+
+.free-field{
+  background-color: gray;
+}
+.maze-col::after{
+  content: '\200b';
+}
+
+.player{
+  background-color: peru;
+}
+
+.computer{
+  background-color: red;
+}
+
+.square{
+  height:100%;
+  width:100%;
+}
+
+.meta{
+  background-color: green;
+}
+
+.path{
+  background-color: purple;
+}
