@@ -1,7 +1,7 @@
 export class Point{
     row: number;
     col: number;
-    isOccupied = false;
+    occupied = false;
     name: string;
 
     constructor(row: number, col: number, name: string){

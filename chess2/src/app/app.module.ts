@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { AngularDraggableModule } from 'angular2-draggable';
 import { MazeComponent } from './maze/maze/maze.component';
 import { MultiplayerComponent } from './maze/multiplayer/multiplayer.component';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { MultiplayerComponent } from './maze/multiplayer/multiplayer.component';
   imports: [
     BrowserModule,
     FormsModule,
+    HttpClientModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     AngularMaterialModule,

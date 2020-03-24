@@ -95,16 +95,16 @@ export class MazeComponent implements OnInit {
     let x = point.row;
     let y = point.col;
 
-    if (x > 0 && MazeComponent.maze.points[x - 1][y].isOccupied) {
+    if (x > 0 && MazeComponent.maze.points[x - 1][y].occupied) {
       neighbours.push(this.UP);
     }
-    if (y > 0 && MazeComponent.maze.points[x][y - 1].isOccupied) {
+    if (y > 0 && MazeComponent.maze.points[x][y - 1].occupied) {
       neighbours.push(this.LEFT);
     }
-    if (x < 28 && MazeComponent.maze.points[x + 1][y].isOccupied) {
+    if (x < 28 && MazeComponent.maze.points[x + 1][y].occupied) {
       neighbours.push(this.DOWN);
     }
-    if (y < 28 && MazeComponent.maze.points[x][y + 1].isOccupied) {
+    if (y < 28 && MazeComponent.maze.points[x][y + 1].occupied) {
       neighbours.push(this.RIGHT);
     }
 
@@ -116,16 +116,16 @@ export class MazeComponent implements OnInit {
     let x = point.row;
     let y = point.col;
 
-    if (x > 0 && MazeComponent.maze.points[x - 1][y].isOccupied) {
+    if (x > 0 && MazeComponent.maze.points[x - 1][y].occupied) {
       neighbours.push(new Point(x - 1, y, null));
     }
-    if (y > 0 && MazeComponent.maze.points[x][y - 1].isOccupied) {
+    if (y > 0 && MazeComponent.maze.points[x][y - 1].occupied) {
       neighbours.push(new Point(x, y - 1, null));
     }
-    if (x < 28 && MazeComponent.maze.points[x + 1][y].isOccupied) {
+    if (x < 28 && MazeComponent.maze.points[x + 1][y].occupied) {
       neighbours.push(new Point(x + 1, y, null));
     }
-    if (y < 28 && MazeComponent.maze.points[x][y + 1].isOccupied) {
+    if (y < 28 && MazeComponent.maze.points[x][y + 1].occupied) {
       neighbours.push(new Point(x, y + 1, null));
     }
 
@@ -137,22 +137,22 @@ export class MazeComponent implements OnInit {
     // event.key === 'ArrowUp'
     switch (event.key) {
       case 'w':
-        if (this.player.row > 0 && MazeComponent.maze.points[this.player.row - 1][this.player.col].isOccupied) {
+        if (this.player.row > 0 && MazeComponent.maze.points[this.player.row - 1][this.player.col].occupied) {
           this.player.row -= 1;
         }
         break;
       case 's':
-        if (this.player.row < 28 && MazeComponent.maze.points[this.player.row + 1][this.player.col].isOccupied) {
+        if (this.player.row < 28 && MazeComponent.maze.points[this.player.row + 1][this.player.col].occupied) {
           this.player.row += 1;
         }
         break;
       case 'a':
-        if (this.player.col > 0 && MazeComponent.maze.points[this.player.row][this.player.col - 1].isOccupied) {
+        if (this.player.col > 0 && MazeComponent.maze.points[this.player.row][this.player.col - 1].occupied) {
           this.player.col -= 1;
         }
         break;
       case 'd':
-        if (this.player.col < 28 && MazeComponent.maze.points[this.player.row][this.player.col + 1].isOccupied) {
+        if (this.player.col < 28 && MazeComponent.maze.points[this.player.row][this.player.col + 1].occupied) {
           this.player.col += 1;
         }
         break;
@@ -167,7 +167,7 @@ export class MazeComponent implements OnInit {
 
     do {
       x = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
-    } while (!MazeComponent.maze.points[x][y].isOccupied);
+    } while (!MazeComponent.maze.points[x][y].occupied);
 
     this.meta = new Point(x, y, null);
   }

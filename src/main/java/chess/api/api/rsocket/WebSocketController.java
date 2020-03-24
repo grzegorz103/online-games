@@ -20,6 +20,7 @@ public class WebSocketController {
 
     @MessageMapping("/message")
     @SendTo("/topic/reply")
+    // dodac session id
     public String processMessageFromClient(@Payload String message,
                                            @Payload String user) throws Exception {
         System.out.println(message);
