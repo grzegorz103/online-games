@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -44,5 +45,29 @@ public class MazeServiceImpl {
         }
 
         return null;
+    }
+
+    public Maze makeMove(String uri, String sessionId, int move) {
+        Maze maze = games.get(uri);
+
+        if (maze != null) {
+            Player player = maze.getPlayers().stream().filter(e -> Objects.equals(sessionId, e.getSessionId()))
+                    .findFirst().orElseThrow(() -> new RuntimeException("Not found"));
+            switch (move) {
+                case 1:
+                    player.getPoint().setRow(player.getPoint().getRow() - 1);
+                    break;
+                case 2:
+                    player.getPoint().setRow(player.getPoint().getRow() + 1);
+                    break;
+                case 3:
+                    player.getPoint().setCol(player.getPoint().getCol() - 1);
+                    break;
+                case 4:
+                    player.getPoint().setCol(player.getPoint().getCol() + 1);
+                    break;
+            }
+        }
+        return maze;
     }
 }

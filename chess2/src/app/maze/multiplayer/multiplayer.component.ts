@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {Maze} from "../models/maze";
 import {Player} from "../models/player";
 import {MazeComponent} from "../maze/maze.component";
@@ -57,6 +57,7 @@ export class MultiplayerComponent implements OnInit {
         console.log(that.players);
         MultiplayerComponent.loading = false;
       });
+
       that.ws.send("/app/message/" + that.uri, {}, JSON.stringify(MultiplayerComponent.maze.points));
     }, function (error) {
       alert("STOMP error " + error);
@@ -106,5 +107,25 @@ export class MultiplayerComponent implements OnInit {
     }, function (error) {
       alert("STOMP error " + error);
     });
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    // event.key === 'ArrowUp'
+    switch (event.key) {
+      case 'w':
+        this.ws.send("/app/message/" + this.uri + "/move/" + 1, {}, {});
+        break;
+      case 's':
+        this.ws.send("/app/message/" + this.uri + "/move/" + 2, {}, {});
+        break;
+      case 'a':
+        this.ws.send("/app/message/" + this.uri + "/move/" + 3, {}, {});
+        break;
+      case 'd':
+        this.ws.send("/app/message/" + this.uri + "/move/" + 4, {}, {});
+        break;
+    }
+
   }
 }
