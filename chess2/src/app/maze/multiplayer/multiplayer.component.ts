@@ -46,7 +46,6 @@ export class MultiplayerComponent implements OnInit {
     //   .subscribe((res=>console.log(MultiplayerComponent.maze.points)));
     let that = this;
     this.ws.connect({}, function (frame) {
-      console.log('a');
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
       });
@@ -54,7 +53,6 @@ export class MultiplayerComponent implements OnInit {
         MultiplayerComponent.maze = JSON.parse(message.body);
         that.players = [];
         that.players = MultiplayerComponent.maze.players;
-        console.log(that.players);
         MultiplayerComponent.loading = false;
       });
 
@@ -90,7 +88,6 @@ export class MultiplayerComponent implements OnInit {
   private getGameFromApi() {
     let that = this;
     this.ws.connect({}, function (frame) {
-      console.log('a');
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
       });
@@ -98,7 +95,6 @@ export class MultiplayerComponent implements OnInit {
         MultiplayerComponent.maze = JSON.parse(message.body);
         that.players = [];
         that.players = MultiplayerComponent.maze.players;
-        console.log(that.players);
         MultiplayerComponent.loading = false;
       });
 
