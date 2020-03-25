@@ -1,10 +1,10 @@
 <div class="container mt-2">
   <div class="row">
-    <div class="mx-auto bg-black" *ngIf="loaded">
-<h2>{{uri}}</h2>
-      <div id="maze">
+    <div class="mx-auto bg-black">
+      <h2>{{uri}}</h2>
+      <div *ngIf="!loading">
+        <div id="maze">
 
-        <div *ngIf="getMaze()">
           <div *ngFor="let x of getMazePoints(); let i = index" class="maze-row">
             <div *ngFor="let y of x; let j = index" class="maze-col">
               <div

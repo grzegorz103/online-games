@@ -1,9 +1,11 @@
 import { Point } from './point';
+import {PlayerMulti} from "./player-multi";
 declare var require: any
 
 export class Maze {
     points: Point[][];
     shuffle = require('shuffle-array');
+  players: PlayerMulti[];
 
     constructor() {
         this.points = [];

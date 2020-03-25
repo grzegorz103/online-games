@@ -7,7 +7,9 @@ import chess.api.services.MazeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.*;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,10 +41,16 @@ public class WebSocketController {
                          @Header("simpSessionId") String sessionId) {
         Maze maze = mazeService.joinGame(uri, sessionId);
         if (maze != null) {
-           Set<? extends Player> players = mazeService.getPlayersByGame(uri);
+            Set<? extends Player> players = mazeService.getPlayersByGame(uri);
             if (players != null) {
-                System.out.println(players);
-                players.forEach(e -> messagingTemplate.convertAndSendToUser(e.getSessionId(), "/topic/reply", maze.getPlayers()));
+                players.forEach(e -> {
+                    System.out.println(e);
+                    SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
+                            .create(SimpMessageType.MESSAGE);
+                    headerAccessor.setSessionId(e.getSessionId());
+                    headerAccessor.setLeaveMutable(true);headerAccessor.addNativeHeader("any", "any");
+                    messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/reply", maze, headerAccessor.getMessageHeaders());
+                });
                 messagingTemplate.convertAndSendToUser(sessionId, "/topic/map", maze.getPoints());
             }
         }

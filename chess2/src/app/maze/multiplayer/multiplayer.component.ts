@@ -6,6 +6,7 @@ import {ActivatedRoute} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 
 import * as Stomp from 'stompjs';
+import {PlayerMulti} from "../models/player-multi";
 
 @Component({
   selector: 'app-multiplayer',
@@ -14,13 +15,13 @@ import * as Stomp from 'stompjs';
 })
 export class MultiplayerComponent implements OnInit {
 
-  loaded = false;
   static maze: Maze;
 //  player: Player= new Player(0,0,'Player');
-  players: Player[] = [];
+  players: PlayerMulti[] = [];
   uri: string;
 
   ws: any;
+  static loading = true;
   name: string;
   disabled: boolean;
   message: any;
@@ -38,7 +39,6 @@ export class MultiplayerComponent implements OnInit {
       this.uri = Math.random().toString(36).substring(4);
       this.sendMazeToApi();
     }
-    this.loaded = true;
   }
 
   private sendMazeToApi() {
@@ -50,12 +50,14 @@ export class MultiplayerComponent implements OnInit {
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
       });
-      that.ws.subscribe("/topic/reply", message => {
-        console.log(message);
+      that.ws.subscribe("/user/queue/reply", message => {
+        MultiplayerComponent.maze = JSON.parse(message.body);
         that.players = [];
-        that.players.push(message.body);
+        that.players = MultiplayerComponent.maze.players;
+        console.log(that.players);
+        MultiplayerComponent.loading = false;
       });
-      that.ws.send("/app/message/" + that.uri , {}, JSON.stringify(MultiplayerComponent.maze.points));
+      that.ws.send("/app/message/" + that.uri, {}, JSON.stringify(MultiplayerComponent.maze.points));
     }, function (error) {
       alert("STOMP error " + error);
     });
@@ -69,15 +71,15 @@ export class MultiplayerComponent implements OnInit {
   }
 
   isPlayerOnField(i: number, j: number) {
-    return this.players.some(e => e.row === i && e.col === j);
+    return this.players.some(e => e.point.row === i && e.point.col === j);
   }
 
   getMazePoints() {
-    return MultiplayerComponent.maze.points;
+    return MultiplayerComponent.maze && MultiplayerComponent.maze.points;
   }
 
   getMaze() {
-    return MultiplayerComponent.maze;
+    return MultiplayerComponent.maze !== undefined;
   }
 
   isMetaOnField(i: number, j: number) {
@@ -91,16 +93,15 @@ export class MultiplayerComponent implements OnInit {
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
       });
-      that.ws.subscribe("/topic/reply", message => {
-        console.log(message);
+      that.ws.subscribe("/user/queue/reply", message => {
+        MultiplayerComponent.maze = JSON.parse(message.body);
         that.players = [];
-        that.players.push(message.body);
+        that.players = MultiplayerComponent.maze.players;
+        console.log(that.players);
+        MultiplayerComponent.loading = false;
       });
 
-      that.ws.subscribe("/topic/map", message => {
-        console.log(message);
-        MultiplayerComponent.maze = message.body;
-      });
+
       that.ws.send("/app/message/" + that.uri + "/join", {}, {});
     }, function (error) {
       alert("STOMP error " + error);
