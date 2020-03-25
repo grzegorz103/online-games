@@ -5,6 +5,7 @@ import {MazeComponent} from "../maze/maze.component";
 import {ActivatedRoute} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 
+import * as Stomp from 'stompjs';
 @Component({
   selector: 'app-multiplayer',
   templateUrl: './multiplayer.component.html',
@@ -26,7 +27,9 @@ export class MultiplayerComponent implements OnInit {
   constructor(private route:ActivatedRoute,
               private httpClient: HttpClient) {
     this.uri = this.route.snapshot.paramMap.get('game');
-
+    let socket = new WebSocket("ws://localhost:8080/chat");
+    this.ws = Stomp.over(socket);
+    console.log('ccccc');
     if(this.uri){
 
     }else { // nowa gra
@@ -38,8 +41,18 @@ export class MultiplayerComponent implements OnInit {
   }
 
   private sendMazeToApi() {
-    this.httpClient.post('http://localhost:8080/api/maze?gameUri=' + this.uri, MultiplayerComponent.maze.points)
-      .subscribe((res=>console.log(MultiplayerComponent.maze.points)));
+  //  this.httpClient.post('http://localhost:8080/api/maze?gameUri=' + this.uri, MultiplayerComponent.maze.points)
+   //   .subscribe((res=>console.log(MultiplayerComponent.maze.points)));
+    let that = this;
+    this.ws.connect({}, function (frame) {
+      console.log('a');
+      that.ws.subscribe("/errors", function (message) {
+        alert("Error " + message.body);
+      });
+      that.ws.send("/app/message/"+ that.uri, {}, JSON.stringify(MultiplayerComponent.maze.points));
+    }, function (error) {
+      alert("STOMP error " + error);
+    });
   }
 
   ngOnInit() {
