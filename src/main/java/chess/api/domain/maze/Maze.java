@@ -1,4 +1,4 @@
-package chess.api.domain;
+package chess.api.domain.maze;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,9 +14,15 @@ public class Maze {
 
     private Point[][] points;
 
-    private Set<String> players = new HashSet<>();
+    private Set<Player> players = new HashSet<>();
 
     public Maze(Point[][] points) {
         this.points = points;
+    }
+
+    public void addPlayer(Player player) {
+        if (player != null) {
+            players.add(player);
+        }
     }
 }

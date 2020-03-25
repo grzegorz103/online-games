@@ -1,16 +1,16 @@
-package chess.api.domain;
+package chess.api.domain.maze;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-public class Point {
+public class Player {
 
-    private int row;
-    private int col;
-    private boolean occupied;
+    private String sessionId;
+
+    private Point point;
 
 }

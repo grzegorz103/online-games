@@ -8,7 +8,8 @@ import {MultiplayerComponent} from "./maze/multiplayer/multiplayer.component";
 const routes: Routes = [
   { component: BoardComponent, path: 'board' },
   { path: 'maze', component: MazeComponent },
-  { path: 'maze/multi', component: MultiplayerComponent}
+  { path: 'maze/multi', component: MultiplayerComponent},
+  {path: 'maze/multi/:game', component:MultiplayerComponent}
 ];
 
 @NgModule({
