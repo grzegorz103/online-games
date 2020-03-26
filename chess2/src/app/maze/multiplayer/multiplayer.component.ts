@@ -8,6 +8,7 @@ import {HttpClient} from "@angular/common/http";
 import * as Stomp from 'stompjs';
 import {PlayerMulti} from "../models/player-multi";
 import {environment} from "../../../environments/environment";
+import {Point} from "../models/point";
 
 @Component({
   selector: 'app-multiplayer',
@@ -37,12 +38,24 @@ export class MultiplayerComponent implements OnInit {
       this.getGameFromApi();
     } else { // nowa gra
       MultiplayerComponent.maze = this.generateMaze();
+      MultiplayerComponent.maze.meta = this.createMetaPoint();
       this.uri = Math.random().toString(36).substring(8);
       this.sendMazeToApi();
     }
   }
 
-  wsUrl(){
+  createMetaPoint() {
+    let x: number;
+    const y = 28;
+
+    do {
+      x = Math.floor(Math.random() * (28 - 1 + 1)) + 1;
+    } while (!MultiplayerComponent.maze.points[x][y].occupied);
+
+    return new Point(x, y, null);
+  }
+
+  wsUrl() {
     return environment.wsUrl;
   }
 
@@ -55,13 +68,17 @@ export class MultiplayerComponent implements OnInit {
         alert("Error " + message.body);
       });
       that.ws.subscribe("/user/queue/reply", message => {
-       // MultiplayerComponent.maze = JSON.parse(message.body);
+        // MultiplayerComponent.maze = JSON.parse(message.body);
         that.players = [];
         that.players = JSON.parse(message.body);
         MultiplayerComponent.loading = false;
       });
 
-      that.ws.send("/app/message/" + that.uri, {}, JSON.stringify(MultiplayerComponent.maze.points));
+    //  that.ws.subscribe("/user/queue/win", message => {
+     //   alert('Koniec');
+    //  });
+
+      that.ws.send("/app/message/" + that.uri + '/' + MultiplayerComponent.maze.meta.row + '/' + MultiplayerComponent.maze.meta.col, {}, JSON.stringify(MultiplayerComponent.maze.points));
     }, function (error) {
       alert("STOMP error " + error);
     });
@@ -87,16 +104,16 @@ export class MultiplayerComponent implements OnInit {
   }
 
   isMetaOnField(i: number, j: number) {
-    return false;
+    return MultiplayerComponent.maze.meta.row === i && MultiplayerComponent.maze.meta.col === j;
   }
 
-  isLoading(){
+  isLoading() {
     return MultiplayerComponent.loading;
   }
 
   private getGameFromApi() {
     let that = this;
-    if(!MultiplayerComponent.maze){
+    if (!MultiplayerComponent.maze) {
       MultiplayerComponent.maze = new Maze();
     }
     this.ws.connect({}, function (frame) {
@@ -108,13 +125,20 @@ export class MultiplayerComponent implements OnInit {
         MultiplayerComponent.maze.points = JSON.parse(message.body);
       })
 
+      that.ws.subscribe("/user/queue/meta", function (message) {
+        MultiplayerComponent.maze.meta = JSON.parse(message.body);
+      })
+      
       that.ws.subscribe("/user/queue/reply", message => {
-       // MultiplayerComponent.maze = JSON.parse(message.body);
+        // MultiplayerComponent.maze = JSON.parse(message.body);
         that.players = [];
         that.players = JSON.parse(message.body);
         MultiplayerComponent.loading = false;
       });
 
+      that.ws.subscribe("/user/queue/win", message => {
+        alert('Koniec');
+      });
 
       that.ws.send("/app/message/" + that.uri + "/join", {}, {});
     }, function (error) {

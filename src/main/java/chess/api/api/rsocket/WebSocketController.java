@@ -24,17 +24,21 @@ public class WebSocketController {
 
     private final MazeServiceImpl mazeService;
 
+    @Autowired
     public WebSocketController(SimpMessageSendingOperations messagingTemplate, MazeServiceImpl mazeService) {
         this.messagingTemplate = messagingTemplate;
         this.mazeService = mazeService;
     }
 
-    @MessageMapping("/message/{uri}")
+    @MessageMapping("/message/{uri}/{row}/{col}")
     //   @SendTo("/topic/reply")
     // dodac session id
-    public void createGame(Message<Point[][]> points,
-                           @DestinationVariable String uri) throws Exception {
-        Maze maze = mazeService.addGame(uri, points.getPayload(), String.valueOf(points.getHeaders().get("simpSessionId")));
+    public void createGame(@DestinationVariable int row,
+                           @DestinationVariable int col,
+                           @Payload Point[][] points,
+                           @DestinationVariable String uri,
+                           @Header("simpSessionId") String sessionId) throws Exception {
+        Maze maze = mazeService.addGame(uri, points, sessionId, row, col);
         sendPlayers(maze, uri, null);
     }
 
@@ -43,6 +47,7 @@ public class WebSocketController {
                          @Header("simpSessionId") String sessionId) {
         Maze maze = mazeService.joinGame(uri, sessionId);
         messagingTemplate.convertAndSendToUser(sessionId, "/queue/map", maze.getPoints(), getMessageHeaders(sessionId));
+        messagingTemplate.convertAndSendToUser(sessionId, "/queue/meta", maze.getMeta(), getMessageHeaders(sessionId));
         sendPlayers(maze, uri, sessionId);
     }
 
@@ -52,6 +57,9 @@ public class WebSocketController {
                          @DestinationVariable("move") int move) {
         Maze maze = mazeService.makeMove(uri, sessionId, move);
         sendPlayers(maze, uri, sessionId);
+        if (maze.getWinner() != null) {
+            maze.getPlayers().forEach(e -> messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/win", maze.getWinner(), getMessageHeaders(e.getSessionId())));
+        }
     }
 
     @MessageExceptionHandler
@@ -87,8 +95,8 @@ public class WebSocketController {
         if (gamesByPlayer != null) {
             gamesByPlayer.forEach(e -> e.getPlayers()
                     .forEach(f ->
-                    messagingTemplate.convertAndSendToUser(f.getSessionId(), "/queue/reply", e.getPlayers(), getMessageHeaders(f.getSessionId()))
-            ));
+                            messagingTemplate.convertAndSendToUser(f.getSessionId(), "/queue/reply", e.getPlayers(), getMessageHeaders(f.getSessionId()))
+                    ));
         }
     }
 

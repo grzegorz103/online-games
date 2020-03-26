@@ -16,8 +16,9 @@ public class MazeServiceImpl {
 
     private Map<String, Maze> games = new HashMap<>();
 
-    public Maze addGame(String uri, Point[][] map, String sessionId) {
+    public Maze addGame(String uri, Point[][] map, String sessionId, int row, int col) {
         Maze maze = new Maze(map);
+        maze.setMeta(new Point(row,col, false));
         maze.addPlayer(new Player(sessionId, new Point(0, 0, false)));
         games.put(uri, maze);
         return maze;
@@ -74,6 +75,10 @@ public class MazeServiceImpl {
                     if (playerPoint.getCol() < 28 && points[playerPoint.getRow()][playerPoint.getCol() + 1].isOccupied())
                         player.getPoint().setCol(player.getPoint().getCol() + 1);
                     break;
+            }
+
+            if (playerPoint.getCol() ==maze.getMeta().getCol() && playerPoint.getRow() == maze.getMeta().getRow()) {
+                maze.setWinner(player);
             }
         }
         return maze;
