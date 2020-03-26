@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class MazeServiceImpl {
@@ -76,5 +77,25 @@ public class MazeServiceImpl {
             }
         }
         return maze;
+    }
+
+    public void removePlayer(String sessionId) {
+        this.games.forEach((k, v) -> {
+            v.setPlayers(v.getPlayers()
+                    .stream()
+                    .filter(e -> !Objects.equals(sessionId, e.getSessionId()))
+                    .collect(Collectors.toSet()
+                    )
+            );
+        });
+    }
+
+    public Set<Maze> getGamesByPlayer(String sessionId) {
+        return this.games.values()
+                .stream()
+                .filter(e -> e.getPlayers()
+                        .stream()
+                        .anyMatch(f -> Objects.equals(sessionId, f.getSessionId())))
+                .collect(Collectors.toSet());
     }
 }

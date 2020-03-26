@@ -5,6 +5,7 @@ import chess.api.domain.maze.Player;
 import chess.api.domain.maze.Point;
 import chess.api.services.MazeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.*;
@@ -12,6 +13,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.Set;
 
@@ -76,6 +78,18 @@ public class WebSocketController {
         headerAccessor.setLeaveMutable(true);
         headerAccessor.addNativeHeader("any", "any");
         return headerAccessor.getMessageHeaders();
+    }
+
+    @EventListener
+    public void handleSessionDisconnect(SessionDisconnectEvent event) {
+        Set<Maze> gamesByPlayer = mazeService.getGamesByPlayer(event.getSessionId());
+        mazeService.removePlayer(event.getSessionId());
+        if (gamesByPlayer != null) {
+            gamesByPlayer.forEach(e -> e.getPlayers()
+                    .forEach(f ->
+                    messagingTemplate.convertAndSendToUser(f.getSessionId(), "/queue/reply", e.getPlayers(), getMessageHeaders(f.getSessionId()))
+            ));
+        }
     }
 
 }
