@@ -50,9 +50,9 @@ export class MultiplayerComponent implements OnInit {
         alert("Error " + message.body);
       });
       that.ws.subscribe("/user/queue/reply", message => {
-        MultiplayerComponent.maze = JSON.parse(message.body);
+       // MultiplayerComponent.maze = JSON.parse(message.body);
         that.players = [];
-        that.players = MultiplayerComponent.maze.players;
+        that.players = JSON.parse(message.body);
         MultiplayerComponent.loading = false;
       });
 
@@ -87,14 +87,23 @@ export class MultiplayerComponent implements OnInit {
 
   private getGameFromApi() {
     let that = this;
+    if(!MultiplayerComponent.maze){
+      MultiplayerComponent.maze = new Maze();
+    }
     this.ws.connect({}, function (frame) {
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
       });
+
+      that.ws.subscribe("/user/queue/map", function (message) {
+        MultiplayerComponent.maze.points = JSON.parse(message.body);
+        console.log(MultiplayerComponent.maze);
+      })
+
       that.ws.subscribe("/user/queue/reply", message => {
-        MultiplayerComponent.maze = JSON.parse(message.body);
+       // MultiplayerComponent.maze = JSON.parse(message.body);
         that.players = [];
-        that.players = MultiplayerComponent.maze.players;
+        that.players = JSON.parse(message.body);
         MultiplayerComponent.loading = false;
       });
 

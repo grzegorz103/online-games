@@ -40,7 +40,13 @@ public class WebSocketController {
     public void joinGame(@DestinationVariable String uri,
                          @Header("simpSessionId") String sessionId) {
         Maze maze = mazeService.joinGame(uri, sessionId);
-        sendMaze(maze, uri, sessionId);
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
+                .create(SimpMessageType.MESSAGE);
+        headerAccessor.setSessionId(sessionId);
+        headerAccessor.setLeaveMutable(true);
+        headerAccessor.addNativeHeader("any", "any");
+        messagingTemplate.convertAndSendToUser(sessionId, "/queue/map", maze.getPoints(), headerAccessor.getMessageHeaders());
+        sendPlayers(maze, uri, sessionId);
     }
 
     @MessageMapping("/message/{uri}/move/{move}")
@@ -48,7 +54,7 @@ public class WebSocketController {
                          @Header("simpSessionId") String sessionId,
                          @DestinationVariable("move") int move) {
         Maze maze = mazeService.makeMove(uri, sessionId, move);
-        sendMaze(maze, uri, sessionId);
+        sendPlayers(maze, uri, sessionId);
     }
 
     @MessageExceptionHandler
@@ -57,20 +63,18 @@ public class WebSocketController {
         return exception.getMessage();
     }
 
-    public void sendMaze(Maze maze, String uri, String sessionId) {
+    public void sendPlayers(Maze maze, String uri, String sessionId) {
         if (maze != null) {
             Set<? extends Player> players = mazeService.getPlayersByGame(uri);
             if (players != null) {
                 players.forEach(e -> {
-                    System.out.println(e);
                     SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
                             .create(SimpMessageType.MESSAGE);
                     headerAccessor.setSessionId(e.getSessionId());
                     headerAccessor.setLeaveMutable(true);
                     headerAccessor.addNativeHeader("any", "any");
-                    messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/reply", maze, headerAccessor.getMessageHeaders());
+                    messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/reply", maze.getPlayers(), headerAccessor.getMessageHeaders());
                 });
-                messagingTemplate.convertAndSendToUser(sessionId, "/topic/map", maze.getPoints());
             }
         }
     }
