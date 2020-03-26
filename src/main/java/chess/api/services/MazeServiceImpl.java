@@ -91,7 +91,8 @@ public class MazeServiceImpl {
     }
 
     public Set<Maze> getGamesByPlayer(String sessionId) {
-        return this.games.values()
+        return this.games
+                .values()
                 .stream()
                 .filter(e -> e.getPlayers()
                         .stream()
