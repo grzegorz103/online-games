@@ -21,6 +21,7 @@ export class MultiplayerComponent implements OnInit {
 //  player: Player= new Player(0,0,'Player');
   players: PlayerMulti[] = [];
   uri: string;
+  isWinner = false;
 
   ws: any;
   static loading = true;
@@ -74,9 +75,10 @@ export class MultiplayerComponent implements OnInit {
         MultiplayerComponent.loading = false;
       });
 
-    //  that.ws.subscribe("/user/queue/win", message => {
-     //   alert('Koniec');
-    //  });
+      that.ws.subscribe("/user/queue/win", message => {
+        alert('Koniec');
+        that.isWinner = true;
+      });
 
       that.ws.send("/app/message/" + that.uri + '/' + MultiplayerComponent.maze.meta.row + '/' + MultiplayerComponent.maze.meta.col, {}, JSON.stringify(MultiplayerComponent.maze.points));
     }, function (error) {
@@ -123,12 +125,12 @@ export class MultiplayerComponent implements OnInit {
 
       that.ws.subscribe("/user/queue/map", function (message) {
         MultiplayerComponent.maze.points = JSON.parse(message.body);
-      })
+      });
 
       that.ws.subscribe("/user/queue/meta", function (message) {
         MultiplayerComponent.maze.meta = JSON.parse(message.body);
-      })
-      
+      });
+
       that.ws.subscribe("/user/queue/reply", message => {
         // MultiplayerComponent.maze = JSON.parse(message.body);
         that.players = [];
@@ -138,6 +140,7 @@ export class MultiplayerComponent implements OnInit {
 
       that.ws.subscribe("/user/queue/win", message => {
         alert('Koniec');
+        that.isWinner = true;
       });
 
       that.ws.send("/app/message/" + that.uri + "/join", {}, {});
@@ -148,6 +151,10 @@ export class MultiplayerComponent implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
+
+    if (this.isWinner)
+      return;
+
     // event.key === 'ArrowUp'
     switch (event.key) {
       case 'w':
