@@ -1,8 +1,8 @@
 <div class="container mt-2">
   <div class="row">
     <div class="mx-auto bg-black">
-      <h2>{{uri}}</h2>
-      <div *ngIf="!loading">
+      <h2>localhost:4200/maze/multi/{{uri}}</h2>
+      <div *ngIf="!isLoading()">
         <div id="maze">
 
           <div *ngFor="let x of getMazePoints(); let i = index" class="maze-row">

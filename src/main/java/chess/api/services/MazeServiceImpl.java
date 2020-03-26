@@ -9,17 +9,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class MazeServiceImpl {
 
     private Map<String, Maze> games = new HashMap<>();
 
-    public void addGame(String uri, Point[][] map, String sessionId) {
+    public Maze addGame(String uri, Point[][] map, String sessionId) {
         Maze maze = new Maze(map);
         maze.addPlayer(new Player(sessionId, new Point(0, 0, false)));
         games.put(uri, maze);
-        System.out.println("DODANO ");
+        return maze;
     }
 
     public Maze getByURI(String uri) {
@@ -28,7 +29,6 @@ public class MazeServiceImpl {
 
     public Maze joinGame(String uri, String sessionId) {
         Maze maze = games.get(uri);
-        System.out.println("DOLACZANIE " + maze);
         if (maze != null) {
             maze.addPlayer(new Player(sessionId, new Point(0, 0, false)));
         }
@@ -39,7 +39,6 @@ public class MazeServiceImpl {
 
     public Set<? extends Player> getPlayersByGame(String uri) {
         Maze maze = games.get(uri);
-        System.out.println(maze);
         if (maze != null) {
             return maze.getPlayers();
         }
@@ -78,5 +77,25 @@ public class MazeServiceImpl {
             }
         }
         return maze;
+    }
+
+    public void removePlayer(String sessionId) {
+        this.games.forEach((k, v) -> {
+            v.setPlayers(v.getPlayers()
+                    .stream()
+                    .filter(e -> !Objects.equals(sessionId, e.getSessionId()))
+                    .collect(Collectors.toSet()
+                    )
+            );
+        });
+    }
+
+    public Set<Maze> getGamesByPlayer(String sessionId) {
+        return this.games.values()
+                .stream()
+                .filter(e -> e.getPlayers()
+                        .stream()
+                        .anyMatch(f -> Objects.equals(sessionId, f.getSessionId())))
+                .collect(Collectors.toSet());
     }
 }

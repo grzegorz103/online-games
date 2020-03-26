@@ -36,7 +36,7 @@ export class MultiplayerComponent implements OnInit {
       this.getGameFromApi();
     } else { // nowa gra
       MultiplayerComponent.maze = this.generateMaze();
-      this.uri = Math.random().toString(36).substring(4);
+      this.uri = Math.random().toString(36).substring(8);
       this.sendMazeToApi();
     }
   }
@@ -85,6 +85,10 @@ export class MultiplayerComponent implements OnInit {
     return false;
   }
 
+  isLoading(){
+    return MultiplayerComponent.loading;
+  }
+
   private getGameFromApi() {
     let that = this;
     if(!MultiplayerComponent.maze){
@@ -97,7 +101,6 @@ export class MultiplayerComponent implements OnInit {
 
       that.ws.subscribe("/user/queue/map", function (message) {
         MultiplayerComponent.maze.points = JSON.parse(message.body);
-        console.log(MultiplayerComponent.maze);
       })
 
       that.ws.subscribe("/user/queue/reply", message => {
