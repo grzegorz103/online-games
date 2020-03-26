@@ -6,46 +6,41 @@ import chess.api.domain.maze.Point;
 import chess.api.services.MazeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.stereotype.Controller;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Arrays;
 import java.util.Set;
 
 @Controller
 public class WebSocketController {
 
-    @Autowired
-    private SimpMessageSendingOperations messagingTemplate;
+    private final SimpMessageSendingOperations messagingTemplate;
 
-    @Autowired
-    private MazeServiceImpl mazeService;
+    private final MazeServiceImpl mazeService;
+
+    public WebSocketController(SimpMessageSendingOperations messagingTemplate, MazeServiceImpl mazeService) {
+        this.messagingTemplate = messagingTemplate;
+        this.mazeService = mazeService;
+    }
 
     @MessageMapping("/message/{uri}")
     //   @SendTo("/topic/reply")
     // dodac session id
     public void createGame(Message<Point[][]> points,
                            @DestinationVariable String uri) throws Exception {
-        System.out.println(uri);
-        mazeService.addGame(uri, points.getPayload(), String.valueOf(points.getHeaders().get("simpSessionId")));
+        Maze maze = mazeService.addGame(uri, points.getPayload(), String.valueOf(points.getHeaders().get("simpSessionId")));
+        sendPlayers(maze, uri, null);
     }
 
     @MessageMapping("/message/{uri}/join")
     public void joinGame(@DestinationVariable String uri,
                          @Header("simpSessionId") String sessionId) {
         Maze maze = mazeService.joinGame(uri, sessionId);
-        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
-                .create(SimpMessageType.MESSAGE);
-        headerAccessor.setSessionId(sessionId);
-        headerAccessor.setLeaveMutable(true);
-        headerAccessor.addNativeHeader("any", "any");
-        messagingTemplate.convertAndSendToUser(sessionId, "/queue/map", maze.getPoints(), headerAccessor.getMessageHeaders());
+        messagingTemplate.convertAndSendToUser(sessionId, "/queue/map", maze.getPoints(), getMessageHeaders(sessionId));
         sendPlayers(maze, uri, sessionId);
     }
 
@@ -63,20 +58,24 @@ public class WebSocketController {
         return exception.getMessage();
     }
 
-    public void sendPlayers(Maze maze, String uri, String sessionId) {
+    private void sendPlayers(Maze maze, String uri, String sessionId) {
         if (maze != null) {
             Set<? extends Player> players = mazeService.getPlayersByGame(uri);
             if (players != null) {
                 players.forEach(e -> {
-                    SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
-                            .create(SimpMessageType.MESSAGE);
-                    headerAccessor.setSessionId(e.getSessionId());
-                    headerAccessor.setLeaveMutable(true);
-                    headerAccessor.addNativeHeader("any", "any");
-                    messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/reply", maze.getPlayers(), headerAccessor.getMessageHeaders());
+                    messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/reply", maze.getPlayers(), getMessageHeaders(e.getSessionId()));
                 });
             }
         }
+    }
+
+    private MessageHeaders getMessageHeaders(String sessionId) {
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
+                .create(SimpMessageType.MESSAGE);
+        headerAccessor.setSessionId(sessionId);
+        headerAccessor.setLeaveMutable(true);
+        headerAccessor.addNativeHeader("any", "any");
+        return headerAccessor.getMessageHeaders();
     }
 
 }

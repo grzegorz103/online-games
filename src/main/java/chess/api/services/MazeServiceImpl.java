@@ -15,11 +15,11 @@ public class MazeServiceImpl {
 
     private Map<String, Maze> games = new HashMap<>();
 
-    public void addGame(String uri, Point[][] map, String sessionId) {
+    public Maze addGame(String uri, Point[][] map, String sessionId) {
         Maze maze = new Maze(map);
         maze.addPlayer(new Player(sessionId, new Point(0, 0, false)));
         games.put(uri, maze);
-        System.out.println("DODANO ");
+        return maze;
     }
 
     public Maze getByURI(String uri) {
@@ -28,7 +28,6 @@ public class MazeServiceImpl {
 
     public Maze joinGame(String uri, String sessionId) {
         Maze maze = games.get(uri);
-        System.out.println("DOLACZANIE " + maze);
         if (maze != null) {
             maze.addPlayer(new Player(sessionId, new Point(0, 0, false)));
         }
@@ -39,7 +38,6 @@ public class MazeServiceImpl {
 
     public Set<? extends Player> getPlayersByGame(String uri) {
         Maze maze = games.get(uri);
-        System.out.println(maze);
         if (maze != null) {
             return maze.getPlayers();
         }
