@@ -5,42 +5,45 @@ import chess.api.domain.maze.Player;
 import chess.api.domain.maze.Point;
 import chess.api.services.MazeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.Arrays;
 import java.util.Set;
 
 @Controller
 public class WebSocketController {
 
-    @Autowired
-    private SimpMessageSendingOperations messagingTemplate;
+    private final SimpMessageSendingOperations messagingTemplate;
 
-    @Autowired
-    private MazeServiceImpl mazeService;
+    private final MazeServiceImpl mazeService;
+
+    public WebSocketController(SimpMessageSendingOperations messagingTemplate, MazeServiceImpl mazeService) {
+        this.messagingTemplate = messagingTemplate;
+        this.mazeService = mazeService;
+    }
 
     @MessageMapping("/message/{uri}")
     //   @SendTo("/topic/reply")
     // dodac session id
     public void createGame(Message<Point[][]> points,
                            @DestinationVariable String uri) throws Exception {
-        System.out.println(uri);
-        mazeService.addGame(uri, points.getPayload(), String.valueOf(points.getHeaders().get("simpSessionId")));
+        Maze maze = mazeService.addGame(uri, points.getPayload(), String.valueOf(points.getHeaders().get("simpSessionId")));
+        sendPlayers(maze, uri, null);
     }
 
     @MessageMapping("/message/{uri}/join")
     public void joinGame(@DestinationVariable String uri,
                          @Header("simpSessionId") String sessionId) {
         Maze maze = mazeService.joinGame(uri, sessionId);
-        sendMaze(maze, uri, sessionId);
+        messagingTemplate.convertAndSendToUser(sessionId, "/queue/map", maze.getPoints(), getMessageHeaders(sessionId));
+        sendPlayers(maze, uri, sessionId);
     }
 
     @MessageMapping("/message/{uri}/move/{move}")
@@ -48,7 +51,7 @@ public class WebSocketController {
                          @Header("simpSessionId") String sessionId,
                          @DestinationVariable("move") int move) {
         Maze maze = mazeService.makeMove(uri, sessionId, move);
-        sendMaze(maze, uri, sessionId);
+        sendPlayers(maze, uri, sessionId);
     }
 
     @MessageExceptionHandler
@@ -57,21 +60,35 @@ public class WebSocketController {
         return exception.getMessage();
     }
 
-    public void sendMaze(Maze maze, String uri, String sessionId) {
+    private void sendPlayers(Maze maze, String uri, String sessionId) {
         if (maze != null) {
             Set<? extends Player> players = mazeService.getPlayersByGame(uri);
             if (players != null) {
                 players.forEach(e -> {
-                    System.out.println(e);
-                    SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
-                            .create(SimpMessageType.MESSAGE);
-                    headerAccessor.setSessionId(e.getSessionId());
-                    headerAccessor.setLeaveMutable(true);
-                    headerAccessor.addNativeHeader("any", "any");
-                    messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/reply", maze, headerAccessor.getMessageHeaders());
+                    messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/reply", maze.getPlayers(), getMessageHeaders(e.getSessionId()));
                 });
-                messagingTemplate.convertAndSendToUser(sessionId, "/topic/map", maze.getPoints());
             }
+        }
+    }
+
+    private MessageHeaders getMessageHeaders(String sessionId) {
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
+                .create(SimpMessageType.MESSAGE);
+        headerAccessor.setSessionId(sessionId);
+        headerAccessor.setLeaveMutable(true);
+        headerAccessor.addNativeHeader("any", "any");
+        return headerAccessor.getMessageHeaders();
+    }
+
+    @EventListener
+    public void handleSessionDisconnect(SessionDisconnectEvent event) {
+        Set<Maze> gamesByPlayer = mazeService.getGamesByPlayer(event.getSessionId());
+        mazeService.removePlayer(event.getSessionId());
+        if (gamesByPlayer != null) {
+            gamesByPlayer.forEach(e -> e.getPlayers()
+                    .forEach(f ->
+                    messagingTemplate.convertAndSendToUser(f.getSessionId(), "/queue/reply", e.getPlayers(), getMessageHeaders(f.getSessionId()))
+            ));
         }
     }
 
