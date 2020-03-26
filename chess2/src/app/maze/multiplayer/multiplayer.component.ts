@@ -7,6 +7,7 @@ import {HttpClient} from "@angular/common/http";
 
 import * as Stomp from 'stompjs';
 import {PlayerMulti} from "../models/player-multi";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-multiplayer',
@@ -29,7 +30,7 @@ export class MultiplayerComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private httpClient: HttpClient) {
     this.uri = this.route.snapshot.paramMap.get('game');
-    let socket = new WebSocket("ws://localhost:8080/chat");
+    let socket = new WebSocket(environment.wsUrl);
     this.ws = Stomp.over(socket);
     console.log('ccccc');
     if (this.uri) {
@@ -39,6 +40,10 @@ export class MultiplayerComponent implements OnInit {
       this.uri = Math.random().toString(36).substring(8);
       this.sendMazeToApi();
     }
+  }
+
+  wsUrl(){
+    return environment.wsUrl;
   }
 
   private sendMazeToApi() {

@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "chess-online-de4ca"
+    "default": "chess-online-de4ca",
+    "online-games": "online-games-69bcf"
   }
 }
