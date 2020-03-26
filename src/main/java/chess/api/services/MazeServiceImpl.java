@@ -71,7 +71,7 @@ public class MazeServiceImpl {
                         player.getPoint().setCol(player.getPoint().getCol() - 1);
                     break;
                 case 4:
-                    if (playerPoint.getRow() < 28 && points[playerPoint.getRow()][playerPoint.getCol() + 1].isOccupied())
+                    if (playerPoint.getCol() < 28 && points[playerPoint.getRow()][playerPoint.getCol() + 1].isOccupied())
                         player.getPoint().setCol(player.getPoint().getCol() + 1);
                     break;
             }
