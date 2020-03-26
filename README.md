@@ -1,6 +1,6 @@
 # Chess and Maze app
 ## Live demo
-Live demo available at https://chess-online-de4ca.firebaseapp.com/
+Live demo available at https://online-games-69bcf.firebaseapp.com/
 
 ## Features:
 
