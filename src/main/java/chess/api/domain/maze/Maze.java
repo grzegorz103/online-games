@@ -16,6 +16,10 @@ public class Maze {
 
     private Set<Player> players = new HashSet<>();
 
+    private Point meta;
+
+    private Player winner;
+
     public Maze(Point[][] points) {
         this.points = points;
     }
