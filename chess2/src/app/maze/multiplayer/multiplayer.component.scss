@@ -1,54 +1,70 @@
-#maze{
-  height:40vw;
-  width:40vw;
-  background-color:black;
+#maze {
+  height: 100%;
+  width: 100%;
+  background-color: black;
   border: 2px solid blue;
 }
 
-.maze-row{
-  display:block;
+@media screen and (max-width: 768px) {
+  .height {
+    height: 80vw;
+    width: 80vw;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .height {
+    height: 40vw;
+    width: 40vw;
+  }
+}
+
+
+.maze-row {
+  display: block;
   width: 100%;
   height: 3%;
 }
 
-.maze-col{
+.maze-col {
   display: inline-block;
   width: 3.3%;
-  height:100%;
+  height: 100%;
   vertical-align: top;
-  cursor:default;
+  cursor: default;
 }
 
-.occupied-field{
+.occupied-field {
   background-color: black;
 
 }
 
 
-.free-field{
+.free-field {
   background-color: gray;
 }
-.maze-col::after{
+
+.maze-col::after {
   content: '\200b';
 }
 
-.player{
+.player {
   background-color: peru;
 }
 
-.computer{
+.computer {
   background-color: red;
 }
 
-.square{
-  height:100%;
-  width:100%;
+.square {
+  height: 100%;
+  width: 100%;
 }
 
-.meta{
+.meta {
   background-color: green;
 }
 
-.path{
+.path {
   background-color: purple;
 }
