@@ -9,18 +9,25 @@
 <mat-sidenav-container>
   <!-- Sidenav -->
   <mat-sidenav #sidenav [mode]="isBiggerScreen() ? 'over' : 'side'" [(opened)]="opened" [fixedInViewport]="true"
-    [fixedTopGap]>
+               [fixedTopGap]>
     <mat-nav-list>
       <a mat-list-item>
-        <mat-icon>dashboard</mat-icon> <a routerLink="/board">Szachy</a>
+        <mat-icon>dashboard</mat-icon>
+        <a routerLink="/board">Szachy</a>
       </a>
       <a mat-list-item>
-        <mat-icon>dashboard</mat-icon> <a routerLink="/maze">Labirynt</a>
+        <mat-icon>dashboard</mat-icon>
+        <a routerLink="/maze">Labirynt</a>
       </a>
       <a mat-list-item>
-      <mat-icon>dashboard</mat-icon> <a routerLink="/maze/multi">Labirynt multiplayer</a>
-    </a>
+        <mat-icon>dashboard</mat-icon>
+        <a routerLink="/maze/multi">Labirynt multiplayer</a>
+      </a>
     </mat-nav-list>
+    <div id="version">
+      v1.0.1
+    </div>
+
   </mat-sidenav>
 
   <!-- Main content -->
@@ -31,4 +38,5 @@
     </div>
 
   </mat-sidenav-content>
+
 </mat-sidenav-container>

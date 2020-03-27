@@ -13,4 +13,6 @@ public class Player {
 
     private Point point;
 
+    private String username;
+
 }

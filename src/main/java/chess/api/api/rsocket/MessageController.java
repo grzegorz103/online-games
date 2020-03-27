@@ -4,6 +4,7 @@ import chess.api.domain.Message;
 import chess.api.domain.maze.Player;
 import chess.api.services.MazeServiceImpl;
 import chess.api.services.MessageServiceImpl;
+import chess.api.services.PlayerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -27,13 +28,16 @@ public class MessageController {
 
     private final MazeServiceImpl mazeService;
 
+    private final PlayerServiceImpl playerService;
+
     private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
-    public MessageController(MessageServiceImpl messageService, MazeServiceImpl mazeService, SimpMessageSendingOperations messagingTemplate) {
+    public MessageController(MessageServiceImpl messageService, MazeServiceImpl mazeService, SimpMessageSendingOperations messagingTemplate, PlayerServiceImpl playerService) {
         this.messageService = messageService;
         this.mazeService = mazeService;
         this.messagingTemplate = messagingTemplate;
+        this.playerService = playerService;
     }
 
     @MessageMapping("/message/{uri}/send")
@@ -41,6 +45,7 @@ public class MessageController {
                                @DestinationVariable String uri,
                                @Header("simpSessionId") String sessionId) {
         Set<? extends Player> playersByGame = mazeService.getPlayersByGame(uri);
+        message.setMessage(playerService.getBySessionId(sessionId).getUsername() + ": " + message.getMessage());
         playersByGame.forEach(e -> messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/dm", message, getMessageHeaders(e.getSessionId())));
     }
 

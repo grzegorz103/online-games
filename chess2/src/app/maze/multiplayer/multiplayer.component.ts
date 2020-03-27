@@ -30,6 +30,7 @@ export class MultiplayerComponent implements OnInit {
   disabled: boolean;
   message: Message = new Message();
   messages: Message[] = [];
+  username = prompt('Wprowadź swój nick');
 
   constructor(private route: ActivatedRoute,
               private httpClient: HttpClient) {
@@ -86,7 +87,7 @@ export class MultiplayerComponent implements OnInit {
         that.isWinner = true;
       });
 
-      that.ws.send("/app/message/" + that.uri + '/' + MultiplayerComponent.maze.meta.row + '/' + MultiplayerComponent.maze.meta.col, {}, JSON.stringify(MultiplayerComponent.maze.points));
+      that.ws.send("/app/message/" + that.uri + '/' + MultiplayerComponent.maze.meta.row + '/' + MultiplayerComponent.maze.meta.col + "/" + that.username, {}, JSON.stringify(MultiplayerComponent.maze.points));
     }, function (error) {
       alert("STOMP error " + error);
     });
@@ -153,7 +154,7 @@ export class MultiplayerComponent implements OnInit {
         that.messages.push(JSON.parse(message.body));
       });
 
-      that.ws.send("/app/message/" + that.uri + "/join", {}, {});
+      that.ws.send("/app/message/" + that.uri + "/" + that.username + "/join", {}, {});
     }, function (error) {
       alert("STOMP error " + error);
     });
