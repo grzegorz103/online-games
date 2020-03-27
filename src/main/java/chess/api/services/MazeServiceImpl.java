@@ -3,6 +3,7 @@ package chess.api.services;
 import chess.api.domain.maze.Maze;
 import chess.api.domain.maze.Player;
 import chess.api.domain.maze.Point;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -105,7 +106,15 @@ public class MazeServiceImpl {
                 .collect(Collectors.toSet());
     }
 
-    public Map<String, ? extends Maze> getGames(){
+    public Map<String, ? extends Maze> getGames() {
         return this.games;
+    }
+
+
+    @Scheduled(fixedRate = 600000L)
+    public void removeUnactiveGames() {
+        this.getGames()
+                .values()
+                .removeIf(e -> e.getPlayers().isEmpty());
     }
 }
