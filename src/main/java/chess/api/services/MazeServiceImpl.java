@@ -112,7 +112,7 @@ public class MazeServiceImpl {
 
 
     @Scheduled(fixedRate = 600000L)
-    public void removeUnactiveGames() {
+    public void removeInactiveGames() {
         this.getGames()
                 .values()
                 .removeIf(e -> e.getPlayers().isEmpty());

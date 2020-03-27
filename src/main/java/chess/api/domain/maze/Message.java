@@ -1,4 +1,4 @@
-package chess.api.domain;
+package chess.api.domain.maze;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

@@ -1,6 +1,6 @@
-package chess.api.api.rsocket;
+package chess.api.api.socket;
 
-import chess.api.domain.Message;
+import chess.api.domain.maze.Message;
 import chess.api.domain.maze.Maze;
 import chess.api.domain.maze.Player;
 import chess.api.domain.maze.Point;

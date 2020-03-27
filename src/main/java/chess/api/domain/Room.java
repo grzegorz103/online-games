@@ -1,11 +1,11 @@
 package chess.api.domain;
 
+import chess.api.domain.maze.Message;
 import chess.api.utils.MessageComparator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
