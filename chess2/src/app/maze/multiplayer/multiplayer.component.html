@@ -1,11 +1,7 @@
 <div class="container mt-2">
   <div class="row">
     <div class="col-md-9 bg-black">
-      <button class="btn btn-info mb-3"
-              (click)="copyMessage('https://online-games-69bcf.firebaseapp.com/maze/multi/' + uri)"
-              value="Zaproś znajomego">
-        Zaproś znajomego
-      </button>
+
       <div *ngIf="!isLoading()">
         <div class="mx-auto height">
           <div id="maze">
@@ -36,8 +32,14 @@
           <button class="btn btn-success" style="height: 60px; width: 60px" (click)="moveByClick(4)">→</button>
         </div>
       </div>
-
+      <button class="btn btn-info mb-3"
+              (click)="copyMessage('https://online-games-69bcf.firebaseapp.com/maze/multi/' + uri)"
+              value="Zaproś znajomego">
+        Zaproś znajomego
+      </button>
+      <mat-divider></mat-divider>
       <div class="form-inline">
+
         <div class="form-group">
           <mat-form-field class="example-full-width">
             <mat-label>Wyślij wiadomość</mat-label>
