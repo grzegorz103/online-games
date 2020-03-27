@@ -1,10 +1,13 @@
 <div class="container mt-2">
   <div class="row">
     <div class="mx-auto bg-black">
-      <button class="btn btn-info mb-3" (click)="copyMessage('https://online-games-69bcf.firebaseapp.com/maze/multi/' + uri)" value="Zaproś znajomego">
+      <button class="btn btn-info mb-3"
+              (click)="copyMessage('https://online-games-69bcf.firebaseapp.com/maze/multi/' + uri)"
+              value="Zaproś znajomego">
         Zaproś znajomego
       </button>
-
+      <input [(ngModel)]="message.message">
+      <button (click)="sendMessage()">Wyślij</button>
       <div *ngIf="!isLoading()">
         <div class="mx-auto height">
           <div id="maze">
@@ -31,6 +34,12 @@
               <button class="btn btn-success" style="height: 60px; width: 60px" (click)="moveByClick(4)">→</button>
             </div>
           </div>
+
+          <ul class="list-group">
+          <li *ngFor="let message of messages" class="list-group-item">{{message.message}}</li>
+
+        </ul>
+
         </div>
       </div>
     </div>
