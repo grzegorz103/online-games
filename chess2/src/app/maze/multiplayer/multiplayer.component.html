@@ -21,32 +21,35 @@
         </div>
       </div>
     </div>
-      <div class="col-md-3">
-        <div class="row mt-2 mobile">
-          <div class="mx-auto">
-            <button class="btn btn-success mb-2" style="height: 60px; width: 60px" (click)="moveByClick(1)">↑</button>
-            <br/>
-          </div>
-
+    <div class="col-md-3">
+      <div class="row mt-2 mobile">
+        <div class="mx-auto">
+          <button class="btn btn-success mb-2" style="height: 60px; width: 60px" (click)="moveByClick(1)">↑</button>
+          <br/>
         </div>
-        <div class="row mobile">
-          <div class="mx-auto">
-            <button class="btn btn-success" style="height: 60px; width: 60px" (click)="moveByClick(3)">←</button>
-            <button class="btn btn-success mx-2" style="height: 60px; width: 60px" (click)="moveByClick(2)">↓</button>
-            <button class="btn btn-success" style="height: 60px; width: 60px" (click)="moveByClick(4)">→</button>
-          </div>
-        </div>
-
-        <mat-form-field class="example-full-width">
-          <mat-label>Wyślij wiadomość</mat-label>
-          <input matInput [(ngModel)]="message.message">
-        </mat-form-field>
-        <button class="ml-3 btn btn-success" (click)="sendMessage()">Wyślij</button>
-        <ul class="list-group">
-          <li *ngFor="let message of messages" class="list-group-item">{{message.message}}</li>
-
-        </ul>
 
       </div>
+      <div class="row mobile">
+        <div class="mx-auto">
+          <button class="btn btn-success" style="height: 60px; width: 60px" (click)="moveByClick(3)">←</button>
+          <button class="btn btn-success mx-2" style="height: 60px; width: 60px" (click)="moveByClick(2)">↓</button>
+          <button class="btn btn-success" style="height: 60px; width: 60px" (click)="moveByClick(4)">→</button>
+        </div>
+      </div>
+
+      <div class="form-inline">
+        <div class="form-group">
+          <mat-form-field class="example-full-width">
+            <mat-label>Wyślij wiadomość</mat-label>
+            <input matInput [(ngModel)]="message.message">
+          </mat-form-field>
+          <button class="ml-3 btn btn-success" (click)="sendMessage()">Wyślij</button>
+        </div>
+      </div>
+      <ul class="list-group">
+        <li *ngFor="let message of messages" class="list-group-item">{{message.message}}</li>
+      </ul>
+
     </div>
   </div>
+</div>
