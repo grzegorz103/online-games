@@ -18,34 +18,36 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import java.util.Set;
 
 @Controller
-public class WebSocketController {
+public class MazeSocketController {
 
     private final SimpMessageSendingOperations messagingTemplate;
 
     private final MazeServiceImpl mazeService;
 
     @Autowired
-    public WebSocketController(SimpMessageSendingOperations messagingTemplate, MazeServiceImpl mazeService) {
+    public MazeSocketController(SimpMessageSendingOperations messagingTemplate, MazeServiceImpl mazeService) {
         this.messagingTemplate = messagingTemplate;
         this.mazeService = mazeService;
     }
 
-    @MessageMapping("/message/{uri}/{row}/{col}")
+    @MessageMapping("/message/{uri}/{row}/{col}/{username}")
     //   @SendTo("/topic/reply")
     // dodac session id
     public void createGame(@DestinationVariable int row,
                            @DestinationVariable int col,
                            @Payload Point[][] points,
                            @DestinationVariable String uri,
+                           @DestinationVariable String username,
                            @Header("simpSessionId") String sessionId) throws Exception {
-        Maze maze = mazeService.addGame(uri, points, sessionId, row, col);
+        Maze maze = mazeService.addGame(uri, points, sessionId, row, col, username);
         sendPlayers(maze, uri, null);
     }
 
-    @MessageMapping("/message/{uri}/join")
+    @MessageMapping("/message/{uri}/{username}/join")
     public void joinGame(@DestinationVariable String uri,
+                         @DestinationVariable String username,
                          @Header("simpSessionId") String sessionId) {
-        Maze maze = mazeService.joinGame(uri, sessionId);
+        Maze maze = mazeService.joinGame(uri, sessionId, username);
         messagingTemplate.convertAndSendToUser(sessionId, "/queue/map", maze.getPoints(), getMessageHeaders(sessionId));
         messagingTemplate.convertAndSendToUser(sessionId, "/queue/meta", maze.getMeta(), getMessageHeaders(sessionId));
         sendPlayers(maze, uri, sessionId);

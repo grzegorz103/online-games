@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 @Service
 public class MazeServiceImpl {
 
-    private Map<String, Maze> games = new HashMap<>();
+    private final Map<String, Maze> games = new HashMap<>();
 
-    public Maze addGame(String uri, Point[][] map, String sessionId, int row, int col) {
+    public Maze addGame(String uri, Point[][] map, String sessionId, int row, int col, String username) {
         Maze maze = new Maze(map);
-        maze.setMeta(new Point(row,col, false));
-        maze.addPlayer(new Player(sessionId, new Point(0, 0, false)));
+        maze.setMeta(new Point(row, col, false));
+        maze.addPlayer(new Player(sessionId, new Point(0, 0, false), username));
         games.put(uri, maze);
         return maze;
     }
@@ -28,10 +28,10 @@ public class MazeServiceImpl {
         return games.get("uri");
     }
 
-    public Maze joinGame(String uri, String sessionId) {
+    public Maze joinGame(String uri, String sessionId, String username) {
         Maze maze = games.get(uri);
         if (maze != null) {
-            maze.addPlayer(new Player(sessionId, new Point(0, 0, false)));
+            maze.addPlayer(new Player(sessionId, new Point(0, 0, false), username));
         }
 
         return maze;
@@ -77,7 +77,7 @@ public class MazeServiceImpl {
                     break;
             }
 
-            if (playerPoint.getCol() ==maze.getMeta().getCol() && playerPoint.getRow() == maze.getMeta().getRow()) {
+            if (playerPoint.getCol() == maze.getMeta().getCol() && playerPoint.getRow() == maze.getMeta().getRow()) {
                 maze.setWinner(player);
             }
         }
@@ -103,5 +103,9 @@ public class MazeServiceImpl {
                         .stream()
                         .anyMatch(f -> Objects.equals(sessionId, f.getSessionId())))
                 .collect(Collectors.toSet());
+    }
+
+    public Map<String, ? extends Maze> getGames(){
+        return this.games;
     }
 }

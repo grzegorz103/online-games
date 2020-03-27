@@ -9,6 +9,7 @@ import * as Stomp from 'stompjs';
 import {PlayerMulti} from "../models/player-multi";
 import {environment} from "../../../environments/environment";
 import {Point} from "../models/point";
+import {Message} from "../models/message";
 
 @Component({
   selector: 'app-multiplayer',
@@ -27,7 +28,9 @@ export class MultiplayerComponent implements OnInit {
   static loading = true;
   name: string;
   disabled: boolean;
-  message: any;
+  message: Message = new Message();
+  messages: Message[] = [];
+  username = prompt('Wprowadź swój nick');
 
   constructor(private route: ActivatedRoute,
               private httpClient: HttpClient) {
@@ -75,12 +78,16 @@ export class MultiplayerComponent implements OnInit {
         MultiplayerComponent.loading = false;
       });
 
+      that.ws.subscribe("/user/queue/dm", message => {
+        that.messages.push(JSON.parse(message.body));
+      });
+
       that.ws.subscribe("/user/queue/win", message => {
         alert('Koniec');
         that.isWinner = true;
       });
 
-      that.ws.send("/app/message/" + that.uri + '/' + MultiplayerComponent.maze.meta.row + '/' + MultiplayerComponent.maze.meta.col, {}, JSON.stringify(MultiplayerComponent.maze.points));
+      that.ws.send("/app/message/" + that.uri + '/' + MultiplayerComponent.maze.meta.row + '/' + MultiplayerComponent.maze.meta.col + "/" + that.username, {}, JSON.stringify(MultiplayerComponent.maze.points));
     }, function (error) {
       alert("STOMP error " + error);
     });
@@ -143,7 +150,11 @@ export class MultiplayerComponent implements OnInit {
         that.isWinner = true;
       });
 
-      that.ws.send("/app/message/" + that.uri + "/join", {}, {});
+      that.ws.subscribe("/user/queue/dm", message => {
+        that.messages.push(JSON.parse(message.body));
+      });
+
+      that.ws.send("/app/message/" + that.uri + "/" + that.username + "/join", {}, {});
     }, function (error) {
       alert("STOMP error " + error);
     });
@@ -192,6 +203,13 @@ export class MultiplayerComponent implements OnInit {
       return;
     }
 
-
+    this.ws.send("/app/message/" + this.uri + "/move/" + value, {}, {});
   }
+
+  sendMessage() {
+    if (this.message && this.message.message) {
+      this.ws.send("/app/message/" + this.uri + "/send", {}, JSON.stringify(this.message))
+    }
+  }
+
 }
