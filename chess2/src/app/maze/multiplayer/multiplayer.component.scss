@@ -10,6 +10,10 @@
     height: 80vw;
     width: 80vw;
   }
+
+  .mobile {
+    visibility: visible;
+  }
 }
 
 @media screen and (min-width: 768px) {
@@ -17,8 +21,11 @@
     height: 40vw;
     width: 40vw;
   }
-}
 
+  .mobile {
+    visibility: hidden;
+  }
+}
 
 .maze-row {
   display: block;

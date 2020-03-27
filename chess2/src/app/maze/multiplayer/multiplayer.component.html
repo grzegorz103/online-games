@@ -1,7 +1,9 @@
 <div class="container mt-2">
   <div class="row">
     <div class="mx-auto bg-black">
-      <h4>https://online-games-69bcf.firebaseapp.com/maze/multi/{{uri}}</h4><button (click)="copyMessage('https://online-games-69bcf.firebaseapp.com/maze/multi/' + uri)" value="Kopiuj" >Kopiuj</button>
+      <button class="btn btn-info mb-3" (click)="copyMessage('https://online-games-69bcf.firebaseapp.com/maze/multi/' + uri)" value="Zaproś znajomego">
+        Zaproś znajomego
+      </button>
 
       <div *ngIf="!isLoading()">
         <div class="mx-auto height">
@@ -13,6 +15,20 @@
                   &nbsp;
                 </div>
               </div>
+            </div>
+          </div>
+          <div class="row mt-2 mobile">
+            <div class="mx-auto">
+              <button class="btn btn-success mb-2" style="height: 60px; width: 60px" (click)="moveByClick(1)">↑</button>
+              <br/>
+            </div>
+
+          </div>
+          <div class="row mobile">
+            <div class="mx-auto">
+              <button class="btn btn-success" style="height: 60px; width: 60px" (click)="moveByClick(3)">←</button>
+              <button class="btn btn-success mx-2" style="height: 60px; width: 60px" (click)="moveByClick(2)">↓</button>
+              <button class="btn btn-success" style="height: 60px; width: 60px" (click)="moveByClick(4)">→</button>
             </div>
           </div>
         </div>
