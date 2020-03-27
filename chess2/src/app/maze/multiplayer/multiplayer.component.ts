@@ -37,6 +37,8 @@ export class MultiplayerComponent implements OnInit {
     this.uri = this.route.snapshot.paramMap.get('game');
     let socket = new WebSocket(environment.wsUrl);
     this.ws = Stomp.over(socket);
+    this.ws.heartbeat.outgoing = 5000;
+    this.ws.heartbeat.incomingng = 5000;
     console.log('ccccc');
     if (this.uri) {
       this.getGameFromApi();
