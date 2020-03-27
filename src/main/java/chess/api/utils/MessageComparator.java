@@ -1,7 +1,7 @@
 package chess.api.utils;
 
 
-import chess.api.domain.Message;
+import chess.api.domain.maze.Message;
 
 import java.util.Comparator;
 

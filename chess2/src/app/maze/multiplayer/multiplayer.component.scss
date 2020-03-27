@@ -23,7 +23,7 @@
   }
 
   .mobile {
-    display:none;
+    display: none;
   }
 }
 
@@ -33,9 +33,9 @@
   height: 3%;
 }
 
-.list-group-item{
+.list-group-item {
   background-color: transparent;
-  border: 3px solid rgb(0, 124, 17);
+  border: 3px solid #673ab7;
 }
 
 .maze-col {
@@ -79,4 +79,12 @@
 
 .path {
   background-color: purple;
+}
+
+.circle {
+  display: inline-block;
+  height: 8px;
+  width: 8px;
+  background-color: #00ff00;
+  border-radius: 10px;
 }
