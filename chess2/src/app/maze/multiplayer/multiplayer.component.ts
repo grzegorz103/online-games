@@ -192,6 +192,6 @@ export class MultiplayerComponent implements OnInit {
       return;
     }
 
-
+    this.ws.send("/app/message/" + this.uri + "/move/" + value, {}, {});
   }
 }
