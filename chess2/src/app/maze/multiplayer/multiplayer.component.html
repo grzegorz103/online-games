@@ -38,6 +38,10 @@
         Zaproś znajomego
       </button>
       <mat-divider></mat-divider>
+      Lista graczy
+      <div *ngFor="let player of players"><div class="circle"></div>
+        {{player.username}}</div>
+      <mat-divider></mat-divider>
       <div class="form-inline">
 
         <div class="form-group">
