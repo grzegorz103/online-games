@@ -1,16 +1,34 @@
 <div class="container mt-2">
   <div class="row">
     <div class="mx-auto bg-black">
-      <h2>https://online-games-69bcf.firebaseapp.com/maze/multi/{{uri}}</h2>
-      <div *ngIf="!isLoading()">
-        <div id="maze">
+      <button class="btn btn-info mb-3" (click)="copyMessage('https://online-games-69bcf.firebaseapp.com/maze/multi/' + uri)" value="Zaproś znajomego">
+        Zaproś znajomego
+      </button>
 
-          <div *ngFor="let x of getMazePoints(); let i = index" class="maze-row">
-            <div *ngFor="let y of x; let j = index" class="maze-col">
-              <div
-                [ngClass]="[getMazePoints()[i][j].occupied ? 'occupied-field' : 'free-field', isPlayerOnField(i,j) ? 'player' : '', isMetaOnField(i, j) ? 'meta' : '']">
-                &nbsp;
+      <div *ngIf="!isLoading()">
+        <div class="mx-auto height">
+          <div id="maze">
+            <div *ngFor="let x of getMazePoints(); let i = index" class="maze-row">
+              <div *ngFor="let y of x; let j = index" class="maze-col">
+                <div
+                  [ngClass]="[getMazePoints()[i][j].occupied ? 'occupied-field' : 'free-field', isPlayerOnField(i,j) ? 'player' : '', isMetaOnField(i, j) ? 'meta' : '']">
+                  &nbsp;
+                </div>
               </div>
+            </div>
+          </div>
+          <div class="row mt-2 mobile">
+            <div class="mx-auto">
+              <button class="btn btn-success mb-2" style="height: 60px; width: 60px" (click)="moveByClick(1)">↑</button>
+              <br/>
+            </div>
+
+          </div>
+          <div class="row mobile">
+            <div class="mx-auto">
+              <button class="btn btn-success" style="height: 60px; width: 60px" (click)="moveByClick(3)">←</button>
+              <button class="btn btn-success mx-2" style="height: 60px; width: 60px" (click)="moveByClick(2)">↓</button>
+              <button class="btn btn-success" style="height: 60px; width: 60px" (click)="moveByClick(4)">→</button>
             </div>
           </div>
         </div>
