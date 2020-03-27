@@ -1,12 +1,12 @@
 package chess.api.api.rsocket;
 
+import chess.api.domain.Message;
 import chess.api.domain.maze.Maze;
 import chess.api.domain.maze.Player;
 import chess.api.domain.maze.Point;
 import chess.api.services.MazeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.*;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -50,6 +50,7 @@ public class MazeSocketController {
         Maze maze = mazeService.joinGame(uri, sessionId, username);
         messagingTemplate.convertAndSendToUser(sessionId, "/queue/map", maze.getPoints(), getMessageHeaders(sessionId));
         messagingTemplate.convertAndSendToUser(sessionId, "/queue/meta", maze.getMeta(), getMessageHeaders(sessionId));
+        maze.getPlayers().forEach(e -> messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/dm", new Message(username + " dołącza do gry", null, null), getMessageHeaders(e.getSessionId())));
         sendPlayers(maze, uri, sessionId);
     }
 
