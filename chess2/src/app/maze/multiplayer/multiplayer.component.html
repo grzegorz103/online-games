@@ -6,8 +6,6 @@
               value="Zaproś znajomego">
         Zaproś znajomego
       </button>
-      <input [(ngModel)]="message.message">
-      <button (click)="sendMessage()">Wyślij</button>
       <div *ngIf="!isLoading()">
         <div class="mx-auto height">
           <div id="maze">
@@ -35,6 +33,11 @@
             </div>
           </div>
 
+          <mat-form-field class="example-full-width">
+            <mat-label>Wyślij wiadomość</mat-label>
+            <input matInput [(ngModel)]="message.message">
+          </mat-form-field>
+          <button class="ml-3 btn btn-success" (click)="sendMessage()">Wyślij</button>
           <ul class="list-group">
           <li *ngFor="let message of messages" class="list-group-item">{{message.message}}</li>
 
