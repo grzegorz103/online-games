@@ -78,7 +78,6 @@ export class MultiplayerComponent implements OnInit {
       });
 
       that.ws.subscribe("/user/queue/dm", message => {
-        console.log(message.body);
         that.messages.push(JSON.parse(message.body));
       });
 
@@ -148,6 +147,10 @@ export class MultiplayerComponent implements OnInit {
       that.ws.subscribe("/user/queue/win", message => {
         alert('Koniec');
         that.isWinner = true;
+      });
+
+      that.ws.subscribe("/user/queue/dm", message => {
+        that.messages.push(JSON.parse(message.body));
       });
 
       that.ws.send("/app/message/" + that.uri + "/join", {}, {});
