@@ -1,4 +1,4 @@
-# Chess and Maze app
+# Chess and Maze app [![CircleCI](https://circleci.com/gh/grzegorz103/chess-online.svg?style=svg)](https://circleci.com/gh/grzegorz103/chess-online)
 ## Live demo
 Live demo available at https://online-games-69bcf.firebaseapp.com/
 
