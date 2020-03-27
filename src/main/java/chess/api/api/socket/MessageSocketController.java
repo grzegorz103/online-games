@@ -1,6 +1,6 @@
-package chess.api.api.rsocket;
+package chess.api.api.socket;
 
-import chess.api.domain.Message;
+import chess.api.domain.maze.Message;
 import chess.api.domain.maze.Player;
 import chess.api.services.MazeServiceImpl;
 import chess.api.services.MessageServiceImpl;
@@ -14,15 +14,12 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessageType;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.Map;
 import java.util.Set;
 
 @Controller
-public class MessageController {
+public class MessageSocketController {
 
     private final MessageServiceImpl messageService;
 
@@ -33,7 +30,7 @@ public class MessageController {
     private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
-    public MessageController(MessageServiceImpl messageService, MazeServiceImpl mazeService, SimpMessageSendingOperations messagingTemplate, PlayerServiceImpl playerService) {
+    public MessageSocketController(MessageServiceImpl messageService, MazeServiceImpl mazeService, SimpMessageSendingOperations messagingTemplate, PlayerServiceImpl playerService) {
         this.messageService = messageService;
         this.mazeService = mazeService;
         this.messagingTemplate = messagingTemplate;

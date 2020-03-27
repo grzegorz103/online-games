@@ -1,6 +1,6 @@
 package chess.api.services;
 
-import chess.api.domain.Message;
+import chess.api.domain.maze.Message;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
