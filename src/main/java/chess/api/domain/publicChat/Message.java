@@ -1,4 +1,4 @@
-package chess.api.domain.maze;
+package chess.api.domain.publicChat;
 
 import chess.api.domain.shared.BaseMessage;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -18,6 +18,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Message extends BaseMessage {
 
-    private String user;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private LocalDate creationDate;
+
+    public Message(String message, LocalDate creationDate) {
+        super(message);
+        this.creationDate = creationDate;
+    }
 
 }
