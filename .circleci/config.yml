@@ -2,6 +2,9 @@ version: 2.1
 orbs:
   node: circleci/node@1.1.6
 jobs:
+  branches:
+    only:
+      - develop
   build-and-test:
     executor:
       name: node/default
