@@ -1,1 +1,18 @@
-<p>public-chat works!</p>
+<div class="container">
+  <div class="row">
+
+    <input [(ngModel)]="message.message">
+
+    <button type="button" (click)="sendMessage()">Wyslij</button>
+  </div>
+  <mat-card>
+
+    <div *ngFor="let message of messages">
+      <mat-card [ngClass]="'message'">
+        {{ message.message }}
+      </mat-card>
+    </div>
+
+
+  </mat-card>
+</div>

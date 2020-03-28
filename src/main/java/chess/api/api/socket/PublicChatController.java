@@ -12,11 +12,16 @@ import java.time.LocalDate;
 @Controller
 public class PublicChatController {
 
+    @MessageMapping("/public/chat/{username}/join")
+    @SendTo("/topic/public/chat")
+    public Message joinChat(@DestinationVariable String username) {
+        return new Message(username + " dolacza do chatu", LocalDate.now());
+    }
+
     @MessageMapping("/public/chat/send")
     @SendTo("/topic/public/chat")
-    public Message sendMessage() {
-        System.out.println("CAC");
-        return new Message("A", LocalDate.now());
+    public Message sendMessage(Message message) {
+        return message;
     }
 
 }

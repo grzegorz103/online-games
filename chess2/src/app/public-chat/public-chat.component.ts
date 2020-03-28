@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {environment} from "../../environments/environment";
 import * as Stomp from 'stompjs';
+import {Message} from "./models/message";
 
 @Component({
   selector: 'app-public-chat',
@@ -11,6 +12,8 @@ export class PublicChatComponent implements OnInit {
 
   ws: any;
   username = prompt('Wprowdz swoj nick');
+  message = new Message();
+  messages: Message[] = [];
 
   constructor() {
   }
@@ -29,13 +32,21 @@ export class PublicChatComponent implements OnInit {
       });
 
       that.ws.subscribe("/topic/public/chat", message => {
-        console.log('asd');
+        that.messages.push(JSON.parse(message.body));
       });
 
-      that.ws.send("/app/public/chat/send",{},{})
+      that.ws.send("/app/public/chat/" + that.username + "/join", {}, {})
 
     }, function (error) {
       alert("STOMP error " + error);
     });
   }
+
+  sendMessage() {
+    if (this.message && this.message.message.length === 0)
+      return;
+
+    this.ws.send("/app/public/chat/send", {}, JSON.stringify(this.message));
+  }
+
 }
