@@ -5,7 +5,7 @@
     <div class="col-8 h-75">
       <mat-card>
         <div *ngFor="let message of messages">
-          <mat-card [ngClass]="'message'">
+          <mat-card [ngClass]="message.authorSessionId === sessionId ? 'my-message' : 'other-message'">
             {{ message.message }}
           </mat-card>
         </div>
