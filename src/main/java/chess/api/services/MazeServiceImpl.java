@@ -20,7 +20,7 @@ public class MazeServiceImpl {
     public Maze addGame(String uri, Point[][] map, String sessionId, int row, int col, String username) {
         Maze maze = new Maze(map);
         maze.setMeta(new Point(row, col, false));
-        maze.addPlayer(new Player(sessionId, new Point(0, 0, false), username));
+        maze.addPlayer(new Player(sessionId, username, new Point(0, 0, false)));
         games.put(uri, maze);
         return maze;
     }
@@ -32,7 +32,7 @@ public class MazeServiceImpl {
     public Maze joinGame(String uri, String sessionId, String username) {
         Maze maze = games.get(uri);
         if (maze != null) {
-            maze.addPlayer(new Player(sessionId, new Point(0, 0, false), username));
+            maze.addPlayer(new Player(sessionId, username, new Point(0, 0, false)));
         }
 
         return maze;
