@@ -13,6 +13,7 @@ import { MazeComponent } from './maze/maze/maze.component';
 import { MultiplayerComponent } from './maze/multiplayer/multiplayer.component';
 import {HttpClientModule} from "@angular/common/http";
 import { PublicChatComponent } from './public-chat/public-chat.component';
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [
@@ -22,16 +23,17 @@ import { PublicChatComponent } from './public-chat/public-chat.component';
     MultiplayerComponent,
     PublicChatComponent
   ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    AngularMaterialModule,
-    NgbModule,
-    AngularDraggableModule,
-  ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        AngularMaterialModule,
+        NgbModule,
+        AngularDraggableModule,
+        MatProgressSpinnerModule,
+    ],
   providers: [],
   bootstrap: [AppComponent],
   schemas:[CUSTOM_ELEMENTS_SCHEMA]

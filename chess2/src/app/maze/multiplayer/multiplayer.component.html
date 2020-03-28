@@ -2,6 +2,11 @@
   <div class="row">
     <div class="col-md-9 bg-black">
 
+      <div *ngIf="isLoading()" class="col-12 w-100">
+        <mat-spinner class="mx-auto"></mat-spinner>
+        <div class="text-center w-100"><i>Uruchamianie serwera</i></div>
+      </div>
+
       <div *ngIf="!isLoading()">
         <div class="mx-auto height">
           <div id="maze">
@@ -17,7 +22,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-3" *ngIf="!isLoading()">
       <div class="row mt-2 mobile">
         <div class="mx-auto">
           <button class="btn btn-success mb-2" style="height: 60px; width: 60px" (click)="moveByClick(1)">↑</button>

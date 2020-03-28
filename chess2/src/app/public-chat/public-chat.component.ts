@@ -15,6 +15,7 @@ export class PublicChatComponent implements OnInit {
   message = new Message();
   messages: Message[] = [];
   sessionId: string;
+  loading: boolean = true;
 
   constructor() {
   }
@@ -34,6 +35,7 @@ export class PublicChatComponent implements OnInit {
 
       that.ws.subscribe("/user/queue/public/chat/id", message=>{
         that.sessionId = message.body;
+        that.loading = false;
       });
 
       that.ws.subscribe("/topic/public/chat", message => {
