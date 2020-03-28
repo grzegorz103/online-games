@@ -12,13 +12,15 @@ import { AngularDraggableModule } from 'angular2-draggable';
 import { MazeComponent } from './maze/maze/maze.component';
 import { MultiplayerComponent } from './maze/multiplayer/multiplayer.component';
 import {HttpClientModule} from "@angular/common/http";
+import { PublicChatComponent } from './public-chat/public-chat.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BoardComponent,
     MazeComponent,
-    MultiplayerComponent
+    MultiplayerComponent,
+    PublicChatComponent
   ],
   imports: [
     BrowserModule,
