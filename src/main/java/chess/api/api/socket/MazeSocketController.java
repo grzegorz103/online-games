@@ -1,17 +1,15 @@
 package chess.api.api.socket;
 
-import chess.api.domain.maze.Message;
+import chess.api.api.utils.WebSocketUtils;
 import chess.api.domain.maze.Maze;
+import chess.api.domain.maze.Message;
 import chess.api.domain.maze.Player;
 import chess.api.domain.maze.Point;
 import chess.api.services.MazeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.*;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
@@ -31,8 +29,6 @@ public class MazeSocketController {
     }
 
     @MessageMapping("/message/{uri}/{row}/{col}/{username}")
-    //   @SendTo("/topic/reply")
-    // dodac session id
     public void createGame(@DestinationVariable int row,
                            @DestinationVariable int col,
                            @Payload Point[][] points,
@@ -48,9 +44,9 @@ public class MazeSocketController {
                          @DestinationVariable String username,
                          @Header("simpSessionId") String sessionId) {
         Maze maze = mazeService.joinGame(uri, sessionId, username);
-        messagingTemplate.convertAndSendToUser(sessionId, "/queue/map", maze.getPoints(), getMessageHeaders(sessionId));
-        messagingTemplate.convertAndSendToUser(sessionId, "/queue/meta", maze.getMeta(), getMessageHeaders(sessionId));
-        maze.getPlayers().forEach(e -> messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/dm", new Message(username + " dolacza do gry"), getMessageHeaders(e.getSessionId())));
+        messagingTemplate.convertAndSendToUser(sessionId, "/queue/map", maze.getPoints(), WebSocketUtils.getMessageHeaders(sessionId));
+        messagingTemplate.convertAndSendToUser(sessionId, "/queue/meta", maze.getMeta(), WebSocketUtils.getMessageHeaders(sessionId));
+        maze.getPlayers().forEach(e -> messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/dm", new Message(username + " dolacza do gry"), WebSocketUtils.getMessageHeaders(e.getSessionId())));
         sendPlayers(maze, uri, sessionId);
     }
 
@@ -61,7 +57,7 @@ public class MazeSocketController {
         Maze maze = mazeService.makeMove(uri, sessionId, move);
         sendPlayers(maze, uri, sessionId);
         if (maze.getWinner() != null) {
-            maze.getPlayers().forEach(e -> messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/win", maze.getWinner(), getMessageHeaders(e.getSessionId())));
+            maze.getPlayers().forEach(e -> messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/win", maze.getWinner(), WebSocketUtils.getMessageHeaders(e.getSessionId())));
         }
     }
 
@@ -76,19 +72,10 @@ public class MazeSocketController {
             Set<? extends Player> players = mazeService.getPlayersByGame(uri);
             if (players != null) {
                 players.forEach(e -> {
-                    messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/reply", maze.getPlayers(), getMessageHeaders(e.getSessionId()));
+                    messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/reply", maze.getPlayers(), WebSocketUtils.getMessageHeaders(e.getSessionId()));
                 });
             }
         }
-    }
-
-    private MessageHeaders getMessageHeaders(String sessionId) {
-        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
-                .create(SimpMessageType.MESSAGE);
-        headerAccessor.setSessionId(sessionId);
-        headerAccessor.setLeaveMutable(true);
-        headerAccessor.addNativeHeader("any", "any");
-        return headerAccessor.getMessageHeaders();
     }
 
     @EventListener
@@ -98,7 +85,7 @@ public class MazeSocketController {
         if (gamesByPlayer != null) {
             gamesByPlayer.forEach(e -> e.getPlayers()
                     .forEach(f ->
-                            messagingTemplate.convertAndSendToUser(f.getSessionId(), "/queue/reply", e.getPlayers(), getMessageHeaders(f.getSessionId()))
+                            messagingTemplate.convertAndSendToUser(f.getSessionId(), "/queue/reply", e.getPlayers(), WebSocketUtils.getMessageHeaders(f.getSessionId()))
                     ));
         }
     }

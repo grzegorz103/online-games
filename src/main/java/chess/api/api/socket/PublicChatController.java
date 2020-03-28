@@ -1,5 +1,6 @@
 package chess.api.api.socket;
 
+import chess.api.api.utils.WebSocketUtils;
 import chess.api.domain.publicChat.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageHeaders;
@@ -25,17 +26,8 @@ public class PublicChatController {
     @SendTo("/topic/public/chat")
     public Message joinChat(@DestinationVariable String username,
                             @Header("simpSessionId") String sessionId) {
-        messagingTemplate.convertAndSendToUser(sessionId, "/queue/public/chat/id", sessionId, getMessageHeaders(sessionId));
+        messagingTemplate.convertAndSendToUser(sessionId, "/queue/public/chat/id", sessionId, WebSocketUtils.getMessageHeaders(sessionId));
         return new Message(username + " dolacza do chatu", LocalDate.now(), null);
-    }
-
-    private MessageHeaders getMessageHeaders(String sessionId) {
-        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
-                .create(SimpMessageType.MESSAGE);
-        headerAccessor.setSessionId(sessionId);
-        headerAccessor.setLeaveMutable(true);
-        headerAccessor.addNativeHeader("any", "any");
-        return headerAccessor.getMessageHeaders();
     }
 
     @MessageMapping("/public/chat/send")

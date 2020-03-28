@@ -1,5 +1,6 @@
 package chess.api.api.socket;
 
+import chess.api.api.utils.WebSocketUtils;
 import chess.api.domain.maze.Message;
 import chess.api.domain.maze.Player;
 import chess.api.services.MazeServiceImpl;
@@ -30,7 +31,10 @@ public class MessageSocketController {
     private final SimpMessageSendingOperations messagingTemplate;
 
     @Autowired
-    public MessageSocketController(MessageServiceImpl messageService, MazeServiceImpl mazeService, SimpMessageSendingOperations messagingTemplate, PlayerServiceImpl playerService) {
+    public MessageSocketController(MessageServiceImpl messageService,
+                                   MazeServiceImpl mazeService,
+                                   SimpMessageSendingOperations messagingTemplate,
+                                   PlayerServiceImpl playerService) {
         this.messageService = messageService;
         this.mazeService = mazeService;
         this.messagingTemplate = messagingTemplate;
@@ -43,16 +47,7 @@ public class MessageSocketController {
                                @Header("simpSessionId") String sessionId) {
         Set<? extends Player> playersByGame = mazeService.getPlayersByGame(uri);
         message.setMessage(playerService.getBySessionId(sessionId).getUsername() + ": " + message.getMessage());
-        playersByGame.forEach(e -> messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/dm", message, getMessageHeaders(e.getSessionId())));
-    }
-
-    private MessageHeaders getMessageHeaders(String sessionId) {
-        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
-                .create(SimpMessageType.MESSAGE);
-        headerAccessor.setSessionId(sessionId);
-        headerAccessor.setLeaveMutable(true);
-        headerAccessor.addNativeHeader("any", "any");
-        return headerAccessor.getMessageHeaders();
+        playersByGame.forEach(e -> messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/dm", message, WebSocketUtils.getMessageHeaders(e.getSessionId())));
     }
 
 }
