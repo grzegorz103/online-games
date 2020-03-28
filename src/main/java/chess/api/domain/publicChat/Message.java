@@ -21,8 +21,12 @@ public class Message extends BaseMessage {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate creationDate;
 
-    public Message(String message, LocalDate creationDate) {
+    private String authorSessionId;
+
+    public Message(String message, LocalDate creationDate, String authorSessionId) {
         super(message);
         this.creationDate = creationDate;
+        this.authorSessionId = authorSessionId;
     }
+
 }

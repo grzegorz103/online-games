@@ -14,6 +14,7 @@ export class PublicChatComponent implements OnInit {
   username = prompt('Wprowdz swoj nick');
   message = new Message();
   messages: Message[] = [];
+  sessionId: string;
 
   constructor() {
   }
@@ -29,6 +30,10 @@ export class PublicChatComponent implements OnInit {
     this.ws.connect({}, function (frame) {
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
+      });
+
+      that.ws.subscribe("/user/queue/public/chat/id", message=>{
+        that.sessionId = message.body;
       });
 
       that.ws.subscribe("/topic/public/chat", message => {
