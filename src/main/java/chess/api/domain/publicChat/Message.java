@@ -15,7 +15,6 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Message extends BaseMessage {
 
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -26,5 +25,4 @@ public class Message extends BaseMessage {
         super(message);
         this.creationDate = creationDate;
     }
-
 }

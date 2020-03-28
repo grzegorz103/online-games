@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BaseUser {
+public abstract class BaseUser {
 
     protected String sessionId;
 

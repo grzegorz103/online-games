@@ -50,7 +50,7 @@ public class MazeSocketController {
         Maze maze = mazeService.joinGame(uri, sessionId, username);
         messagingTemplate.convertAndSendToUser(sessionId, "/queue/map", maze.getPoints(), getMessageHeaders(sessionId));
         messagingTemplate.convertAndSendToUser(sessionId, "/queue/meta", maze.getMeta(), getMessageHeaders(sessionId));
-        maze.getPlayers().forEach(e -> messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/dm", new Message(username + " dołącza do gry", null, null), getMessageHeaders(e.getSessionId())));
+        maze.getPlayers().forEach(e -> messagingTemplate.convertAndSendToUser(e.getSessionId(), "/queue/dm", new Message(username + " dolacza do gry"), getMessageHeaders(e.getSessionId())));
         sendPlayers(maze, uri, sessionId);
     }
 

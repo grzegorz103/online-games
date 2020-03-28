@@ -21,7 +21,6 @@ public class MessageServiceImpl {
     }
 
     public Message create(Message message) {
-        message.setCreationDate(LocalDate.now());
         messages.add(message);
         return message;
     }

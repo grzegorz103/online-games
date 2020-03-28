@@ -15,9 +15,10 @@ import java.time.LocalDate;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Message extends BaseMessage {
 
-    private String user;
+    public Message(String message) {
+        super(message);
+    }
 
 }
