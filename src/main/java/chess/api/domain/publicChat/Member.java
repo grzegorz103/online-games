@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Member extends BaseUser {
 
-
+    public Member(String sessionId, String username) {
+        super(sessionId, username);
+    }
 
 }

@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {environment} from "../../environments/environment";
 import * as Stomp from 'stompjs';
 import {Message} from "./models/message";
+import {Member} from "./models/member";
 
 @Component({
   selector: 'app-public-chat',
@@ -11,13 +12,17 @@ import {Message} from "./models/message";
 export class PublicChatComponent implements OnInit {
 
   ws: any;
-  username = prompt('Wprowdz swoj nick');
+  username;
   message = new Message();
   messages: Message[] = [];
   sessionId: string;
   loading: boolean = true;
+  members: Member[] = [];
 
   constructor() {
+    do {
+      this.username = prompt('Wprowadz swój nick');
+    } while (!this.username);
   }
 
   ngOnInit() {
@@ -33,13 +38,17 @@ export class PublicChatComponent implements OnInit {
         alert("Error " + message.body);
       });
 
-      that.ws.subscribe("/user/queue/public/chat/id", message=>{
+      that.ws.subscribe("/user/queue/public/chat/id", message => {
         that.sessionId = message.body;
         that.loading = false;
       });
 
       that.ws.subscribe("/topic/public/chat", message => {
         that.messages.push(JSON.parse(message.body));
+      });
+
+      that.ws.subscribe("/queue/public/chat/users", message => {
+        that.members = JSON.parse(message.body);
       });
 
       that.ws.send("/app/public/chat/" + that.username + "/join", {}, {})
