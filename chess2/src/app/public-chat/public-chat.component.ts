@@ -45,7 +45,7 @@ export class PublicChatComponent implements OnInit {
       });
 
       that.ws.subscribe("/user/queue/public/chat/users", message => {
-        alert(JSON.parse(message.body));
+        that.members = JSON.parse(message.body);
       });
 
       that.ws.send("/app/public/chat/" + that.username + "/join", {}, {})
