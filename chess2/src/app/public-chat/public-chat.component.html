@@ -18,10 +18,11 @@
       </div>
 
       <div class="col-4">
-        Lista czlonkow
+        Lista członków
+        <div *ngFor="let member of members"><div class="circle"></div>
+          {{member.username}}</div>
+        </div>
       </div>
-
-    </div>
 
     <div style="position:absolute; bottom:0; width: 95%;">
       <div class="col-12">
