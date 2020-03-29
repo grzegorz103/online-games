@@ -41,8 +41,8 @@ public class PublicChatController {
                             @Header("simpSessionId") String sessionId) {
         chatService.addMember(new Member(sessionId, username));
         messagingTemplate.convertAndSendToUser(sessionId, "/queue/public/chat/id", sessionId, WebSocketUtils.getMessageHeaders(sessionId));
-        messagingTemplate.convertAndSendToUser(sessionId, "/queue/public/chat/users", chatService.getMembers(), WebSocketUtils.getMessageHeaders(sessionId));
-        return new Message(username + " dolacza do chatu", LocalDate.now(), null);
+        messagingTemplate.convertAndSend("/queue/public/chat/users", chatService.getMembers());
+        return new Message(username + " dołącza do chatu", LocalDate.now(), null);
     }
 
     @MessageMapping("/public/chat/send")
@@ -54,9 +54,9 @@ public class PublicChatController {
     }
 
     @EventListener
-    @SendTo("/topic/public/users")
     public Set<Member> handleSessionDisconnect(SessionDisconnectEvent event) {
         chatService.removeMember(event.getSessionId());
+        messagingTemplate.convertAndSend("/queue/public/chat/users", chatService.getMembers());
         return chatService.getMembers();
     }
 

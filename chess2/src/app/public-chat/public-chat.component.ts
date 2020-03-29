@@ -12,7 +12,7 @@ import {Member} from "./models/member";
 export class PublicChatComponent implements OnInit {
 
   ws: any;
-  username = prompt('Wprowdz swoj nick');
+  username;
   message = new Message();
   messages: Message[] = [];
   sessionId: string;
@@ -20,6 +20,9 @@ export class PublicChatComponent implements OnInit {
   members: Member[] = [];
 
   constructor() {
+    do {
+      this.username = prompt('Wprowadz swój nick');
+    } while (!this.username);
   }
 
   ngOnInit() {
@@ -44,7 +47,7 @@ export class PublicChatComponent implements OnInit {
         that.messages.push(JSON.parse(message.body));
       });
 
-      that.ws.subscribe("/user/queue/public/chat/users", message => {
+      that.ws.subscribe("/queue/public/chat/users", message => {
         that.members = JSON.parse(message.body);
       });
 
