@@ -10,6 +10,7 @@ import {PlayerMulti} from "../models/player-multi";
 import {environment} from "../../../environments/environment";
 import {Point} from "../models/point";
 import {Message} from "../models/message";
+import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-multiplayer',
@@ -33,6 +34,7 @@ export class MultiplayerComponent implements OnInit {
   username = prompt('Wprowadź swój nick');
 
   constructor(private route: ActivatedRoute,
+              public snackBar: MatSnackBar,
               private httpClient: HttpClient) {
     this.uri = this.route.snapshot.paramMap.get('game');
     let socket = new WebSocket(environment.wsUrl);
@@ -197,6 +199,7 @@ export class MultiplayerComponent implements OnInit {
     selBox.select();
     document.execCommand('copy');
     document.body.removeChild(selBox);
+    this.openSnackbar('Skopiowano do schowka')
   }
 
   moveByClick(value: number) {
@@ -211,6 +214,14 @@ export class MultiplayerComponent implements OnInit {
     if (this.message && this.message.message) {
       this.ws.send("/app/message/" + this.uri + "/send", {}, JSON.stringify(this.message))
     }
+  }
+
+  openSnackbar(message: string) {
+    let config = new MatSnackBarConfig();
+    config.verticalPosition = 'top';
+    config.horizontalPosition = 'center';
+    config.duration = 2000;
+    this.snackBar.open(message, null, config);
   }
 
 }
