@@ -86,14 +86,7 @@ public class MazeServiceImpl {
     }
 
     public void removePlayer(String sessionId) {
-        this.games.forEach((k, v) -> {
-            v.setPlayers(v.getPlayers()
-                    .stream()
-                    .filter(e -> !Objects.equals(sessionId, e.getSessionId()))
-                    .collect(Collectors.toSet()
-                    )
-            );
-        });
+        this.games.forEach((k, v) -> v.getPlayers().removeIf(e -> Objects.equals(sessionId, e.getSessionId())));
     }
 
     public Set<Maze> getGamesByPlayer(String sessionId) {
