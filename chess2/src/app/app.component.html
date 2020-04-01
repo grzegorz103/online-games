@@ -27,6 +27,10 @@
         <mat-icon>dashboard</mat-icon>
         <a routerLink="/chat">Chat</a>
       </a>
+
+      <button (click)="auth.login()" *ngIf="!auth.loggedIn">Log In</button>
+      <button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button>
+
     </mat-nav-list>
     <div id="version">
       v1.0.6
