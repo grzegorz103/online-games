@@ -11,8 +11,8 @@ const routes: Routes = [
   {component: BoardComponent, path: 'board'},
   {component: PublicChatComponent, path: 'chat'},
   {path: 'maze', component: MazeComponent},
-  {path: 'maze/multi', component: MultiplayerComponent, canActivate: [AuthGuard]},
-  {path: 'maze/multi/:game', component: MultiplayerComponent, canActivate: [AuthGuard]}
+  {path: 'maze/multi', component: MultiplayerComponent},
+  {path: 'maze/multi/:game', component: MultiplayerComponent}
 ];
 
 @NgModule({
