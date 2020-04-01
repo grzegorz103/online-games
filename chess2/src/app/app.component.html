@@ -27,10 +27,14 @@
         <mat-icon>dashboard</mat-icon>
         <a routerLink="/chat">Chat</a>
       </a>
+      <mat-divider></mat-divider>
 
-      <button (click)="auth.login()" *ngIf="!auth.loggedIn">Log In</button>
-      <button (click)="auth.logout()" *ngIf="auth.loggedIn">Log Out</button>
-
+      <div class="row mt-3">
+        <span class="mx-auto">
+      <button class="btn btn-success" (click)="auth.login()" *ngIf="!auth.loggedIn">Logowanie</button>
+      <button class="btn btn-primary" (click)="auth.logout()" *ngIf="auth.loggedIn">Wyloguj</button>
+    </span>
+      </div>
     </mat-nav-list>
     <div id="version">
       v1.0.6
