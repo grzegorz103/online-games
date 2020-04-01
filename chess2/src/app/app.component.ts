@@ -1,5 +1,6 @@
 import { Component, ViewChild, HostListener } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
+import {AuthService} from "./auth.service";
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,9 @@ import { MatSidenav } from '@angular/material/sidenav';
 export class AppComponent {
   opened = true;
   @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
+
+  constructor(public auth: AuthService) {
+  }
 
   ngOnInit() {
     console.log(window.innerWidth)
