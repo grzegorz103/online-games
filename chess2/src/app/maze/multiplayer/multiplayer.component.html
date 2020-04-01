@@ -38,13 +38,14 @@
         </div>
       </div>
       <button class="btn btn-info mb-3"
-              (click)="copyMessage('https://online-games-69bcf.firebaseapp.com/maze/multi/' + uri)"
+              (click)="copyMessage(apiUrl() + 'maze/multi/' + uri)"
               value="Zaproś znajomego">
         Zaproś znajomego
       </button>
       <mat-divider></mat-divider>
       Lista graczy
-      <div *ngFor="let player of players"><div class="circle"></div>
+      <div *ngFor="let player of players">
+        <div class="circle"></div>
         {{player.username}}</div>
       <mat-divider></mat-divider>
       <div class="form-inline">

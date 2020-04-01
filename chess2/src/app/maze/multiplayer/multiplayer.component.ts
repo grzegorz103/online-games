@@ -11,6 +11,7 @@ import {environment} from "../../../environments/environment";
 import {Point} from "../models/point";
 import {Message} from "../models/message";
 import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
+import {AuthService} from "../../auth.service";
 
 @Component({
   selector: 'app-multiplayer',
@@ -31,11 +32,15 @@ export class MultiplayerComponent implements OnInit {
   disabled: boolean;
   message: Message = new Message();
   messages: Message[] = [];
-  username = prompt('Wprowadź swój nick');
+  username: string = prompt('Wprowadź swój nick');
 
   constructor(private route: ActivatedRoute,
               public snackBar: MatSnackBar,
+              private auth: AuthService,
               private httpClient: HttpClient) {
+  }
+
+  ngOnInit() {
     this.uri = this.route.snapshot.paramMap.get('game');
     let socket = new WebSocket(environment.wsUrl);
     this.ws = Stomp.over(socket);
@@ -49,6 +54,7 @@ export class MultiplayerComponent implements OnInit {
       this.uri = Math.random().toString(36).substring(8);
       this.sendMazeToApi();
     }
+
   }
 
   createMetaPoint() {
@@ -64,6 +70,10 @@ export class MultiplayerComponent implements OnInit {
 
   wsUrl() {
     return environment.wsUrl;
+  }
+
+  apiUrl(){
+    return environment.appUrl;
   }
 
   private sendMazeToApi() {
@@ -94,9 +104,6 @@ export class MultiplayerComponent implements OnInit {
     }, function (error) {
       alert("STOMP error " + error);
     });
-  }
-
-  ngOnInit() {
   }
 
   generateMaze() {
