@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false,
+  appUrl: 'http://localhost:4200/',
   wsUrl: "ws://localhost:8080/chat"
 };
 

@@ -72,6 +72,10 @@ export class MultiplayerComponent implements OnInit {
     return environment.wsUrl;
   }
 
+  apiUrl(){
+    return environment.appUrl;
+  }
+
   private sendMazeToApi() {
     //  this.httpClient.post('http://localhost:8080/api/maze?gameUri=' + this.uri, MultiplayerComponent.maze.points)
     //   .subscribe((res=>console.log(MultiplayerComponent.maze.points)));
