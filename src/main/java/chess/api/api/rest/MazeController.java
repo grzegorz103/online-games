@@ -1,6 +1,6 @@
 package chess.api.api.rest;
 
-import chess.api.domain.maze.Point;
+import chess.api.domain.maze.Message;
 import chess.api.services.MazeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,8 +15,7 @@ public class MazeController {
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public String saveMaze(){
-        //mazeService.addGame(mazeUri, points);
-        return null;
+    public Message saveMaze(){
+        return new Message("test");
     }
 }
