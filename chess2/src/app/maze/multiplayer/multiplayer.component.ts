@@ -32,7 +32,7 @@ export class MultiplayerComponent implements OnInit {
   disabled: boolean;
   message: Message = new Message();
   messages: Message[] = [];
-  username: string = prompt('Wprowadź swój nick');
+  username: string;
 
   constructor(private route: ActivatedRoute,
               public snackBar: MatSnackBar,
@@ -46,6 +46,15 @@ export class MultiplayerComponent implements OnInit {
     this.ws = Stomp.over(socket);
     this.ws.heartbeat.outgoing = 5000;
     this.ws.heartbeat.incomingng = 5000;
+
+    if (this.auth.loggedIn) {
+      this.auth.userProfile$.subscribe(res => this.username = res.nickname);
+    } else {
+      do {
+        this.username = prompt('Wprowadz swój nick');
+      } while (!this.username);
+    }
+
     if (this.uri) {
       this.getGameFromApi();
     } else { // nowa gra
@@ -72,7 +81,7 @@ export class MultiplayerComponent implements OnInit {
     return environment.wsUrl;
   }
 
-  apiUrl(){
+  apiUrl() {
     return environment.appUrl;
   }
 
