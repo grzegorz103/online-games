@@ -50,7 +50,9 @@ export class MultiplayerComponent implements OnInit {
     if (this.auth.loggedIn) {
       this.auth.userProfile$.subscribe(res => this.username = res.nickname);
     } else {
-      this.username = prompt('Wprowadz swój nick');
+      do {
+        this.username = prompt('Wprowadz swój nick');
+      } while (!this.username);
     }
 
     if (this.uri) {

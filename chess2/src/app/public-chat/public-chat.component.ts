@@ -3,6 +3,7 @@ import {environment} from "../../environments/environment";
 import * as Stomp from 'stompjs';
 import {Message} from "./models/message";
 import {Member} from "./models/member";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-public-chat',
@@ -19,15 +20,22 @@ export class PublicChatComponent implements OnInit {
   loading: boolean = true;
   members: Member[] = [];
 
-  constructor() {
-    do {
-      this.username = prompt('Wprowadz swój nick');
-    } while (!this.username);
+  constructor(private auth: AuthService) {
+
   }
 
   ngOnInit() {
     let socket = new WebSocket(environment.wsUrl);
     this.ws = Stomp.over(socket);
+
+    if (this.auth.loggedIn) {
+      this.auth.userProfile$.subscribe(res => this.username = res.nickname);
+    } else {
+      do {
+        this.username = prompt('Wprowadz swój nick');
+      } while (!this.username);
+    }
+
     this.joinChat();
   }
 
