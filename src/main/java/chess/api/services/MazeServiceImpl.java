@@ -3,6 +3,7 @@ package chess.api.services;
 import chess.api.domain.maze.Maze;
 import chess.api.domain.maze.Player;
 import chess.api.domain.maze.Point;
+import chess.api.services.declarations.MazeService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class MazeServiceImpl {
+public class MazeServiceImpl implements MazeService {
 
     private final Map<String, Maze> games = new HashMap<>();
 

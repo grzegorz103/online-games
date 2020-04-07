@@ -1,16 +1,16 @@
 package chess.api.services;
 
 import chess.api.domain.maze.Message;
+import chess.api.services.declarations.MessageService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class MessageServiceImpl {
+public class MessageServiceImpl implements MessageService {
 
     private List<Message> messages = new ArrayList<>();
 
