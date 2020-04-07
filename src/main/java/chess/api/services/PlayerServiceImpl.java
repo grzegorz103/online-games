@@ -2,14 +2,14 @@ package chess.api.services;
 
 import chess.api.domain.maze.Maze;
 import chess.api.domain.maze.Player;
-import org.springframework.beans.factory.annotation.Autowired;
+import chess.api.services.declarations.PlayerService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Objects;
 
 @Service
-public class PlayerServiceImpl {
+public class PlayerServiceImpl implements PlayerService {
 
     private final MazeServiceImpl mazeService;
 

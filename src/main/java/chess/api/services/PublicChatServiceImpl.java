@@ -2,32 +2,37 @@ package chess.api.services;
 
 import chess.api.domain.publicChat.Member;
 import chess.api.utils.MemberComparator;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
 public class PublicChatServiceImpl {
 
-    private SortedSet<Member> members = new TreeSet<>(new MemberComparator());
+    private List<Member> members = Collections.synchronizedList(new LinkedList<>());
 
-    public SortedSet<Member> addMember(Member member) {
-        if (member != null) {
-            members.add(member);
-            return members;
-        }
+    private final MemberComparator memberComparator;
 
-        return null;
+    public PublicChatServiceImpl(MemberComparator memberComparator) {
+        this.memberComparator = memberComparator;
     }
 
-    public SortedSet<Member> getMembers() {
+    public List<Member> addMember(Member member) {
+        if (member != null) {
+            members.add(member);
+            members.sort(memberComparator);
+        }
+
+        return members;
+    }
+
+    public List<Member> getMembers() {
         return this.members;
     }
 
-    public SortedSet<Member> removeMember(String sessionId) {
+    public List<Member> removeMember(String sessionId) {
         members.removeIf(e -> Objects.equals(e.getSessionId(), sessionId));
         return this.members;
     }
