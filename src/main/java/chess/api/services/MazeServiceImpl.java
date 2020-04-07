@@ -7,16 +7,16 @@ import chess.api.services.declarations.MazeService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
 public class MazeServiceImpl implements MazeService {
 
-    private final Map<String, Maze> games = new HashMap<>();
+    private final Map<String, Maze> games = new ConcurrentHashMap<>();
 
     public Maze addGame(String uri, Point[][] map, String sessionId, int row, int col, String username) {
         Maze maze = new Maze(map);

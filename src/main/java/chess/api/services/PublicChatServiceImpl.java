@@ -6,11 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
 public class PublicChatServiceImpl {
 
-    private List<Member> members = new LinkedList<>();
+    private List<Member> members = Collections.synchronizedList(new LinkedList<>());
 
     private final MemberComparator memberComparator;
 
