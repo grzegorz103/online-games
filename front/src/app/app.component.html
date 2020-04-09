@@ -29,15 +29,17 @@
       </a>
       <mat-divider></mat-divider>
 
-      <div class="row mt-3">
-        <span class="mx-auto">
-      <button class="btn btn-success" (click)="auth.login()" *ngIf="!auth.loggedIn">Logowanie</button>
-      <button class="btn btn-primary" (click)="auth.logout()" *ngIf="auth.loggedIn">Wyloguj</button>
-    </span>
+      <div class="text-center mt-3">
+        <button class="btn btn-success mx-auto" style=" text-align: right" (click)="auth.login()"
+                *ngIf="!auth.loggedIn">
+          Logowanie
+        </button>
+        <button class="btn btn-primary" (click)="auth.logout()" *ngIf="auth.loggedIn">Wyloguj</button>
       </div>
+
     </mat-nav-list>
     <div id="version">
-      v2.0.1
+      v2.0.2
     </div>
 
   </mat-sidenav>

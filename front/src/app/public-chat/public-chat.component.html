@@ -1,0 +1,45 @@
+<div class="container-fluid">
+
+  <div *ngIf="loading" class="mt-3 col-12 w-100">
+    <mat-spinner class="mx-auto"></mat-spinner>
+    <div class="text-center w-100"><i>Uruchamianie serwera</i></div>
+  </div>
+
+  <div *ngIf="!loading">
+    <div class="row h-75">
+      <div class="col-8 h-75" style="height: 60vh">
+        <mat-card style="max-height: 75vh; overflow-y: auto"  #scrollMe>
+          <div *ngFor="let message of messages">
+            <mat-card [ngClass]="message.authorSessionId === sessionId ? 'my-message' : 'other-message'"
+                      style="max-height: 80vh">
+              {{ message.message }}
+            </mat-card>
+          </div>
+        </mat-card>
+      </div>
+
+      <div class="col-4">
+        Lista członków
+        <div *ngFor="let member of members">
+          <div class="circle"></div>
+          {{member.username}}</div>
+      </div>
+    </div>
+
+    <form (keydown.enter)="sendMessage()" (ngSubmit)="sendMessage()">
+      <div style="position:absolute; bottom:0; width: 95%;">
+        <div class="col-12">
+          <mat-divider></mat-divider>
+          <mat-form-field style="width:90%">
+            <mat-label>Treść wiadomości</mat-label>
+            <textarea [(ngModel)]="message.message" matInput [ngModelOptions]="{standalone: true}" (keydown.enter)="$event.preventDefault()"
+                      placeholder="Treść wiadomości"></textarea>
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" class="ml-3">Wyslij
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

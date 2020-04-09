@@ -15,6 +15,12 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {PublicChatComponent} from './public-chat/public-chat.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {InterceptorService} from "./interceptor.service";
+import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+
+const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+  suppressScrollX: true
+};
 
 @NgModule({
   declarations: [
@@ -34,11 +40,16 @@ import {InterceptorService} from "./interceptor.service";
     NgbModule,
     AngularDraggableModule,
     MatProgressSpinnerModule,
+    PerfectScrollbarModule
   ], providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: InterceptorService,
       multi: true
+    },
+    {
+      provide: PERFECT_SCROLLBAR_CONFIG,
+      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
     }
   ],
   bootstrap: [AppComponent],
