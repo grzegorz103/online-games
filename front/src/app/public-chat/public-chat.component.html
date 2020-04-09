@@ -7,8 +7,8 @@
 
   <div *ngIf="!loading">
     <div class="row h-75">
-      <div class="col-8 h-75" style="max-height: 60vh">
-        <mat-card style="max-height: 75vh; overflow-y: auto">
+      <div class="col-8 h-75" style="height: 60vh">
+        <mat-card style="max-height: 75vh; overflow-y: auto"  #scrollMe>
           <div *ngFor="let message of messages">
             <mat-card [ngClass]="message.authorSessionId === sessionId ? 'my-message' : 'other-message'"
                       style="max-height: 80vh">
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <form (keydown.enter)="sendMessage()">
+    <form (keydown.enter)="sendMessage()" (ngSubmit)="sendMessage()">
       <div style="position:absolute; bottom:0; width: 95%;">
         <div class="col-12">
           <mat-divider></mat-divider>

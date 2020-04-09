@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {environment} from "../../environments/environment";
 import * as Stomp from 'stompjs';
 import {Message} from "./models/message";
@@ -12,6 +12,7 @@ import {AuthService} from "../auth.service";
 })
 export class PublicChatComponent implements OnInit {
 
+  @ViewChild('scrollMe', {read: ElementRef, static:false}) private scroll: ElementRef;
   ws: any;
   username;
   message = new Message();
@@ -60,7 +61,6 @@ export class PublicChatComponent implements OnInit {
       });
 
       that.ws.send("/app/public/chat/" + that.username + "/join", {}, {})
-
     }, function (error) {
       alert("STOMP error " + error);
     });
@@ -74,11 +74,8 @@ export class PublicChatComponent implements OnInit {
     this.message.clearMessage();
   }
 
-  keyDownFunction(event) {
-    if(event.keyCode == 13) {
-      alert('you just clicked enter');
-    this.sendMessage();
-    }
+  public scrollBottom() {
+    this.scroll.nativeElement.scrollTop = this.scroll.nativeElement.scrollHeight;
+console.log('a');
   }
-
 }
