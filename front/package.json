@@ -1,5 +1,5 @@
 {
-  "name": "chess2",
+  "name": "front",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -29,6 +29,7 @@
     "jquery": "^3.4.1",
     "mdbootstrap": "^4.10.0",
     "net": "^1.0.2",
+    "ngx-perfect-scrollbar": "^9.0.0",
     "popper.js": "^1.16.0",
     "rxjs": "~6.4.0",
     "shuffle-array": "^1.0.1",
