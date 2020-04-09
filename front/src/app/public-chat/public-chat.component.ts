@@ -67,10 +67,18 @@ export class PublicChatComponent implements OnInit {
   }
 
   sendMessage() {
-    if (this.message && this.message.message.length === 0)
+    if (this.message && this.message.message.length == 0)
       return;
 
     this.ws.send("/app/public/chat/send", {}, JSON.stringify(this.message));
+    this.message.clearMessage();
+  }
+
+  keyDownFunction(event) {
+    if(event.keyCode == 13) {
+      alert('you just clicked enter');
+    this.sendMessage();
+    }
   }
 
 }
