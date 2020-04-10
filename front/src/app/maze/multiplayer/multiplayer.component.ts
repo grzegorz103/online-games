@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {Maze} from "../models/maze";
 import {Player} from "../models/player";
 import {MazeComponent} from "../maze/maze.component";
@@ -18,7 +18,7 @@ import {AuthService} from "../../auth.service";
   templateUrl: './multiplayer.component.html',
   styleUrls: ['./multiplayer.component.scss']
 })
-export class MultiplayerComponent implements OnInit {
+export class MultiplayerComponent implements OnInit, OnDestroy {
 
   static maze: Maze;
 //  player: Player= new Player(0,0,'Player');
@@ -33,6 +33,7 @@ export class MultiplayerComponent implements OnInit {
   message: Message = new Message();
   messages: Message[] = [];
   username: string;
+  socket: WebSocket;
 
   constructor(private route: ActivatedRoute,
               public snackBar: MatSnackBar,
@@ -42,8 +43,8 @@ export class MultiplayerComponent implements OnInit {
 
   ngOnInit() {
     this.uri = this.route.snapshot.paramMap.get('game');
-    let socket = new WebSocket(environment.wsUrl);
-    this.ws = Stomp.over(socket);
+    this.socket = new WebSocket(environment.wsUrl);
+    this.ws = Stomp.over(this.socket);
     this.ws.heartbeat.outgoing = 5000;
     this.ws.heartbeat.incomingng = 5000;
 
@@ -64,6 +65,10 @@ export class MultiplayerComponent implements OnInit {
       this.sendMazeToApi();
     }
 
+  }
+
+  ngOnDestroy(): void {
+    this.socket.close();
   }
 
   createMetaPoint() {
@@ -111,7 +116,7 @@ export class MultiplayerComponent implements OnInit {
 
       that.ws.send("/app/message/" + that.uri + '/' + MultiplayerComponent.maze.meta.row + '/' + MultiplayerComponent.maze.meta.col + "/" + that.username, {}, JSON.stringify(MultiplayerComponent.maze.points));
     }, function (error) {
-      alert("STOMP error " + error);
+      that.socket.close();
     });
   }
 
@@ -175,7 +180,7 @@ export class MultiplayerComponent implements OnInit {
 
       that.ws.send("/app/message/" + that.uri + "/" + that.username + "/join", {}, {});
     }, function (error) {
-      alert("STOMP error " + error);
+      that.socket.close();
     });
   }
 

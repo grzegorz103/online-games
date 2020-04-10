@@ -12,7 +12,7 @@ import {AuthService} from "../auth.service";
 })
 export class PublicChatComponent implements OnInit {
 
-  @ViewChild('scrollMe', {read: ElementRef, static:false}) private scroll: ElementRef;
+  @ViewChild('scrollMe', {read: ElementRef, static: false}) private scroll: ElementRef;
   ws: any;
   username;
   message = new Message();
@@ -20,14 +20,15 @@ export class PublicChatComponent implements OnInit {
   sessionId: string;
   loading: boolean = true;
   members: Member[] = [];
+  socket: WebSocket;
 
   constructor(private auth: AuthService) {
 
   }
 
   ngOnInit() {
-    let socket = new WebSocket(environment.wsUrl);
-    this.ws = Stomp.over(socket);
+    this.socket = new WebSocket(environment.wsUrl);
+    this.ws = Stomp.over(this.socket);
 
     if (this.auth.loggedIn) {
       this.auth.userProfile$.subscribe(res => this.username = res.nickname);
@@ -62,7 +63,7 @@ export class PublicChatComponent implements OnInit {
 
       that.ws.send("/app/public/chat/" + that.username + "/join", {}, {})
     }, function (error) {
-      alert("STOMP error " + error);
+      that.socket.close();
     });
   }
 
@@ -76,6 +77,10 @@ export class PublicChatComponent implements OnInit {
 
   public scrollBottom() {
     this.scroll.nativeElement.scrollTop = this.scroll.nativeElement.scrollHeight;
-console.log('a');
   }
+
+  ngOnDestroy(): void {
+    this.socket.close();
+  }
+
 }
