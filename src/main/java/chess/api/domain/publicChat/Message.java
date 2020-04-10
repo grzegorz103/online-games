@@ -23,10 +23,13 @@ public class Message extends BaseMessage {
 
     private String authorSessionId;
 
-    public Message(String message, LocalDate creationDate, String authorSessionId) {
+    private String authorUsername;
+
+    public Message(String message, LocalDate creationDate, String authorSessionId, String authorUsername) {
         super(message);
         this.creationDate = creationDate;
         this.authorSessionId = authorSessionId;
+        this.authorUsername = authorUsername;
     }
 
 }

@@ -36,13 +36,14 @@ public class PublicChatController {
         chatService.addMember(new Member(sessionId, username));
         messagingTemplate.convertAndSendToUser(sessionId, "/queue/public/chat/id", sessionId, WebSocketUtils.getMessageHeaders(sessionId));
         messagingTemplate.convertAndSend("/queue/public/chat/users", chatService.getMembers());
-        return new Message(username + " dołącza do chatu", LocalDate.now(), null);
+        return new Message(username + " dołącza do chatu", LocalDate.now(), null, username);
     }
 
     @MessageMapping("/public/chat/send")
     @SendTo("/topic/public/chat")
     public Message sendMessage(Message message,
                                @Header("simpSessionId") String sessionId) {
+        message.setAuthorUsername(chatService.getMemberBySessionId(sessionId).getUsername());
         message.setAuthorSessionId(sessionId);
         return message;
     }
