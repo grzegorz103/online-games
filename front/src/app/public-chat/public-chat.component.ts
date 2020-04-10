@@ -16,7 +16,7 @@ export class PublicChatComponent implements OnInit {
   @ViewChild('scrollMe', {read: ElementRef, static: false}) private scroll: ElementRef;
 
   constructor(private auth: AuthService,
-              private publicChatService: PublicChatService) {
+              public publicChatService: PublicChatService) {
   }
 
   ngOnInit() {
