@@ -12,4 +12,5 @@ public interface PublicChatService {
 
     List<Member> removeMember(String sessionId);
 
+    Member getMemberBySessionId(String sessionId);
 }
