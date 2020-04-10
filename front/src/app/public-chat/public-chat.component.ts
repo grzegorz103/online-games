@@ -4,6 +4,7 @@ import * as Stomp from 'stompjs';
 import {Message} from "./models/message";
 import {Member} from "./models/member";
 import {AuthService} from "../auth.service";
+import {PublicChatService} from "./service/public-chat.service";
 
 @Component({
   selector: 'app-public-chat',
@@ -13,65 +14,27 @@ import {AuthService} from "../auth.service";
 export class PublicChatComponent implements OnInit {
 
   @ViewChild('scrollMe', {read: ElementRef, static: false}) private scroll: ElementRef;
-  ws: any;
-  username;
-  message = new Message();
-  messages: Message[] = [];
-  sessionId: string;
-  loading: boolean = true;
-  members: Member[] = [];
-  socket: WebSocket;
 
-  constructor(private auth: AuthService) {
+  message = new Message();
+
+  constructor(private auth: AuthService,
+              private publicChatService: PublicChatService) {
 
   }
 
   ngOnInit() {
-    this.socket = new WebSocket(environment.wsUrl);
-    this.ws = Stomp.over(this.socket);
-
-    if (this.auth.loggedIn) {
-      this.auth.userProfile$.subscribe(res => this.username = res.nickname);
-    } else {
-      do {
-        this.username = prompt('Wprowadz swój nick');
-      } while (!this.username);
-    }
-
     this.joinChat();
   }
 
   private joinChat() {
-    let that = this;
-    this.ws.connect({}, function (frame) {
-      that.ws.subscribe("/errors", function (message) {
-        alert("Error " + message.body);
-      });
-
-      that.ws.subscribe("/user/queue/public/chat/id", message => {
-        that.sessionId = message.body;
-        that.loading = false;
-      });
-
-      that.ws.subscribe("/topic/public/chat", message => {
-        that.messages.push(JSON.parse(message.body));
-      });
-
-      that.ws.subscribe("/queue/public/chat/users", message => {
-        that.members = JSON.parse(message.body);
-      });
-
-      that.ws.send("/app/public/chat/" + that.username + "/join", {}, {})
-    }, function (error) {
-      that.socket.close();
-    });
+    this.publicChatService.connect();
   }
 
   sendMessage() {
     if (this.message && this.message.message.length == 0)
       return;
 
-    this.ws.send("/app/public/chat/send", {}, JSON.stringify(this.message));
+  //  this.ws.send("/app/public/chat/send", {}, JSON.stringify(this.message));
     this.message.clearMessage();
   }
 
@@ -80,7 +43,7 @@ export class PublicChatComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.socket.close();
+   // this.socket.close();
   }
 
 }

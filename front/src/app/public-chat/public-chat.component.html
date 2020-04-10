@@ -1,16 +1,16 @@
 <div class="container-fluid">
 
-  <div *ngIf="loading" class="mt-3 col-12 w-100">
+  <div *ngIf="publicChatService.loading" class="mt-3 col-12 w-100">
     <mat-spinner class="mx-auto"></mat-spinner>
     <div class="text-center w-100"><i>Uruchamianie serwera</i></div>
   </div>
 
-  <div *ngIf="!loading">
+  <div *ngIf="!publicChatService.loading">
     <div class="row h-75">
       <div class="col-8 h-75" style="height: 60vh">
         <mat-card style="max-height: 75vh; overflow-y: auto"  #scrollMe>
-          <div *ngFor="let message of messages">
-            <mat-card [ngClass]="message.authorSessionId === sessionId ? 'my-message' : 'other-message'"
+          <div *ngFor="let message of publicChatService.messages">
+            <mat-card [ngClass]="message.authorSessionId === publicChatService.sessionId ? 'my-message' : 'other-message'"
                       style="max-height: 80vh">
               {{ message.message }}
             </mat-card>
@@ -20,7 +20,7 @@
 
       <div class="col-4">
         Lista członków
-        <div *ngFor="let member of members">
+        <div *ngFor="let member of publicChatService.members">
           <div class="circle"></div>
           {{member.username}}</div>
       </div>
