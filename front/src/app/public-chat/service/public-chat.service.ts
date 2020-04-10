@@ -17,6 +17,7 @@ export class PublicChatService {
   members: Member[] = [];
   socket: WebSocket;
   loading: boolean = true;
+  message = new Message();
 
   constructor(private auth: AuthService) {
     this.socket = new WebSocket(environment.wsUrl);
@@ -31,7 +32,7 @@ export class PublicChatService {
     }
   }
 
-  connect(){
+  connect() {
     let that = this;
     this.ws.connect({}, function (frame) {
       that.ws.subscribe("/errors", function (message) {
@@ -55,6 +56,14 @@ export class PublicChatService {
     }, function (error) {
       that.socket.close();
     });
+  }
+
+  sendMessage() {
+    if (this.message && this.message.message.length == 0)
+      return;
+
+    this.ws.send("/app/public/chat/send", {}, JSON.stringify(this.message));
+    this.message.clearMessage();
   }
 
 }

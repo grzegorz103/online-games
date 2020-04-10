@@ -8,10 +8,11 @@
   <div *ngIf="!publicChatService.loading">
     <div class="row h-75">
       <div class="col-8 h-75" style="height: 60vh">
-        <mat-card style="max-height: 75vh; overflow-y: auto"  #scrollMe>
+        <mat-card style="max-height: 75vh; overflow-y: auto" #scrollMe>
           <div *ngFor="let message of publicChatService.messages">
-            <mat-card [ngClass]="message.authorSessionId === publicChatService.sessionId ? 'my-message' : 'other-message'"
-                      style="max-height: 80vh">
+            <mat-card
+              [ngClass]="message.authorSessionId === publicChatService.sessionId ? 'my-message' : 'other-message'"
+              style="max-height: 80vh">
               {{ message.message }}
             </mat-card>
           </div>
@@ -32,7 +33,8 @@
           <mat-divider></mat-divider>
           <mat-form-field style="width:90%">
             <mat-label>Treść wiadomości</mat-label>
-            <textarea [(ngModel)]="message.message" matInput [ngModelOptions]="{standalone: true}" (keydown.enter)="$event.preventDefault()"
+            <textarea [(ngModel)]="publicChatService.message.message" matInput [ngModelOptions]="{standalone: true}"
+                      (keydown.enter)="$event.preventDefault()"
                       placeholder="Treść wiadomości"></textarea>
           </mat-form-field>
 

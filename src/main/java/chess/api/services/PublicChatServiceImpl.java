@@ -1,6 +1,7 @@
 package chess.api.services;
 
 import chess.api.domain.publicChat.Member;
+import chess.api.services.declarations.PublicChatService;
 import chess.api.utils.MemberComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,7 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
-public class PublicChatServiceImpl {
+public class PublicChatServiceImpl implements PublicChatService {
 
     private List<Member> members = Collections.synchronizedList(new LinkedList<>());
 
@@ -35,6 +36,14 @@ public class PublicChatServiceImpl {
     public List<Member> removeMember(String sessionId) {
         members.removeIf(e -> Objects.equals(e.getSessionId(), sessionId));
         return this.members;
+    }
+
+    @Override
+    public Member getMemberBySessionId(String sessionId) {
+        return members.stream()
+                .filter(e -> Objects.equals(e.getSessionId(), sessionId))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
 }

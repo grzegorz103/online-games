@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import {Component, OnInit, HostListener, OnDestroy} from '@angular/core';
 import { Maze } from '../models/maze';
 import { Player } from '../models/player';
 import { Computer } from '../models/computer';
@@ -14,7 +14,7 @@ import {Master} from "../models/levels/master";
   templateUrl: './maze.component.html',
   styleUrls: ['./maze.component.scss']
 })
-export class MazeComponent implements OnInit {
+export class MazeComponent implements OnInit, OnDestroy {
 
   player: Player;
   loaded = false;
@@ -33,6 +33,7 @@ export class MazeComponent implements OnInit {
   static metaNode: Path;
   found: boolean;
   visited: Point[];
+  private timeOut: any;
 
   constructor() {
     MazeComponent.maze = this.generateMaze();
@@ -87,7 +88,7 @@ export class MazeComponent implements OnInit {
   computerMove() {
     this.engine.move(this.computer);
     this.checkForWin(this.computer);
-    setTimeout(() => this.computerMove(), 100);
+    this.timeOut = setTimeout(() => this.computerMove(), 100);
   }
 
   static neighbours(point: Point): number[] {
@@ -255,5 +256,9 @@ export class MazeComponent implements OnInit {
 
       this.calculateShortestPath(p);
     });
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.timeOut);
   }
 }

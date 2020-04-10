@@ -15,11 +15,8 @@ export class PublicChatComponent implements OnInit {
 
   @ViewChild('scrollMe', {read: ElementRef, static: false}) private scroll: ElementRef;
 
-  message = new Message();
-
   constructor(private auth: AuthService,
               private publicChatService: PublicChatService) {
-
   }
 
   ngOnInit() {
@@ -31,19 +28,11 @@ export class PublicChatComponent implements OnInit {
   }
 
   sendMessage() {
-    if (this.message && this.message.message.length == 0)
-      return;
-
-  //  this.ws.send("/app/public/chat/send", {}, JSON.stringify(this.message));
-    this.message.clearMessage();
+    this.publicChatService.sendMessage();
   }
 
   public scrollBottom() {
     this.scroll.nativeElement.scrollTop = this.scroll.nativeElement.scrollHeight;
-  }
-
-  ngOnDestroy(): void {
-   // this.socket.close();
   }
 
 }
