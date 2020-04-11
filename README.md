@@ -1,4 +1,4 @@
-# Online games [![CircleCI](https://circleci.com/gh/grzegorz103/online-games.svg?style=svg)](https://circleci.com/gh/grzegorz103/online-games)
+# Online games [![CircleCI](https://circleci.com/gh/grzegorz103/online-games.svg?style=svg)](https://circleci.com/gh/grzegorz103/online-games) ![GitHub language count](https://img.shields.io/github/languages/count/grzegorz103/online-games)
 
 ## Live demo
 Live demo available at https://online-games-69bcf.firebaseapp.com/
