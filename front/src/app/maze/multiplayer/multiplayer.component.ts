@@ -242,6 +242,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
     config.verticalPosition = 'top';
     config.horizontalPosition = 'center';
     config.duration = 2000;
+    config.panelClass = ['share-friend-bar'];
     this.snackBar.open(message, null, config);
   }
 
