@@ -31,7 +31,8 @@
 .maze-row {
   display: block;
   width: 100%;
-  height: 3%;
+  background-size: contain;
+  height: 3.333333333333333%;
 }
 
 .list-group-item {
@@ -41,20 +42,25 @@
 
 .maze-col {
   display: inline-block;
-  width: 3.3%;
+  width: 3.333333333333333%;
   height: 100%;
   vertical-align: top;
   cursor: default;
 }
 
 .occupied-field {
+  height: 100%;
+  width: 100%;
   background-color: black;
-
+  display:inline-block;
 }
 
 
 .free-field {
+  height: 100%;
+  width: 100%;
   background-color: gray;
+  background-size: cover;
 }
 
 .maze-col::after {
