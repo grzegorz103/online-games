@@ -61,7 +61,6 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
     } else { // nowa gra
       MultiplayerComponent.maze = this.generateMaze();
       MultiplayerComponent.maze.meta = this.createMetaPoint();
-      this.uri = Math.random().toString(36).substring(8);
       this.sendMazeToApi();
     }
 
@@ -109,12 +108,16 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
         that.messages.push(JSON.parse(message.body));
       });
 
+      that.ws.subscribe("/user/queue/uri", message => {
+        that.uri = message.body;
+      });
+
       that.ws.subscribe("/user/queue/win", message => {
         alert('Koniec');
         that.isWinner = true;
       });
 
-      that.ws.send("/app/message/" + that.uri + '/' + MultiplayerComponent.maze.meta.row + '/' + MultiplayerComponent.maze.meta.col + "/" + that.username, {}, JSON.stringify(MultiplayerComponent.maze.points));
+      that.ws.send("/app/message/" + MultiplayerComponent.maze.meta.row + '/' + MultiplayerComponent.maze.meta.col + "/" + that.username, {}, JSON.stringify(MultiplayerComponent.maze.points));
     }, function (error) {
       that.socket.close();
     });
@@ -242,6 +245,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
     config.verticalPosition = 'top';
     config.horizontalPosition = 'center';
     config.duration = 2000;
+    config.panelClass = ['share-friend-bar'];
     this.snackBar.open(message, null, config);
   }
 

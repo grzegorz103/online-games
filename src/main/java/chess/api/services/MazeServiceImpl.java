@@ -4,6 +4,8 @@ import chess.api.domain.maze.Maze;
 import chess.api.domain.maze.Player;
 import chess.api.domain.maze.Point;
 import chess.api.services.declarations.MazeService;
+import chess.api.utils.Constants;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -105,10 +107,21 @@ public class MazeServiceImpl implements MazeService {
     }
 
 
-    @Scheduled(fixedRate = 600000L)
+    @Scheduled(fixedRate = Constants.REMOVE_INACTIVE_GAMES_RATE)
     public void removeInactiveGames() {
         this.getGames()
                 .values()
                 .removeIf(e -> e.getPlayers().isEmpty());
     }
+
+    @Override
+    public String getAvailableUri() {
+        String uri;
+        do {
+            uri = RandomStringUtils.randomAlphanumeric(Constants.MAZE_URI_GAME_LENGTH);
+        } while (this.games.containsKey(uri));
+
+        return uri;
+    }
+
 }

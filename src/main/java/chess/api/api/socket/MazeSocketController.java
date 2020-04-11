@@ -28,13 +28,14 @@ public class MazeSocketController {
         this.mazeService = mazeService;
     }
 
-    @MessageMapping("/message/{uri}/{row}/{col}/{username}")
+    @MessageMapping("/message/{row}/{col}/{username}")
     public void createGame(@DestinationVariable int row,
                            @DestinationVariable int col,
                            @Payload Point[][] points,
-                           @DestinationVariable String uri,
                            @DestinationVariable String username,
                            @Header("simpSessionId") String sessionId) throws Exception {
+        String uri = mazeService.getAvailableUri();
+        messagingTemplate.convertAndSendToUser(sessionId, "/queue/uri", uri, WebSocketUtils.getMessageHeaders(sessionId));
         Maze maze = mazeService.addGame(uri, points, sessionId, row, col, username);
         sendPlayers(maze, uri, null);
     }
