@@ -3,6 +3,7 @@ import {environment} from "../../environments/environment";
 import {ActivatedRoute} from "@angular/router";
 import * as Stomp from 'stompjs';
 import {Game} from "./models/game";
+import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -21,7 +22,8 @@ export class TicTacToeComponent implements OnInit {
   loading = true;
   awaitingPlayers = true;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute,
+              private snackBar: MatSnackBar) {
     this.uri = this.route.snapshot.paramMap.get('game');
     this.socket = new WebSocket(environment.wsUrl);
     this.ws = Stomp.over(this.socket);
@@ -108,4 +110,29 @@ export class TicTacToeComponent implements OnInit {
   isLoading() {
     return this.loading;
   }
+
+  copyMessage(val: string) {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.openSnackbar('Skopiowano do schowka')
+  }
+
+  openSnackbar(message: string) {
+    let config = new MatSnackBarConfig();
+    config.verticalPosition = 'top';
+    config.horizontalPosition = 'center';
+    config.duration = 2000;
+    config.panelClass = ['share-friend-bar'];
+    this.snackBar.open(message, null, config);
+  }
+
 }
