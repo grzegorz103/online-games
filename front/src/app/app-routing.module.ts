@@ -5,6 +5,7 @@ import {MazeComponent} from './maze/maze/maze.component';
 import {MultiplayerComponent} from "./maze/multiplayer/multiplayer.component";
 import {PublicChatComponent} from "./public-chat/public-chat.component";
 import {AuthGuard} from "./auth.guard";
+import {TicTacToeComponent} from "./tic-tac-toe/tic-tac-toe.component";
 
 
 const routes: Routes = [
@@ -12,7 +13,9 @@ const routes: Routes = [
   {component: PublicChatComponent, path: 'chat'},
   {path: 'maze', component: MazeComponent},
   {path: 'maze/multi', component: MultiplayerComponent},
-  {path: 'maze/multi/:game', component: MultiplayerComponent}
+  {path: 'maze/multi/:game', component: MultiplayerComponent},
+  {path: 'tic', component: TicTacToeComponent},
+  {path: 'tic/:game', component: TicTacToeComponent}
 ];
 
 @NgModule({
