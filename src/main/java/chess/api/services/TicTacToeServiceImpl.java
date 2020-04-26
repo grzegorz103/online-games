@@ -6,6 +6,7 @@ import chess.api.domain.ticTacToe.State;
 import chess.api.services.declarations.TicTacToeService;
 import chess.api.utils.Constants;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -61,9 +62,7 @@ public class TicTacToeServiceImpl implements TicTacToeService {
 
     private void checkWin(Game game) {
         if (game != null) {
-
             String[] map = game.getMap();
-            System.out.println(Arrays.toString(map));
             if ((Objects.equals(map[0], Constants.X_PLAYER) &&
                     Objects.equals(map[1], Constants.X_PLAYER) &&
                     Objects.equals(map[2], Constants.X_PLAYER)) ||
@@ -141,6 +140,13 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     @Override
     public Map<String, ? extends Game> getGames() {
         return this.games;
+    }
+
+    @Scheduled(fixedRate = Constants.REMOVE_INACTIVE_TIC_TAC_TOE_GAMES)
+    public void removeInactiveGames() {
+        this.games
+                .values()
+                .removeIf(e -> e.getState() == State.CLOSED);
     }
 
 }

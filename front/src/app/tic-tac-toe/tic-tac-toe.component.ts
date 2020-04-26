@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {ActivatedRoute} from "@angular/router";
 import * as Stomp from 'stompjs';
+import {Game} from "./models/game";
 
 @Component({
   selector: 'app-tic-tac-toe',
@@ -14,7 +15,7 @@ export class TicTacToeComponent implements OnInit {
   socket: WebSocket;
   ws: any;
 
-  grid: string[] = [];
+  game: Game = new Game();
   readonly X_POINT: string = "X";
   readonly Y_POINT: string = "O";
 
@@ -38,16 +39,16 @@ export class TicTacToeComponent implements OnInit {
 
   initGrid() {
     for (let i: number = 0; i < 9; i++) {
-      this.grid[i] = ''
+      this.game.map[i] = ''
     }
   }
 
   isXOnField(i: number) {
-    return this.grid[i] == this.X_POINT;
+    return this.game.map[i] == this.X_POINT;
   }
 
   isYOnField(i: number) {
-    return this.grid[i] == this.Y_POINT;
+    return this.game.map[i] == this.Y_POINT;
   }
 
   move(i: number) {
@@ -65,7 +66,10 @@ export class TicTacToeComponent implements OnInit {
         alert("Error " + message.body);
       });
       that.ws.subscribe("/user/queue/tic", message => {
-        that.grid = JSON.parse(message.body);
+        that.game = JSON.parse(message.body);
+        if(that.game.state == 'CLOSED'){
+          alert('Koniec')
+        }
       });
 
       that.ws.send("/app/tic/join/" + that.uri, {}, {});
@@ -81,8 +85,10 @@ export class TicTacToeComponent implements OnInit {
         alert("Error " + message.body);
       });
       that.ws.subscribe("/user/queue/tic", message => {
-        that.grid = JSON.parse(message.body);
-        console.log('gr')
+        that.game = JSON.parse(message.body);
+        if(that.game.state == 'CLOSED'){
+          alert('Koniec')
+        }
       });
 
       that.ws.subscribe("/user/queue/tic/uri", message => {
