@@ -1,4 +1,4 @@
-# Chess and Maze app [![CircleCI](https://circleci.com/gh/grzegorz103/online-games.svg?style=svg)](https://circleci.com/gh/grzegorz103/online-games)
+# Online games [![CircleCI](https://circleci.com/gh/grzegorz103/online-games.svg?style=svg)](https://circleci.com/gh/grzegorz103/online-games) ![GitHub language count](https://img.shields.io/github/languages/count/grzegorz103/online-games)
 
 ## Live demo
 Live demo available at https://online-games-69bcf.firebaseapp.com/
@@ -18,3 +18,13 @@ Live demo available at https://online-games-69bcf.firebaseapp.com/
 - Chat with current members online (Websocket)
 - Tic tac toe game with Multiplayer (Websocket)
 - Chess game with simple AI (unfinished yet)    
+
+## How to launch
+
+1. Clone this repository   
+2. Open terminal in main directory and type `mvn spring-boot:run`    
+3. Run another terminal and type following commands:
+- `cd front`    
+- `npm install`   
+- `ng serve`
+4. Run browser and head to `http://localhost:4200'
