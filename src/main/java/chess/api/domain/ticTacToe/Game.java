@@ -11,4 +11,10 @@ public class Game {
     private Player OPlayer;
 
     private String[] map = new String[9];
+
+    private State state;
+
+    private Player currentPlayer;
+
+    private Player winner;
 }

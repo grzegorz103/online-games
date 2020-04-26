@@ -2,8 +2,10 @@ package chess.api.services;
 
 import chess.api.domain.ticTacToe.Game;
 import chess.api.domain.ticTacToe.Player;
+import chess.api.domain.ticTacToe.State;
 import chess.api.services.declarations.TicTacToeService;
 import chess.api.utils.Constants;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -20,6 +22,8 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     public Game hostGame(String sessionId, String uri) {
         Game game = new Game();
         game.setXPlayer(new Player(sessionId, null));
+        game.setState(State.NEW);
+        game.setCurrentPlayer(game.getXPlayer());
         this.games.put(uri, game);
         return game;
     }
@@ -29,6 +33,7 @@ public class TicTacToeServiceImpl implements TicTacToeService {
         Game game = this.games.get(uri);
         if (game != null) {
             game.setOPlayer(new Player(sessionId, null));
+            game.setState(State.RUNNING);
         }
         return game;
     }
@@ -37,14 +42,100 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     public Game move(String uri, String sessionId, int move) {
         Game game = this.games.get(uri);
         if (game != null) {
-            System.out.println(move + " " + sessionId);
-            game.getMap()[move] = Objects.equals(game.getOPlayer().getSessionId(), sessionId)
-                    ? Constants.X_PLAYER
-                    : Constants.O_PLAYER;
-            System.out.println(Arrays.toString(game.getMap()));
-        }
+            if (game.getState() == State.RUNNING && Objects.equals(game.getCurrentPlayer().getSessionId(), sessionId)
+                    && StringUtils.isEmpty(game.getMap()[move])) {
+                game.getMap()[move] = Objects.equals(game.getOPlayer().getSessionId(), sessionId)
+                        ? Constants.X_PLAYER
+                        : Constants.O_PLAYER;
+                game.setCurrentPlayer(
+                        Objects.equals(game.getCurrentPlayer().getSessionId(), game.getXPlayer().getSessionId())
+                                ? game.getOPlayer()
+                                : game.getXPlayer()
+                );
 
+                checkWin(game);
+            }
+        }
         return game;
+    }
+
+    private void checkWin(Game game) {
+        if (game != null) {
+
+            String[] map = game.getMap();
+            System.out.println(Arrays.toString(map));
+            if ((Objects.equals(map[0], Constants.X_PLAYER) &&
+                    Objects.equals(map[1], Constants.X_PLAYER) &&
+                    Objects.equals(map[2], Constants.X_PLAYER)) ||
+                    (Objects.equals(map[3], Constants.X_PLAYER) &&
+                            Objects.equals(map[4], Constants.X_PLAYER) &&
+                            Objects.equals(map[5], Constants.X_PLAYER)) ||
+                    (Objects.equals(map[6], Constants.X_PLAYER) &&
+                            Objects.equals(map[7], Constants.X_PLAYER) &&
+                            Objects.equals(map[8], Constants.X_PLAYER))) {
+                game.setState(State.CLOSED);
+                game.setWinner(game.getXPlayer());
+            }
+
+            if ((Objects.equals(map[0], Constants.O_PLAYER) &&
+                    Objects.equals(map[1], Constants.O_PLAYER) &&
+                    Objects.equals(map[2], Constants.O_PLAYER)) ||
+                    (Objects.equals(map[3], Constants.O_PLAYER) &&
+                            Objects.equals(map[4], Constants.O_PLAYER) &&
+                            Objects.equals(map[5], Constants.O_PLAYER)) ||
+                    (Objects.equals(map[6], Constants.O_PLAYER) &&
+                            Objects.equals(map[7], Constants.O_PLAYER) &&
+                            Objects.equals(map[8], Constants.O_PLAYER))) {
+                game.setState(State.CLOSED);
+                game.setWinner(game.getOPlayer());
+            }
+
+            if ((Objects.equals(map[0], Constants.X_PLAYER) &&
+                    Objects.equals(map[3], Constants.X_PLAYER) &&
+                    Objects.equals(map[6], Constants.X_PLAYER)) ||
+                    (Objects.equals(map[1], Constants.X_PLAYER) &&
+                            Objects.equals(map[4], Constants.X_PLAYER) &&
+                            Objects.equals(map[7], Constants.X_PLAYER)) ||
+                    (Objects.equals(map[2], Constants.X_PLAYER) &&
+                            Objects.equals(map[5], Constants.X_PLAYER) &&
+                            Objects.equals(map[8], Constants.X_PLAYER))) {
+                game.setState(State.CLOSED);
+                game.setWinner(game.getXPlayer());
+            }
+
+            if ((Objects.equals(map[0], Constants.O_PLAYER) &&
+                    Objects.equals(map[3], Constants.O_PLAYER) &&
+                    Objects.equals(map[6], Constants.O_PLAYER)) ||
+                    (Objects.equals(map[1], Constants.O_PLAYER) &&
+                            Objects.equals(map[4], Constants.O_PLAYER) &&
+                            Objects.equals(map[7], Constants.O_PLAYER)) ||
+                    (Objects.equals(map[2], Constants.O_PLAYER) &&
+                            Objects.equals(map[5], Constants.O_PLAYER) &&
+                            Objects.equals(map[8], Constants.O_PLAYER))) {
+                game.setState(State.CLOSED);
+                game.setWinner(game.getXPlayer());
+            }
+
+            if ((Objects.equals(map[0], Constants.X_PLAYER) &&
+                    Objects.equals(map[4], Constants.X_PLAYER) &&
+                    Objects.equals(map[8], Constants.X_PLAYER)) ||
+                    (Objects.equals(map[2], Constants.X_PLAYER) &&
+                            Objects.equals(map[4], Constants.X_PLAYER) &&
+                            Objects.equals(map[6], Constants.X_PLAYER))) {
+                game.setState(State.CLOSED);
+                game.setWinner(game.getXPlayer());
+            }
+
+            if ((Objects.equals(map[0], Constants.O_PLAYER) &&
+                    Objects.equals(map[4], Constants.O_PLAYER) &&
+                    Objects.equals(map[8], Constants.O_PLAYER)) ||
+                    (Objects.equals(map[2], Constants.O_PLAYER) &&
+                            Objects.equals(map[4], Constants.O_PLAYER) &&
+                            Objects.equals(map[6], Constants.O_PLAYER))) {
+                game.setState(State.CLOSED);
+                game.setWinner(game.getXPlayer());
+            }
+        }
     }
 
     @Override
