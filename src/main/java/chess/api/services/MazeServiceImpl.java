@@ -106,22 +106,11 @@ public class MazeServiceImpl implements MazeService {
         return this.games;
     }
 
-
     @Scheduled(fixedRate = Constants.REMOVE_INACTIVE_GAMES_RATE)
     public void removeInactiveGames() {
         this.getGames()
                 .values()
                 .removeIf(e -> e.getPlayers().isEmpty());
-    }
-
-    @Override
-    public String getAvailableUri() {
-        String uri;
-        do {
-            uri = RandomStringUtils.randomAlphanumeric(Constants.MAZE_URI_GAME_LENGTH);
-        } while (this.games.containsKey(uri));
-
-        return uri;
     }
 
 }
