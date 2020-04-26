@@ -37,7 +37,8 @@ public class TicTacToeController {
     public void joinGame(@Header("simpSessionId") String sessionId,
                          @DestinationVariable String uri) {
         Game game = ticTacToeService.joinGame(uri, sessionId);
-        sendingOperations.convertAndSendToUser(sessionId, "/queue/tic", game.getMap());
+        sendingOperations.convertAndSendToUser(game.getOPlayer().getSessionId(), "/queue/tic", game, WebSocketUtils.getMessageHeaders(game.getOPlayer().getSessionId()));
+        sendingOperations.convertAndSendToUser(game.getXPlayer().getSessionId(), "/queue/tic", game, WebSocketUtils.getMessageHeaders(game.getXPlayer().getSessionId()));
     }
 
     @MessageMapping("/tic/move/{uri}/{move}")

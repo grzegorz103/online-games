@@ -13,10 +13,11 @@ Live demo available at https://online-games-69bcf.firebaseapp.com/
 ## Features:
 
 - Auth0 authorization integrated
-- Chess game with simple AI (unfinished yet)    
 - Maze game with two difficult levels - Easy, Hard and Master (uses shortest path finding algorithm in maze). Use WSAD to move
 - Maze game with Multiplayer (Websocket)
 - Chat with current members online (Websocket)
+- Tic tac toe game with Multiplayer (Websocket)
+- Chess game with simple AI (unfinished yet)    
 
 ## How to launch
 
