@@ -46,8 +46,8 @@ public class TicTacToeServiceImpl implements TicTacToeService {
             if (game.getState() == State.RUNNING && Objects.equals(game.getCurrentPlayer().getSessionId(), sessionId)
                     && StringUtils.isEmpty(game.getMap()[move])) {
                 game.getMap()[move] = Objects.equals(game.getOPlayer().getSessionId(), sessionId)
-                        ? Constants.X_PLAYER
-                        : Constants.O_PLAYER;
+                        ? Constants.O_PLAYER
+                        : Constants.X_PLAYER;
                 game.setCurrentPlayer(
                         Objects.equals(game.getCurrentPlayer().getSessionId(), game.getXPlayer().getSessionId())
                                 ? game.getOPlayer()
