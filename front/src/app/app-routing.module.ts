@@ -14,7 +14,8 @@ const routes: Routes = [
   {path: 'maze', component: MazeComponent},
   {path: 'maze/multi', component: MultiplayerComponent},
   {path: 'maze/multi/:game', component: MultiplayerComponent},
-  {path: 'tic', component: TicTacToeComponent}
+  {path: 'tic', component: TicTacToeComponent},
+  {path: 'tic/:game', component: TicTacToeComponent}
 ];
 
 @NgModule({

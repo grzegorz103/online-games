@@ -15,8 +15,8 @@ export class TicTacToeComponent implements OnInit {
   ws: any;
 
   grid: string[] = [];
-  readonly X_POINT: string = 'X';
-  readonly Y_POINT: string = 'Y';
+  readonly X_POINT: string = "X";
+  readonly Y_POINT: string = "O";
 
   constructor(private route: ActivatedRoute) {
     this.uri = this.route.snapshot.paramMap.get('game');
@@ -42,23 +42,56 @@ export class TicTacToeComponent implements OnInit {
     }
   }
 
-  isXOnField(i: number){
+  isXOnField(i: number) {
     return this.grid[i] == this.X_POINT;
   }
 
-  isYOnField(i: number){
+  isYOnField(i: number) {
     return this.grid[i] == this.Y_POINT;
   }
 
-  move(i: number){
-    this.grid[i] = this.Y_POINT;
+  move(i: number) {
+    this.ws.send('/app/tic/move/' + this.uri + '/' + i);
+  }
+
+  apiUrl() {
+    return environment.appUrl;
   }
 
   private getGameFromApi() {
+    let that = this;
+    this.ws.connect({}, function (frame) {
+      that.ws.subscribe("/errors", function (message) {
+        alert("Error " + message.body);
+      });
+      that.ws.subscribe("/user/queue/tic", message => {
+        that.grid = JSON.parse(message.body);
+      });
 
+      that.ws.send("/app/tic/join/" + that.uri, {}, {});
+    }, function (error) {
+      that.socket.close();
+    });
   }
 
   private sendGameToApi() {
+    let that = this;
+    this.ws.connect({}, function (frame) {
+      that.ws.subscribe("/errors", function (message) {
+        alert("Error " + message.body);
+      });
+      that.ws.subscribe("/user/queue/tic", message => {
+        that.grid = JSON.parse(message.body);
+        console.log('gr')
+      });
 
+      that.ws.subscribe("/user/queue/tic/uri", message => {
+        that.uri = message.body;
+      });
+
+      that.ws.send("/app/tic/host", {}, {});
+    }, function (error) {
+      that.socket.close();
+    });
   }
 }

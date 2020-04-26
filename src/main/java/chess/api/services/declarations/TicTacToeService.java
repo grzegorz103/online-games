@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface TicTacToeService {
 
-    void hostGame(String sessionId);
+    Game hostGame(String sessionId, String uri);
 
     Game joinGame(String uri, String sessionId);
 
