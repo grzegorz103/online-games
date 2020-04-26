@@ -18,6 +18,8 @@ export class TicTacToeComponent implements OnInit {
   game: Game = new Game();
   readonly X_POINT: string = "X";
   readonly Y_POINT: string = "O";
+  loading = true;
+  awaitingPlayers = true;
 
   constructor(private route: ActivatedRoute) {
     this.uri = this.route.snapshot.paramMap.get('game');
@@ -67,6 +69,7 @@ export class TicTacToeComponent implements OnInit {
       });
       that.ws.subscribe("/user/queue/tic", message => {
         that.game = JSON.parse(message.body);
+        that.loading = false;
         if(that.game.state == 'CLOSED'){
           alert('Koniec')
         }
@@ -86,6 +89,7 @@ export class TicTacToeComponent implements OnInit {
       });
       that.ws.subscribe("/user/queue/tic", message => {
         that.game = JSON.parse(message.body);
+        that.loading = false;
         if(that.game.state == 'CLOSED'){
           alert('Koniec')
         }
@@ -99,5 +103,9 @@ export class TicTacToeComponent implements OnInit {
     }, function (error) {
       that.socket.close();
     });
+  }
+
+  isLoading() {
+    return this.loading;
   }
 }
