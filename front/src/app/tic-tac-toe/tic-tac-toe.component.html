@@ -13,12 +13,16 @@
           <div class="text-center w-100"><i>Oczekiwanie na drugiego gracza</i></div>
         </div>
 
-        <mat-grid-list *ngIf="game.state == 'RUNNING'" cols="3" rowHeight="1:1">
+        <mat-grid-list *ngIf="game.state !== 'NEW'" cols="3" rowHeight="1:1">
           <mat-grid-tile *ngFor="let tile of game.map; let i = index"
                          [ngClass]="isXOnField(i) ? 'xBackground' : isYOnField(i) ? 'yBackground' : ''"
                          (click)="move(i)"></mat-grid-tile>
         </mat-grid-list>
-        {{ apiUrl() + 'tic/' + uri}}
+        <button class="btn btn-info mb-3"
+                (click)="copyMessage(apiUrl() + 'tic/' + uri)"
+                value="Zaproś znajomego">
+          Zaproś znajomego
+        </button>
       </div>
     </div>
   </div>
