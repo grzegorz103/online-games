@@ -17,6 +17,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {InterceptorService} from "./interceptor.service";
 import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+import { TicTacToeComponent } from './tic-tac-toe/tic-tac-toe.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -28,7 +29,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     BoardComponent,
     MazeComponent,
     MultiplayerComponent,
-    PublicChatComponent
+    PublicChatComponent,
+    TicTacToeComponent
   ],
   imports: [
     BrowserModule,

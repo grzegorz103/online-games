@@ -27,6 +27,4 @@ public interface MazeService {
 
     void removeInactiveGames();
 
-    String getAvailableUri();
-
 }

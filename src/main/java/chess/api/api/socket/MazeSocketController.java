@@ -6,6 +6,7 @@ import chess.api.domain.maze.Message;
 import chess.api.domain.maze.Player;
 import chess.api.domain.maze.Point;
 import chess.api.services.MazeServiceImpl;
+import chess.api.utils.URIGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.*;
@@ -34,7 +35,7 @@ public class MazeSocketController {
                            @Payload Point[][] points,
                            @DestinationVariable String username,
                            @Header("simpSessionId") String sessionId) throws Exception {
-        String uri = mazeService.getAvailableUri();
+        String uri = URIGenerator.getAvailableURI(mazeService.getGames());
         messagingTemplate.convertAndSendToUser(sessionId, "/queue/uri", uri, WebSocketUtils.getMessageHeaders(sessionId));
         Maze maze = mazeService.addGame(uri, points, sessionId, row, col, username);
         sendPlayers(maze, uri, null);

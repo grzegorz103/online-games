@@ -1,0 +1,14 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <div *ngIf="game && game.map &&game.map.length > 0">
+        <mat-grid-list cols="3" rowHeight="1:1">
+          <mat-grid-tile *ngFor="let tile of game.map; let i = index"
+                         [ngClass]="isXOnField(i) ? 'xBackground' : isYOnField(i) ? 'yBackground' : ''"
+                         (click)="move(i)"></mat-grid-tile>
+        </mat-grid-list>
+      </div>
+    </div>
+    {{ apiUrl() + 'tic/' + uri}}
+  </div>
+</div>
