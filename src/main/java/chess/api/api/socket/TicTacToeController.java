@@ -28,7 +28,7 @@ public class TicTacToeController {
     public void hostGame(@Header("simpSessionId") String sessionId) {
         String uri = URIGenerator.getAvailableURI(ticTacToeService.getGames());
         Game game = ticTacToeService.hostGame(sessionId, uri);
-        System.out.println(uri);
+        sendingOperations.convertAndSendToUser(sessionId, "/queue/tic/id", sessionId, WebSocketUtils.getMessageHeaders(sessionId));
         sendingOperations.convertAndSendToUser(sessionId, "/queue/tic", game, WebSocketUtils.getMessageHeaders(sessionId));
         sendingOperations.convertAndSendToUser(sessionId, "/queue/tic/uri", uri, WebSocketUtils.getMessageHeaders(sessionId));
     }
@@ -37,6 +37,7 @@ public class TicTacToeController {
     public void joinGame(@Header("simpSessionId") String sessionId,
                          @DestinationVariable String uri) {
         Game game = ticTacToeService.joinGame(uri, sessionId);
+        sendingOperations.convertAndSendToUser(sessionId, "/queue/tic/id", sessionId, WebSocketUtils.getMessageHeaders(sessionId));
         sendingOperations.convertAndSendToUser(game.getOPlayer().getSessionId(), "/queue/tic", game, WebSocketUtils.getMessageHeaders(game.getOPlayer().getSessionId()));
         sendingOperations.convertAndSendToUser(game.getXPlayer().getSessionId(), "/queue/tic", game, WebSocketUtils.getMessageHeaders(game.getXPlayer().getSessionId()));
     }

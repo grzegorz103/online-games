@@ -21,6 +21,8 @@ export class TicTacToeComponent implements OnInit {
   readonly Y_POINT: string = "O";
   loading = true;
   awaitingPlayers = true;
+  sessionId: string;
+  requestOfferSent = false;
 
   constructor(private route: ActivatedRoute,
               private snackBar: MatSnackBar) {
@@ -56,7 +58,7 @@ export class TicTacToeComponent implements OnInit {
   }
 
   move(i: number) {
-    if(this.game.state === 'CLOSED')
+    if (this.game.state === 'CLOSED')
       return;
     this.ws.send('/app/tic/move/' + this.uri + '/' + i);
   }
@@ -74,9 +76,18 @@ export class TicTacToeComponent implements OnInit {
       that.ws.subscribe("/user/queue/tic", message => {
         that.game = JSON.parse(message.body);
         that.loading = false;
-        if(that.game.state == 'CLOSED'){
+        if (that.game.state == 'CLOSED') {
           alert('Koniec')
         }
+
+        if (that.requestOfferSent) {
+          that.requestOfferSent = false;
+        }
+      });
+
+      that.ws.subscribe("/user/queue/tic/id", message => {
+        that.sessionId = message.body;
+        that.loading = false;
       });
 
       that.ws.send("/app/tic/join/" + that.uri, {}, {});
@@ -94,13 +105,22 @@ export class TicTacToeComponent implements OnInit {
       that.ws.subscribe("/user/queue/tic", message => {
         that.game = JSON.parse(message.body);
         that.loading = false;
-        if(that.game.state == 'CLOSED'){
+        console.log(message.body)
+        if (that.game.state == 'CLOSED') {
           alert('Koniec')
+        }
+        if (that.requestOfferSent) {
+          that.requestOfferSent = false;
         }
       });
 
       that.ws.subscribe("/user/queue/tic/uri", message => {
         that.uri = message.body;
+      });
+
+      that.ws.subscribe("/user/queue/tic/id", message => {
+        that.sessionId = message.body;
+        that.loading = false;
       });
 
       that.ws.send("/app/tic/host", {}, {});
@@ -138,6 +158,10 @@ export class TicTacToeComponent implements OnInit {
   }
 
   sendRematchOffer() {
+    if (this.requestOfferSent) {
+      return;
+    }
+    this.requestOfferSent = true;
     this.ws.send("/app/tic/rematch/" + this.uri, {}, {});
   }
 }
