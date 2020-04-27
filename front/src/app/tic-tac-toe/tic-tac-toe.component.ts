@@ -73,10 +73,14 @@ export class TicTacToeComponent implements OnInit {
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
       });
+      that.ws.subscribe("/user/queue/tic/id", message => {
+        that.sessionId = message.body;
+        that.loading = false;
+      });
       that.ws.subscribe("/user/queue/tic", message => {
         that.game = JSON.parse(message.body);
         that.loading = false;
-        if (that.game.state == 'CLOSED') {
+        if (that.game.state == 'CLOSED' && !that.game.oplayer.rematchRequestSend && !that.game.xplayer.rematchRequestSend) {
           alert('Koniec')
         }
 
@@ -85,10 +89,6 @@ export class TicTacToeComponent implements OnInit {
         }
       });
 
-      that.ws.subscribe("/user/queue/tic/id", message => {
-        that.sessionId = message.body;
-        that.loading = false;
-      });
 
       that.ws.send("/app/tic/join/" + that.uri, {}, {});
     }, function (error) {
@@ -101,12 +101,15 @@ export class TicTacToeComponent implements OnInit {
     this.ws.connect({}, function (frame) {
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
+      });   that.ws.subscribe("/user/queue/tic/id", message => {
+        that.sessionId = message.body;
+        that.loading = false;
       });
       that.ws.subscribe("/user/queue/tic", message => {
         that.game = JSON.parse(message.body);
         that.loading = false;
         console.log(message.body)
-        if (that.game.state == 'CLOSED') {
+        if (that.game.state == 'CLOSED' && !that.game.oplayer.rematchRequestSend && !that.game.xplayer.rematchRequestSend) {
           alert('Koniec')
         }
         if (that.requestOfferSent) {
@@ -118,10 +121,7 @@ export class TicTacToeComponent implements OnInit {
         that.uri = message.body;
       });
 
-      that.ws.subscribe("/user/queue/tic/id", message => {
-        that.sessionId = message.body;
-        that.loading = false;
-      });
+
 
       that.ws.send("/app/tic/host", {}, {});
     }, function (error) {

@@ -117,8 +117,6 @@ public class TicTacToeServiceImpl implements TicTacToeService {
 
                 if (game.getOPlayer().isRematchRequestSend() && game.getXPlayer().isRematchRequestSend()) {
                     resetGame(game);
-                } else {
-                    return null;
                 }
             }
         }
