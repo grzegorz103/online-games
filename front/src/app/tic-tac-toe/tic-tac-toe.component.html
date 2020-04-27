@@ -19,7 +19,7 @@
                          [ngClass]="isXOnField(i) ? 'xBackground' : isYOnField(i) ? 'yBackground' : ''"
                          (click)="move(i)"></mat-grid-tile>
         </mat-grid-list>
-        <p *ngIf="game.state==='RUNNING' && sessionId === game.currentPlayer.sessionId">Twój ruch
+        <p *ngIf="game.state=='RUNNING' && sessionId === game.currentPlayer.sessionId">Twój ruch
           <span *ngIf="game.currentPlayer.sessionId === game.xplayer.sessionId">X</span>
           <span *ngIf="game.currentPlayer.sessionId === game.oplayer.sessionId">O</span>
         </p>
