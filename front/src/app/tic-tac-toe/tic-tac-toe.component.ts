@@ -56,6 +56,8 @@ export class TicTacToeComponent implements OnInit {
   }
 
   move(i: number) {
+    if(this.game.state === 'CLOSED')
+      return;
     this.ws.send('/app/tic/move/' + this.uri + '/' + i);
   }
 

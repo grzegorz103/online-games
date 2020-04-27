@@ -117,9 +117,9 @@ public class TicTacToeServiceImpl implements TicTacToeService {
 
                 if (game.getOPlayer().isRematchRequestSend() && game.getXPlayer().isRematchRequestSend()) {
                     resetGame(game);
+                } else {
+                    return null;
                 }
-            } else {
-                return null;
             }
         }
         return game;
@@ -133,6 +133,8 @@ public class TicTacToeServiceImpl implements TicTacToeService {
         Player xTemp = game.getXPlayer();
         game.setXPlayer(game.getOPlayer());
         game.setOPlayer(xTemp);
+        game.getXPlayer().setRematchRequestSend(false);
+        game.getOPlayer().setRematchRequestSend(false);
         game.setCurrentPlayer(game.getXPlayer());
     }
 
