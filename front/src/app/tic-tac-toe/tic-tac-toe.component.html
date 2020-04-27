@@ -13,11 +13,20 @@
           <div class="text-center w-100"><i>Oczekiwanie na drugiego gracza</i></div>
         </div>
 
+
         <mat-grid-list *ngIf="game.state !== 'NEW'" cols="3" rowHeight="1:1">
           <mat-grid-tile *ngFor="let tile of game.map; let i = index"
                          [ngClass]="isXOnField(i) ? 'xBackground' : isYOnField(i) ? 'yBackground' : ''"
                          (click)="move(i)"></mat-grid-tile>
         </mat-grid-list>
+        <p *ngIf="game.state==='RUNNING' && sessionId === game.currentPlayer.sessionId">Twój ruch
+          <span *ngIf="game.currentPlayer.sessionId === game.xplayer.sessionId">X</span>
+          <span *ngIf="game.currentPlayer.sessionId === game.oplayer.sessionId">O</span>
+        </p>
+        <button *ngIf="game.state === 'CLOSED'" class="btn btn-success mr-2" (click)="sendRematchOffer()">Rewanż
+        </button>
+        <span *ngIf="requestOfferSent">Wysłano prośbę o rewanż</span>
+
         <button class="btn btn-info mb-3"
                 (click)="copyMessage(apiUrl() + 'tic/' + uri)"
                 value="Zaproś znajomego">
