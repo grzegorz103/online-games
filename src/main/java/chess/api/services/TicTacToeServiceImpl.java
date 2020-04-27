@@ -22,7 +22,7 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     @Override
     public Game hostGame(String sessionId, String uri) {
         Game game = new Game();
-        game.setXPlayer(new Player(sessionId, null));
+        game.setXPlayer(new Player(sessionId, null, false));
         game.setState(State.NEW);
         game.setCurrentPlayer(game.getXPlayer());
         this.games.put(uri, game);
@@ -33,7 +33,7 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     public Game joinGame(String uri, String sessionId) {
         Game game = this.games.get(uri);
         if (game != null) {
-            game.setOPlayer(new Player(sessionId, null));
+            game.setOPlayer(new Player(sessionId, null, false));
             game.setState(State.RUNNING);
         }
         return game;
@@ -68,7 +68,7 @@ public class TicTacToeServiceImpl implements TicTacToeService {
                 game.setWinner(game.getXPlayer());
             }
 
-            if ((Objects.equals(map[0], Constants.O_PLAYER) && Objects.equals(map[1], Constants.O_PLAYER) && Objects.equals(map[2], Constants.O_PLAYER)) || (Objects.equals(map[3], Constants.O_PLAYER) && Objects.equals(map[4], Constants.O_PLAYER) && Objects.equals(map[5], Constants.O_PLAYER)) ||(Objects.equals(map[6], Constants.O_PLAYER) && Objects.equals(map[7], Constants.O_PLAYER) && Objects.equals(map[8], Constants.O_PLAYER))) {
+            if ((Objects.equals(map[0], Constants.O_PLAYER) && Objects.equals(map[1], Constants.O_PLAYER) && Objects.equals(map[2], Constants.O_PLAYER)) || (Objects.equals(map[3], Constants.O_PLAYER) && Objects.equals(map[4], Constants.O_PLAYER) && Objects.equals(map[5], Constants.O_PLAYER)) || (Objects.equals(map[6], Constants.O_PLAYER) && Objects.equals(map[7], Constants.O_PLAYER) && Objects.equals(map[8], Constants.O_PLAYER))) {
                 game.setState(State.CLOSED);
                 game.setWinner(game.getOPlayer());
             }
@@ -92,12 +92,48 @@ public class TicTacToeServiceImpl implements TicTacToeService {
                 game.setState(State.CLOSED);
                 game.setWinner(game.getXPlayer());
             }
+
+            if (Arrays.stream(map).filter(Objects::nonNull).count() == Constants.TIC_TAC_TOE_MAP_SIZE) {
+                game.setDraw(true);
+            }
         }
     }
 
     @Override
     public Map<String, ? extends Game> getGames() {
         return this.games;
+    }
+
+    @Override
+    public Game rematch(String uri, String sessionId) {
+        Game game = this.games.get(uri);
+        if (game != null) {
+            if (game.getState() == State.CLOSED) {
+                if (Objects.equals(game.getXPlayer().getSessionId(), sessionId)) {
+                    game.getXPlayer().setRematchRequestSend(true);
+                } else if (Objects.equals(game.getOPlayer().getSessionId(), sessionId)) {
+                    game.getOPlayer().setRematchRequestSend(true);
+                }
+
+                if (game.getOPlayer().isRematchRequestSend() && game.getXPlayer().isRematchRequestSend()) {
+                    resetGame(game);
+                }
+            } else {
+                return null;
+            }
+        }
+        return game;
+    }
+
+    private void resetGame(Game game) {
+        game.setDraw(false);
+        game.setState(State.RUNNING);
+        game.setWinner(null);
+        game.setMap(new String[9]);
+        Player xTemp = game.getXPlayer();
+        game.setXPlayer(game.getOPlayer());
+        game.setOPlayer(xTemp);
+        game.setCurrentPlayer(game.getXPlayer());
     }
 
     @Scheduled(fixedRate = Constants.REMOVE_INACTIVE_TIC_TAC_TOE_GAMES)

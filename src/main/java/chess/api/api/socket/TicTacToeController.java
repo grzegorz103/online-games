@@ -50,4 +50,14 @@ public class TicTacToeController {
         sendingOperations.convertAndSendToUser(game.getXPlayer().getSessionId(), "/queue/tic", game, WebSocketUtils.getMessageHeaders(game.getXPlayer().getSessionId()));
     }
 
+    @MessageMapping("/tic/rematch/{uri}")
+    public void rematch(@Header("simpSessionId") String sessionId,
+                        @DestinationVariable String uri) {
+        Game game = ticTacToeService.rematch(uri, sessionId);
+        if (game != null) {
+            sendingOperations.convertAndSendToUser(game.getOPlayer().getSessionId(), "/queue/tic", game, WebSocketUtils.getMessageHeaders(game.getOPlayer().getSessionId()));
+            sendingOperations.convertAndSendToUser(game.getXPlayer().getSessionId(), "/queue/tic", game, WebSocketUtils.getMessageHeaders(game.getXPlayer().getSessionId()));
+        }
+    }
+
 }

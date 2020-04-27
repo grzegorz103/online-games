@@ -135,4 +135,7 @@ export class TicTacToeComponent implements OnInit {
     this.snackBar.open(message, null, config);
   }
 
+  sendRematchOffer() {
+    this.ws.send("/app/tic/rematch/" + this.uri, {}, {});
+  }
 }
