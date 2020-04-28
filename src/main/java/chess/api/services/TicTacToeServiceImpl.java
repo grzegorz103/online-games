@@ -141,7 +141,7 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     public void removeInactiveGames() {
         this.games
                 .values()
-                .removeIf(e -> e.getState() == State.CLOSED);
+                .removeIf(e -> e.getState() == State.CLOSED && e.getXPlayer() == null && e.getOPlayer() == null);
     }
 
 }
