@@ -23,16 +23,16 @@
           <span *ngIf="game.currentPlayer.sessionId === game.xplayer.sessionId">X</span>
           <span *ngIf="game.currentPlayer.sessionId === game.oplayer.sessionId">O</span>
         </p>
-        <button *ngIf="game.state === 'CLOSED'" class="btn btn-success mr-2" (click)="sendRematchOffer()">Rewanż
+        <button *ngIf="game.state === 'CLOSED'" class="btn btn-success mr-2 mt-2" (click)="sendRematchOffer()">Rewanż
         </button>
         <span
           *ngIf="game.state==='CLOSED'&&(sessionId===game.oplayer.sessionId && game.oplayer.rematchRequestSend)
-          || (sessionId === game.xplayer.sessionId && game.xplayer.rematchRequestSend)">Wysłano prośbę o rewanż</span>
+          || (sessionId === game.xplayer.sessionId && game.xplayer.rematchRequestSend)" class="blinking">Wysłano prośbę o rewanż</span>
         <span
           *ngIf="game.state==='CLOSED' && (sessionId!==game.oplayer.sessionId && game.oplayer.rematchRequestSend)
-          || (sessionId !== game.xplayer.sessionId && game.xplayer.rematchRequestSend)">Przeciwnik chce rewanżu</span>
+          || (sessionId !== game.xplayer.sessionId && game.xplayer.rematchRequestSend)" class="blinking">Przeciwnik chce rewanżu</span>
 
-        <button class="btn btn-info mb-3"
+        <button class="btn btn-info mb-3" *ngIf="game.state === 'NEW'"
                 (click)="copyMessage(apiUrl() + 'tic/' + uri)"
                 value="Zaproś znajomego">
           Zaproś znajomego
