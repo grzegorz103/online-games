@@ -81,7 +81,7 @@ export class TicTacToeComponent implements OnInit {
         that.game = JSON.parse(message.body);
         that.loading = false;
         if (that.game.state == 'CLOSED' && !that.game.oplayer.rematchRequestSend && !that.game.xplayer.rematchRequestSend) {
-          alert('Koniec')
+          alert('Gracz ' + (that.game.xplayer.winner ? 'X' : 'Y') + ' wygrał!');
         }
 
         if (that.requestOfferSent) {
@@ -108,9 +108,8 @@ export class TicTacToeComponent implements OnInit {
       that.ws.subscribe("/user/queue/tic", message => {
         that.game = JSON.parse(message.body);
         that.loading = false;
-        console.log(message.body)
         if (that.game.state == 'CLOSED' && !that.game.oplayer.rematchRequestSend && !that.game.xplayer.rematchRequestSend) {
-          alert('Koniec')
+          alert('Gracz ' + (that.game.xplayer.winner ? 'X' : 'Y') + ' wygrał!');
         }
         if (that.requestOfferSent) {
           that.requestOfferSent = false;

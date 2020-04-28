@@ -10,9 +10,12 @@ public class Player extends BaseUser {
 
     private boolean rematchRequestSend;
 
-    public Player(String sessionId, String username, boolean rematchRequestSend) {
+    private boolean winner;
+
+    public Player(String sessionId, String username, boolean rematchRequestSend, boolean winner) {
         super(sessionId, username);
         this.rematchRequestSend = rematchRequestSend;
+        this.winner = winner;
     }
 
 }
