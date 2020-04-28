@@ -11,3 +11,14 @@ mat-grid-tile {
   background-image: url('../../assets/o.svg') !important;
   background-size: contain;
 }
+
+.blinking{
+  animation: blink 1s linear infinite;
+  color: white;
+}
+
+@keyframes blink{
+  0%{opacity: 0;}
+  50%{opacity: .5;}
+  100%{opacity: 1;}
+}
