@@ -22,7 +22,7 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     @Override
     public Game hostGame(String sessionId, String uri) {
         Game game = new Game();
-        game.setXPlayer(new Player(sessionId, null, false));
+        game.setXPlayer(new Player(sessionId, null, false, false));
         game.setState(State.NEW);
         game.setCurrentPlayer(game.getXPlayer());
         this.games.put(uri, game);
@@ -33,7 +33,7 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     public Game joinGame(String uri, String sessionId) {
         Game game = this.games.get(uri);
         if (game != null) {
-            game.setOPlayer(new Player(sessionId, null, false));
+            game.setOPlayer(new Player(sessionId, null, false, false));
             game.setState(State.RUNNING);
         }
         return game;
@@ -65,32 +65,32 @@ public class TicTacToeServiceImpl implements TicTacToeService {
             String[] map = game.getMap();
             if ((Objects.equals(map[0], Constants.X_PLAYER) && Objects.equals(map[1], Constants.X_PLAYER) && Objects.equals(map[2], Constants.X_PLAYER)) || (Objects.equals(map[3], Constants.X_PLAYER) && Objects.equals(map[4], Constants.X_PLAYER) && Objects.equals(map[5], Constants.X_PLAYER)) || (Objects.equals(map[6], Constants.X_PLAYER) && Objects.equals(map[7], Constants.X_PLAYER) && Objects.equals(map[8], Constants.X_PLAYER))) {
                 game.setState(State.CLOSED);
-                game.setWinner(game.getXPlayer());
+                game.getXPlayer().setWinner(true);
             }
 
             if ((Objects.equals(map[0], Constants.O_PLAYER) && Objects.equals(map[1], Constants.O_PLAYER) && Objects.equals(map[2], Constants.O_PLAYER)) || (Objects.equals(map[3], Constants.O_PLAYER) && Objects.equals(map[4], Constants.O_PLAYER) && Objects.equals(map[5], Constants.O_PLAYER)) || (Objects.equals(map[6], Constants.O_PLAYER) && Objects.equals(map[7], Constants.O_PLAYER) && Objects.equals(map[8], Constants.O_PLAYER))) {
                 game.setState(State.CLOSED);
-                game.setWinner(game.getOPlayer());
+                game.getOPlayer().setWinner(true);
             }
 
             if ((Objects.equals(map[0], Constants.X_PLAYER) && Objects.equals(map[3], Constants.X_PLAYER) && Objects.equals(map[6], Constants.X_PLAYER)) || (Objects.equals(map[1], Constants.X_PLAYER) && Objects.equals(map[4], Constants.X_PLAYER) && Objects.equals(map[7], Constants.X_PLAYER)) || (Objects.equals(map[2], Constants.X_PLAYER) && Objects.equals(map[5], Constants.X_PLAYER) && Objects.equals(map[8], Constants.X_PLAYER))) {
                 game.setState(State.CLOSED);
-                game.setWinner(game.getXPlayer());
+                game.getXPlayer().setWinner(true);
             }
 
             if ((Objects.equals(map[0], Constants.O_PLAYER) && Objects.equals(map[3], Constants.O_PLAYER) && Objects.equals(map[6], Constants.O_PLAYER)) || (Objects.equals(map[1], Constants.O_PLAYER) && Objects.equals(map[4], Constants.O_PLAYER) && Objects.equals(map[7], Constants.O_PLAYER)) || (Objects.equals(map[2], Constants.O_PLAYER) && Objects.equals(map[5], Constants.O_PLAYER) && Objects.equals(map[8], Constants.O_PLAYER))) {
                 game.setState(State.CLOSED);
-                game.setWinner(game.getXPlayer());
+                game.getOPlayer().setWinner(true);
             }
 
             if ((Objects.equals(map[0], Constants.X_PLAYER) && Objects.equals(map[4], Constants.X_PLAYER) && Objects.equals(map[8], Constants.X_PLAYER)) || (Objects.equals(map[2], Constants.X_PLAYER) && Objects.equals(map[4], Constants.X_PLAYER) && Objects.equals(map[6], Constants.X_PLAYER))) {
                 game.setState(State.CLOSED);
-                game.setWinner(game.getXPlayer());
+                game.getXPlayer().setWinner(true);
             }
 
             if ((Objects.equals(map[0], Constants.O_PLAYER) && Objects.equals(map[4], Constants.O_PLAYER) && Objects.equals(map[8], Constants.O_PLAYER)) || (Objects.equals(map[2], Constants.O_PLAYER) && Objects.equals(map[4], Constants.O_PLAYER) && Objects.equals(map[6], Constants.O_PLAYER))) {
                 game.setState(State.CLOSED);
-                game.setWinner(game.getXPlayer());
+                game.getOPlayer().setWinner(true);
             }
 
             if (Arrays.stream(map).filter(Objects::nonNull).count() == Constants.TIC_TAC_TOE_MAP_SIZE) {
@@ -126,7 +126,8 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     private void resetGame(Game game) {
         game.setDraw(false);
         game.setState(State.RUNNING);
-        game.setWinner(null);
+        game.getOPlayer().setWinner(false);
+        game.getXPlayer().setWinner(false);
         game.setMap(new String[9]);
         Player xTemp = game.getXPlayer();
         game.setXPlayer(game.getOPlayer());
@@ -140,7 +141,7 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     public void removeInactiveGames() {
         this.games
                 .values()
-                .removeIf(e -> e.getState() == State.CLOSED);
+                .removeIf(e -> e.getState() == State.CLOSED && e.getXPlayer() == null && e.getOPlayer() == null);
     }
 
 }
