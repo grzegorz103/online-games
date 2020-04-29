@@ -4,7 +4,6 @@ import chess.api.api.utils.WebSocketUtils;
 import chess.api.domain.ticTacToe.Game;
 import chess.api.services.declarations.TicTacToeService;
 import chess.api.utils.URIGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;

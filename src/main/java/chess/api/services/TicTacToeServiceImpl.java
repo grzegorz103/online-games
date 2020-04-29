@@ -93,7 +93,9 @@ public class TicTacToeServiceImpl implements TicTacToeService {
                 game.getOPlayer().setWinner(true);
             }
 
-            if (Arrays.stream(map).filter(Objects::nonNull).count() == Constants.TIC_TAC_TOE_MAP_SIZE) {
+            if (Arrays.stream(map)
+                    .filter(Objects::nonNull)
+                    .count() == Constants.TIC_TAC_TOE_MAP_SIZE) {
                 game.setDraw(true);
             }
         }
@@ -125,7 +127,8 @@ public class TicTacToeServiceImpl implements TicTacToeService {
 
     @Override
     public Game getByPlayerSessionId(String sessionId) {
-        return this.games.values()
+        return this.games
+                .values()
                 .stream()
                 .filter(e -> isPlayerInGame(sessionId, e))
                 .findFirst()
