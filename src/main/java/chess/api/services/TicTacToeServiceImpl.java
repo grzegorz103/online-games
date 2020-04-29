@@ -93,7 +93,9 @@ public class TicTacToeServiceImpl implements TicTacToeService {
                 game.getOPlayer().setWinner(true);
             }
 
-            if (Arrays.stream(map).filter(Objects::nonNull).count() == Constants.TIC_TAC_TOE_MAP_SIZE) {
+            if (Arrays.stream(map)
+                    .filter(Objects::nonNull)
+                    .count() == Constants.TIC_TAC_TOE_MAP_SIZE) {
                 game.setDraw(true);
             }
         }
@@ -121,6 +123,27 @@ public class TicTacToeServiceImpl implements TicTacToeService {
             }
         }
         return game;
+    }
+
+    @Override
+    public Game getByPlayerSessionId(String sessionId) {
+        return this.games
+                .values()
+                .stream()
+                .filter(e -> isPlayerInGame(sessionId, e))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+    }
+
+    private boolean isPlayerInGame(String sessionId, Game game) {
+        return Objects.equals(game.getXPlayer().getSessionId(), sessionId)
+                || Objects.equals(game.getOPlayer().getSessionId(), sessionId);
+    }
+
+    @Override
+    public void abandonGame(String sessionId) {
+        Game game = getByPlayerSessionId(sessionId);
+        game.setState(State.ABANDONED);
     }
 
     private void resetGame(Game game) {
