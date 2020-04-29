@@ -3,11 +3,12 @@ package chess.api.services;
 import chess.api.domain.publicChat.Member;
 import chess.api.services.declarations.PublicChatService;
 import chess.api.utils.MemberComparator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PublicChatServiceImpl implements PublicChatService {

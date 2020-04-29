@@ -4,6 +4,7 @@ public enum State {
 
     NEW,
     RUNNING,
+    ABANDONED,
     CLOSED
 
 }
