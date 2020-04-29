@@ -15,4 +15,8 @@ public interface TicTacToeService {
     Map<String, ? extends Game> getGames();
 
     Game rematch(String uri, String sessionId);
+
+    Game getByPlayerSessionId(String sessionId);
+
+    void abandonGame(String sessionId);
 }

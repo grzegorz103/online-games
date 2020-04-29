@@ -5,11 +5,15 @@ import chess.api.domain.ticTacToe.Game;
 import chess.api.services.declarations.TicTacToeService;
 import chess.api.utils.URIGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import java.util.Objects;
 
 @Controller
 public class TicTacToeController {
@@ -57,6 +61,16 @@ public class TicTacToeController {
         Game game = ticTacToeService.rematch(uri, sessionId);
         sendingOperations.convertAndSendToUser(game.getOPlayer().getSessionId(), "/queue/tic", game, WebSocketUtils.getMessageHeaders(game.getOPlayer().getSessionId()));
         sendingOperations.convertAndSendToUser(game.getXPlayer().getSessionId(), "/queue/tic", game, WebSocketUtils.getMessageHeaders(game.getXPlayer().getSessionId()));
+    }
+
+    @EventListener
+    public void handleSessionDisconnect(SessionDisconnectEvent event) {
+        Game playersGame = ticTacToeService.getByPlayerSessionId(event.getSessionId());
+        ticTacToeService.abandonGame(event.getSessionId());
+        if (Objects.equals(playersGame.getOPlayer().getSessionId(), event.getSessionId()))
+            sendingOperations.convertAndSendToUser(playersGame.getXPlayer().getSessionId(),"/queue/tic", playersGame, WebSocketUtils.getMessageHeaders(playersGame.getXPlayer().getSessionId()));
+        else
+            sendingOperations.convertAndSendToUser(playersGame.getOPlayer().getSessionId(), "/queue/tic", playersGame, WebSocketUtils.getMessageHeaders(playersGame.getOPlayer().getSessionId()));
     }
 
 }

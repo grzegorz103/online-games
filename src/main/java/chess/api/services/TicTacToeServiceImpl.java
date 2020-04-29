@@ -123,6 +123,26 @@ public class TicTacToeServiceImpl implements TicTacToeService {
         return game;
     }
 
+    @Override
+    public Game getByPlayerSessionId(String sessionId) {
+        return this.games.values()
+                .stream()
+                .filter(e -> isPlayerInGame(sessionId, e))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+    }
+
+    private boolean isPlayerInGame(String sessionId, Game game) {
+        return Objects.equals(game.getXPlayer().getSessionId(), sessionId)
+                || Objects.equals(game.getOPlayer().getSessionId(), sessionId);
+    }
+
+    @Override
+    public void abandonGame(String sessionId) {
+        Game game = getByPlayerSessionId(sessionId);
+        game.setState(State.ABANDONED);
+    }
+
     private void resetGame(Game game) {
         game.setDraw(false);
         game.setState(State.RUNNING);
