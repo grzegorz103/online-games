@@ -6,17 +6,17 @@
   </div>
 
   <div *ngIf="!publicChatService.loading">
-    <div class="row h-75">
+    <div class="row h-75 mt-2">
       <div class="col-8 h-75" style="height: 60vh">
-        <mat-card style="max-height: 75vh; overflow-y: auto" #scrollMe>
-          <div *ngFor="let message of publicChatService.messages">
-            <mat-card
-              [ngClass]="message.authorSessionId === publicChatService.sessionId ? 'my-message' : 'other-message'"
-              style="max-height: 80vh">
+        <div style="overflow-y: auto; height:75vh" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+          <mat-card>
+            <mat-card *ngFor="let message of publicChatService.messages"
+                      [ngClass]="message.authorSessionId === publicChatService.sessionId ? 'my-message' : 'other-message'"
+                      style="max-height: 80vh">
               {{ message.message }}
             </mat-card>
-          </div>
-        </mat-card>
+          </mat-card>
+        </div>
       </div>
 
       <div class="col-4">
