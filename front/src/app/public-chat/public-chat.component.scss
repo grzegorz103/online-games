@@ -6,7 +6,7 @@
 }
 
 .my-message{
-  background-color:#8c8c8c;
+  background-color: #FF855D;
   width: 80%;
   word-wrap: break-word;
   margin-left: auto;
@@ -14,7 +14,7 @@
 }
 
 .other-message{
-  background-color:#99a7ff;
+  background-color:#FF4C7C;
   width: 80%;
   word-wrap: break-word;
   margin-bottom: 20px;
@@ -26,4 +26,23 @@
   width: 8px;
   background-color: #00ff00;
   border-radius: 10px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

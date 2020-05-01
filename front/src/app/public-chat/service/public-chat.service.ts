@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {ElementRef, Injectable, ViewChild} from '@angular/core';
 import {Message} from "../models/message";
 import {Member} from "../models/member";
 import {environment} from "../../../environments/environment";
@@ -18,6 +18,8 @@ export class PublicChatService {
   socket: WebSocket;
   loading: boolean = true;
   message = new Message();
+  //scroll: ElementRef;
+
 
   constructor(private auth: AuthService) {
     this.socket = new WebSocket(environment.wsUrl);
