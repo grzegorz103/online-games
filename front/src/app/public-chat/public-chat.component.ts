@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {environment} from "../../environments/environment";
 import * as Stomp from 'stompjs';
 import {Message} from "./models/message";
@@ -12,8 +12,6 @@ import {PublicChatService} from "./service/public-chat.service";
   styleUrls: ['./public-chat.component.scss']
 })
 export class PublicChatComponent implements OnInit {
-
-  @ViewChild('scrollMe', {read: ElementRef, static: false}) private scroll: ElementRef;
 
   constructor(private auth: AuthService,
               public publicChatService: PublicChatService) {
@@ -29,10 +27,6 @@ export class PublicChatComponent implements OnInit {
 
   sendMessage() {
     this.publicChatService.sendMessage();
-  }
-
-  public scrollBottom() {
-    this.scroll.nativeElement.scrollTop = this.scroll.nativeElement.scrollHeight;
   }
 
 }
