@@ -38,6 +38,16 @@
                 value="Zaproś znajomego">
           Zaproś znajomego
         </button>
+
+        Wyniki
+
+        Ty - Przyciwki
+        <span *ngFor="let result of results">
+        <p *ngIf="result === 1">1 - 0</p>
+        <p *ngIf="result ===0">0 - 0</p>
+        <p *ngIf="result === -1">0 - 1</p>
+        </span>
+
       </div>
     </div>
   </div>

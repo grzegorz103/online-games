@@ -23,6 +23,7 @@ export class TicTacToeComponent implements OnInit {
   awaitingPlayers = true;
   sessionId: string;
   requestOfferSent = false;
+  results: number[] = [];
 
   constructor(private route: ActivatedRoute,
               private snackBar: MatSnackBar) {
@@ -81,7 +82,20 @@ export class TicTacToeComponent implements OnInit {
         that.game = JSON.parse(message.body);
         that.loading = false;
         if (that.game.state == 'CLOSED' && !that.game.oplayer.rematchRequestSend && !that.game.xplayer.rematchRequestSend) {
-          alert('Gracz ' + (that.game.xplayer.winner ? 'X' : 'Y') + ' wygrał!');
+          if (that.game.draw) {
+            alert('Remis')
+            that.results.push(0);
+          } else {
+
+            alert('Gracz ' + (that.game.xplayer.winner ? 'X' : 'Y') + ' wygrał!');
+            if ((that.game.oplayer.sessionId === that.sessionId && that.game.oplayer.winner)
+              || (that.game.xplayer.sessionId === that.sessionId && that.game.xplayer.winner)) {
+              that.results.push(1);
+            } else {
+              that.results.push(-1);
+            }
+
+          }
         }
 
         if (that.requestOfferSent) {
@@ -101,7 +115,8 @@ export class TicTacToeComponent implements OnInit {
     this.ws.connect({}, function (frame) {
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
-      });   that.ws.subscribe("/user/queue/tic/id", message => {
+      });
+      that.ws.subscribe("/user/queue/tic/id", message => {
         that.sessionId = message.body;
         that.loading = false;
       });
@@ -109,8 +124,21 @@ export class TicTacToeComponent implements OnInit {
         that.game = JSON.parse(message.body);
         that.loading = false;
         if (that.game.state == 'CLOSED' && !that.game.oplayer.rematchRequestSend && !that.game.xplayer.rematchRequestSend) {
-          alert('Gracz ' + (that.game.xplayer.winner ? 'X' : 'Y') + ' wygrał!');
+          if (that.game.draw) {
+            alert("Remis");
+            that.results.push(0);
+          } else {
+            alert('Gracz ' + (that.game.xplayer.winner ? 'X' : 'Y') + ' wygrał!');
+            if ((that.game.oplayer.sessionId === that.sessionId && that.game.oplayer.winner)
+              || (that.game.xplayer.sessionId === that.sessionId && that.game.xplayer.winner)) {
+              that.results.push(1);
+            } else {
+              that.results.push(-1);
+            }
+
+          }
         }
+
         if (that.requestOfferSent) {
           that.requestOfferSent = false;
         }
@@ -119,7 +147,6 @@ export class TicTacToeComponent implements OnInit {
       that.ws.subscribe("/user/queue/tic/uri", message => {
         that.uri = message.body;
       });
-
 
 
       that.ws.send("/app/tic/host", {}, {});

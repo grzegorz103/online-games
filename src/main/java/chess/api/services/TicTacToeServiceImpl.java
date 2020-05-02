@@ -43,7 +43,7 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     public Game move(String uri, String sessionId, int move) {
         Game game = this.games.get(uri);
         if (game != null) {
-            if (game.getState() == State.RUNNING && Objects.equals(game.getCurrentPlayer().getSessionId(), sessionId)
+            if (game.getState().isRunning() && Objects.equals(game.getCurrentPlayer().getSessionId(), sessionId)
                     && StringUtils.isEmpty(game.getMap()[move])) {
                 game.getMap()[move] = Objects.equals(game.getOPlayer().getSessionId(), sessionId)
                         ? Constants.O_PLAYER
@@ -93,9 +93,11 @@ public class TicTacToeServiceImpl implements TicTacToeService {
                 game.getOPlayer().setWinner(true);
             }
 
-            if (Arrays.stream(map)
-                    .filter(Objects::nonNull)
-                    .count() == Constants.TIC_TAC_TOE_MAP_SIZE) {
+            if (game.getState().isRunning() &&
+                    Arrays.stream(map)
+                            .filter(Objects::nonNull)
+                            .count() == Constants.TIC_TAC_TOE_MAP_SIZE) {
+                game.setState(State.CLOSED);
                 game.setDraw(true);
             }
         }
