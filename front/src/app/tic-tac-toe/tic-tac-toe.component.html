@@ -38,6 +38,43 @@
                 value="Zaproś znajomego">
           Zaproś znajomego
         </button>
+
+        <mat-divider class="my-3"></mat-divider>
+        <table id="results" class="mx-auto" *ngIf="results.length > 0">
+
+          <tr>
+            <th>Ty</th>
+            <th *ngFor="let result of results">
+            <span *ngIf="result === 1">
+              1
+            </span>
+              <span *ngIf="result === 0">
+              0
+            </span>
+              <span *ngIf="result === -1">
+              0
+            </span>
+
+            </th>
+          </tr>
+
+          <tr>
+            <th>Przeciwnik</th>
+            <th *ngFor="let result of results">
+            <span *ngIf="result === 1">
+              0
+            </span>
+              <span *ngIf="result === 0">
+              0
+            </span>
+              <span *ngIf="result === -1">
+              1
+            </span>
+
+            </th>
+          </tr>
+
+        </table>
       </div>
     </div>
   </div>
