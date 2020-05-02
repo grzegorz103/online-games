@@ -7,5 +7,6 @@ export class Game {
   currentPlayer: Player;
   oplayer: Player;
   xplayer: Player;
+  draw: boolean;
 
 }

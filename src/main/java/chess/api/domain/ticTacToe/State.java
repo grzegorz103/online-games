@@ -5,6 +5,10 @@ public enum State {
     NEW,
     RUNNING,
     ABANDONED,
-    CLOSED
+    CLOSED;
+
+    public boolean isRunning() {
+        return this == RUNNING;
+    }
 
 }
