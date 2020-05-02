@@ -22,3 +22,17 @@ mat-grid-tile {
   50%{opacity: .5;}
   100%{opacity: 1;}
 }
+
+table th + th { border-left:1px solid #ddd; }
+
+#results, th, td{
+  padding: 10px;
+}
+
+table tr {
+  border-bottom: 1px solid #ddd;
+}
+
+table tr:last-child {
+   border-bottom: 0;
+ }
