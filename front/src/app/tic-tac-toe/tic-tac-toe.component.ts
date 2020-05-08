@@ -171,7 +171,7 @@ export class TicTacToeComponent implements OnInit {
     selBox.select();
     document.execCommand('copy');
     document.body.removeChild(selBox);
-    this.openSnackbar('Skopiowano do schowka')
+    this.openSnackbar('Skopiowano link do schowka')
   }
 
   openSnackbar(message: string) {

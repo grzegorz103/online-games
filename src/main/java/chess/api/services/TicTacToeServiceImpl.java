@@ -138,8 +138,8 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     }
 
     private boolean isPlayerInGame(String sessionId, Game game) {
-        return Objects.equals(game.getXPlayer().getSessionId(), sessionId)
-                || Objects.equals(game.getOPlayer().getSessionId(), sessionId);
+        return (game.getXPlayer() != null && Objects.equals(game.getXPlayer().getSessionId(), sessionId))
+                || (game.getOPlayer() != null && Objects.equals(game.getOPlayer().getSessionId(), sessionId));
     }
 
     @Override
