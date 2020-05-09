@@ -20,6 +20,7 @@ Live demo available at https://online-games-69bcf.firebaseapp.com/
 - REST, Websocket API
 - Angular 8
 - Auth0
+- CircleCI
 
 ## Features:
 
