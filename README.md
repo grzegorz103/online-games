@@ -3,6 +3,7 @@
 
 ## Table of contents
 * [General info](#general-info)
+* [Live demo](#live-demo)
 * [Technologies](#technologies)
 * [Features](#features)
 * [Setup](#setup)
