@@ -35,6 +35,8 @@ public class TicTacToeServiceImpl implements TicTacToeService {
         if (game != null) {
             game.setOPlayer(new Player(sessionId, null, false, false));
             game.setState(State.RUNNING);
+        } else {
+            throw new IllegalArgumentException();
         }
         return game;
     }
@@ -56,7 +58,10 @@ public class TicTacToeServiceImpl implements TicTacToeService {
 
                 checkWin(game);
             }
+        } else {
+            throw new IllegalArgumentException();
         }
+
         return game;
     }
 
@@ -123,7 +128,10 @@ public class TicTacToeServiceImpl implements TicTacToeService {
                     resetGame(game);
                 }
             }
+        }else{
+            throw new IllegalArgumentException();
         }
+
         return game;
     }
 
