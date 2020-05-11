@@ -75,7 +75,7 @@ export class TicTacToeComponent implements OnInit {
         alert("Error " + message.body);
       });
       that.ws.subscribe("/user/queue/tic/id", message => {
-        that.randomId = message.body;
+        that.randomId = JSON.parse(message.body);
         that.loading = false;
       });
       that.ws.subscribe("/user/queue/tic", message => {
@@ -117,7 +117,7 @@ export class TicTacToeComponent implements OnInit {
         alert("Error " + message.body);
       });
       that.ws.subscribe("/user/queue/tic/id", message => {
-        that.randomId = message.body;
+        that.randomId = JSON.parse(message.body);
         that.loading = false;
       });
       that.ws.subscribe("/user/queue/tic", message => {
