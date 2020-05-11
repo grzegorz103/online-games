@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -21,14 +22,14 @@ public class Message extends BaseMessage {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate creationDate;
 
-    private String authorSessionId;
+    private UUID authorRandomId;
 
     private String authorUsername;
 
-    public Message(String message, LocalDate creationDate, String authorSessionId, String authorUsername) {
+    public Message(String message, LocalDate creationDate, UUID authorRandomId, String authorUsername) {
         super(message);
         this.creationDate = creationDate;
-        this.authorSessionId = authorSessionId;
+        this.authorRandomId = authorRandomId;
         this.authorUsername = authorUsername;
     }
 

@@ -21,20 +21,20 @@
         </mat-grid-list>
         <div class="row">
           <div class="mx-auto">
-            <p *ngIf="game.state=='RUNNING' && sessionId === game.currentPlayer.sessionId">Twój ruch
-              <span *ngIf="game.currentPlayer.sessionId === game.xplayer.sessionId">X</span>
-              <span *ngIf="game.currentPlayer.sessionId === game.oplayer.sessionId">O</span>
+            <p *ngIf="game.state=='RUNNING' && randomId === game.currentPlayer.randomId">Twój ruch
+              <span *ngIf="game.currentPlayer.randomId === game.xplayer.randomId">X</span>
+              <span *ngIf="game.currentPlayer.randomId === game.oplayer.randomId">O</span>
             </p>
             <button *ngIf="game.state === 'CLOSED'" class="btn btn-success mr-2 mt-2" (click)="sendRematchOffer()">
               Rewanż
             </button>
             <span *ngIf="game.state === 'ABANDONED'">Przeciwnik porzucił grę</span>
             <span
-              *ngIf="game.state==='CLOSED'&&(sessionId===game.oplayer.sessionId && game.oplayer.rematchRequestSend)
-          || (sessionId === game.xplayer.sessionId && game.xplayer.rematchRequestSend)" class="blinking">Wysłano prośbę o rewanż</span>
+              *ngIf="game.state==='CLOSED'&&(randomId===game.oplayer.randomId && game.oplayer.rematchRequestSend)
+          || (randomId === game.xplayer.randomId && game.xplayer.rematchRequestSend)" class="blinking">Wysłano prośbę o rewanż</span>
             <span
-              *ngIf="game.state==='CLOSED' && (sessionId!==game.oplayer.sessionId && game.oplayer.rematchRequestSend)
-          || (sessionId !== game.xplayer.sessionId && game.xplayer.rematchRequestSend)" class="blinking">Przeciwnik chce rewanżu</span>
+              *ngIf="game.state==='CLOSED' && (randomId!==game.oplayer.randomId && game.oplayer.rematchRequestSend)
+          || (randomId !== game.xplayer.randomId && game.xplayer.rematchRequestSend)" class="blinking">Przeciwnik chce rewanżu</span>
           </div>
         </div>
         <div class="row">

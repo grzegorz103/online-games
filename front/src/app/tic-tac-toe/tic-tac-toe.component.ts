@@ -21,7 +21,7 @@ export class TicTacToeComponent implements OnInit {
   readonly Y_POINT: string = "O";
   loading = true;
   awaitingPlayers = true;
-  sessionId: string;
+  randomId: string;
   requestOfferSent = false;
   results: number[] = [];
 
@@ -75,7 +75,7 @@ export class TicTacToeComponent implements OnInit {
         alert("Error " + message.body);
       });
       that.ws.subscribe("/user/queue/tic/id", message => {
-        that.sessionId = message.body;
+        that.randomId = message.body;
         that.loading = false;
       });
       that.ws.subscribe("/user/queue/tic", message => {
@@ -88,8 +88,8 @@ export class TicTacToeComponent implements OnInit {
           } else {
 
             alert('Gracz ' + (that.game.xplayer.winner ? 'X' : 'Y') + ' wygrał!');
-            if ((that.game.oplayer.sessionId === that.sessionId && that.game.oplayer.winner)
-              || (that.game.xplayer.sessionId === that.sessionId && that.game.xplayer.winner)) {
+            if ((that.game.oplayer.randomId === that.randomId && that.game.oplayer.winner)
+              || (that.game.xplayer.randomId === that.randomId && that.game.xplayer.winner)) {
               that.results.push(1);
             } else {
               that.results.push(-1);
@@ -117,7 +117,7 @@ export class TicTacToeComponent implements OnInit {
         alert("Error " + message.body);
       });
       that.ws.subscribe("/user/queue/tic/id", message => {
-        that.sessionId = message.body;
+        that.randomId = message.body;
         that.loading = false;
       });
       that.ws.subscribe("/user/queue/tic", message => {
@@ -129,8 +129,8 @@ export class TicTacToeComponent implements OnInit {
             that.results.push(0);
           } else {
             alert('Gracz ' + (that.game.xplayer.winner ? 'X' : 'Y') + ' wygrał!');
-            if ((that.game.oplayer.sessionId === that.sessionId && that.game.oplayer.winner)
-              || (that.game.xplayer.sessionId === that.sessionId && that.game.xplayer.winner)) {
+            if ((that.game.oplayer.randomId === that.randomId && that.game.oplayer.winner)
+              || (that.game.xplayer.randomId === that.randomId && that.game.xplayer.winner)) {
               that.results.push(1);
             } else {
               that.results.push(-1);
