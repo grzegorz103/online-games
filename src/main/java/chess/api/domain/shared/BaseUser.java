@@ -11,11 +11,11 @@ import java.util.UUID;
 @NoArgsConstructor
 public abstract class BaseUser {
 
+    @JsonIgnore
     protected String sessionId;
 
     protected String username;
 
-    @JsonIgnore
     private final UUID randomId = UUID.randomUUID();
 
     public BaseUser(String sessionId, String username) {
