@@ -1,14 +1,15 @@
 package chess.api.services.declarations;
 
 import chess.api.domain.ticTacToe.Game;
+import chess.api.domain.ticTacToe.Player;
 
 import java.util.Map;
 
 public interface TicTacToeService {
 
-    Game hostGame(String sessionId, String uri);
+    Game hostGame(Player player, String uri);
 
-    Game joinGame(String uri, String sessionId);
+    Game joinGame(String uri, Player player);
 
     Game move(String uri, String sessionId, int move);
 

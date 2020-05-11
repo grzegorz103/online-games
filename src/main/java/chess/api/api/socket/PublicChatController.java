@@ -33,8 +33,9 @@ public class PublicChatController {
     @SendTo("/topic/public/chat")
     public Message joinChat(@DestinationVariable String username,
                             @Header("simpSessionId") String sessionId) {
-        chatService.addMember(new Member(sessionId, username));
-        messagingTemplate.convertAndSendToUser(sessionId, "/queue/public/chat/id", sessionId, WebSocketUtils.getMessageHeaders(sessionId));
+        Member member = new Member(sessionId, username);
+        chatService.addMember(member);
+        messagingTemplate.convertAndSendToUser(sessionId, "/queue/public/chat/id", member.getRandomId(), WebSocketUtils.getMessageHeaders(sessionId));
         messagingTemplate.convertAndSend("/queue/public/chat/users", chatService.getMembers());
         return new Message(username + " dołącza do chatu", LocalDate.now(), null, username);
     }

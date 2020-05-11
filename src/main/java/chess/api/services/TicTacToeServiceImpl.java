@@ -20,9 +20,9 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     private final Map<String, Game> games = new ConcurrentHashMap<>();
 
     @Override
-    public Game hostGame(String sessionId, String uri) {
+    public Game hostGame(Player player, String uri) {
         Game game = new Game();
-        game.setXPlayer(new Player(sessionId, null, false, false));
+        game.setXPlayer(player);
         game.setState(State.NEW);
         game.setCurrentPlayer(game.getXPlayer());
         this.games.put(uri, game);
@@ -30,10 +30,10 @@ public class TicTacToeServiceImpl implements TicTacToeService {
     }
 
     @Override
-    public Game joinGame(String uri, String sessionId) {
+    public Game joinGame(String uri, Player player) {
         Game game = this.games.get(uri);
         if (game != null) {
-            game.setOPlayer(new Player(sessionId, null, false, false));
+            game.setOPlayer(player);
             game.setState(State.RUNNING);
         } else {
             throw new IllegalArgumentException();
@@ -129,7 +129,7 @@ public class TicTacToeServiceImpl implements TicTacToeService {
                     resetGame(game);
                 }
             }
-        }else{
+        } else {
             throw new IllegalArgumentException();
         }
 
