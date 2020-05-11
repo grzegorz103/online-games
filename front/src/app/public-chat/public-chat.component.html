@@ -4,14 +4,13 @@
     <mat-spinner class="mx-auto"></mat-spinner>
     <div class="text-center w-100"><i>Uruchamianie serwera</i></div>
   </div>
-
   <div *ngIf="!publicChatService.loading">
     <div class="row h-75 mt-2">
       <div class="col-8 h-75" style="height: 60vh">
         <div style="overflow-y: auto; height:75vh" #scrollMe [scrollTop]="scrollMe.scrollHeight">
           <mat-card>
             <mat-card *ngFor="let message of publicChatService.messages"
-                      [ngClass]="message.authorSessionId === publicChatService.sessionId ? 'my-message' : 'other-message'"
+                      [ngClass]="message.authorRandomId === publicChatService.randomId ? 'my-message' : 'other-message'"
                       style="max-height: 80vh">
               {{ message.message }}
             </mat-card>

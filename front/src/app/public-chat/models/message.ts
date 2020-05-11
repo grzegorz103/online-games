@@ -1,7 +1,7 @@
 export class Message {
 
   message: string = '';
-  authorSessionId: string;
+  authorRandomId: string = '';
 
   clearMessage(): void {
     this.message = '';

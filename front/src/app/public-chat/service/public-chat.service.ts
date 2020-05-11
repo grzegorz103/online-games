@@ -13,7 +13,7 @@ export class PublicChatService {
   ws: any;
   username;
   messages: Message[] = [];
-  sessionId: string;
+  randomId: string;
   members: Member[] = [];
   socket: WebSocket;
   loading: boolean = true;
@@ -42,7 +42,7 @@ export class PublicChatService {
       });
 
       that.ws.subscribe("/user/queue/public/chat/id", message => {
-        that.sessionId = message.body;
+        that.randomId = JSON.parse(message.body);
         that.loading = false;
       });
 
