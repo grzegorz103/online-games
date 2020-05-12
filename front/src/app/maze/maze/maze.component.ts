@@ -205,7 +205,6 @@ export class MazeComponent implements OnInit, OnDestroy {
           this.engine.setLevel(new Master());
           break;
       }
-      // diagramy przypadkow uzycia, aktywnosci, sekwencji
     }
   }
 

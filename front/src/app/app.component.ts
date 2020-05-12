@@ -1,6 +1,6 @@
 import {Component, ViewChild, HostListener} from '@angular/core';
 import {MatSidenav} from '@angular/material/sidenav';
-import {AuthService} from "./auth.service";
+import {AuthService} from "./security/auth.service";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 
 @Component({
