@@ -13,9 +13,9 @@ public class MazeController {
     @Autowired
     private MazeServiceImpl mazeService;
 
-    @GetMapping
+   /* @GetMapping
     @PreAuthorize("isAuthenticated()")
     public Message saveMaze(){
         return new Message("test");
-    }
+    }*/
 }
