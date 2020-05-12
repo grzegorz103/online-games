@@ -2,7 +2,7 @@ import {ElementRef, Injectable, ViewChild} from '@angular/core';
 import {Message} from "../models/message";
 import {Member} from "../models/member";
 import {environment} from "../../../environments/environment";
-import {AuthService} from "../../auth.service";
+import {AuthService} from "../../security/auth.service";
 import * as Stomp from 'stompjs';
 
 @Injectable({
