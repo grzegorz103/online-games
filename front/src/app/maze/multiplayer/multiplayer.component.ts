@@ -11,7 +11,7 @@ import {environment} from "../../../environments/environment";
 import {Point} from "../models/point";
 import {Message} from "../models/message";
 import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
-import {AuthService} from "../../auth.service";
+import {AuthService} from "../../security/auth.service";
 
 @Component({
   selector: 'app-multiplayer',

@@ -14,7 +14,7 @@ import {MultiplayerComponent} from './maze/multiplayer/multiplayer.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {PublicChatComponent} from './public-chat/public-chat.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-import {InterceptorService} from "./interceptor.service";
+import {InterceptorService} from "./security/interceptor.service";
 import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { TicTacToeComponent } from './tic-tac-toe/tic-tac-toe.component';

@@ -4,7 +4,7 @@ import {BoardComponent} from './board/board.component';
 import {MazeComponent} from './maze/maze/maze.component';
 import {MultiplayerComponent} from "./maze/multiplayer/multiplayer.component";
 import {PublicChatComponent} from "./public-chat/public-chat.component";
-import {AuthGuard} from "./auth.guard";
+import {AuthGuard} from "./security/auth.guard";
 import {TicTacToeComponent} from "./tic-tac-toe/tic-tac-toe.component";
 
 

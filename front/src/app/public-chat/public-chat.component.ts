@@ -3,7 +3,7 @@ import {environment} from "../../environments/environment";
 import * as Stomp from 'stompjs';
 import {Message} from "./models/message";
 import {Member} from "./models/member";
-import {AuthService} from "../auth.service";
+import {AuthService} from "../security/auth.service";
 import {PublicChatService} from "./service/public-chat.service";
 
 @Component({

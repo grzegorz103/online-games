@@ -9,6 +9,11 @@
 
       <div *ngIf="!isLoading()">
         <div class="mx-auto height">
+          <div class="row">
+            <div class="mx-auto h4">
+              Użyj WSAD aby sterować
+            </div>
+          </div>
           <div id="maze">
             <div *ngFor="let x of getMazePoints(); let i = index" class="maze-row">
               <div *ngFor="let y of x; let j = index" class="maze-col">
