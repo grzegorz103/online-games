@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {environment} from "../../environments/environment";
 import {ActivatedRoute} from "@angular/router";
 import * as Stomp from 'stompjs';
@@ -27,6 +27,7 @@ export class TicTacToeComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private snackBar: MatSnackBar) {
+    this.closeWindowAction();
     this.uri = this.route.snapshot.paramMap.get('game');
     this.socket = new WebSocket(environment.wsUrl);
     this.ws = Stomp.over(this.socket);
@@ -47,6 +48,12 @@ export class TicTacToeComponent implements OnInit {
   initGrid() {
     for (let i: number = 0; i < 9; i++) {
       this.game.map[i] = ''
+    }
+  }
+
+  closeWindowAction() {
+    window.onbeforeunload = function(event){
+      event.returnValue = 'Czy napewno chcesz opuścić gre?';
     }
   }
 

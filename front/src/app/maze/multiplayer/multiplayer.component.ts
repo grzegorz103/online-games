@@ -42,6 +42,7 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.closeWindowAction();
     this.uri = this.route.snapshot.paramMap.get('game');
     this.socket = new WebSocket(environment.wsUrl);
     this.ws = Stomp.over(this.socket);
@@ -79,6 +80,12 @@ export class MultiplayerComponent implements OnInit, OnDestroy {
     } while (!MultiplayerComponent.maze.points[x][y].occupied);
 
     return new Point(x, y, null);
+  }
+
+  closeWindowAction() {
+    window.onbeforeunload = function(event){
+      event.returnValue = 'Czy napewno chcesz opuścić gre?';
+    }
   }
 
   wsUrl() {
