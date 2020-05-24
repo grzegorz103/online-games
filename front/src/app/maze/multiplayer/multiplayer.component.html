@@ -63,7 +63,7 @@
           <button class="ml-3 btn btn-success" (click)="sendMessage()">Wyślij</button>
         </div>
       </div>
-      <ul class="list-group">
+      <ul class="list-group"  #scrollMe [scrollTop]="scrollMe.scrollHeight">
         <li *ngFor="let message of messages" class="list-group-item">{{message.message}}</li>
       </ul>
 

@@ -38,6 +38,7 @@
 .list-group-item {
   background-color: transparent;
   border: 3px solid #673ab7;
+  padding-right: 10px;
 }
 
 .maze-col {
@@ -94,4 +95,11 @@
   width: 8px;
   background-color: #00ff00;
   border-radius: 10px;
+}
+
+.list-group{
+  height:50vh;
+  max-height: 50vh;
+  overflow-y:auto;
+  -webkit-overflow-scrolling: touch;
 }
