@@ -18,6 +18,7 @@ import {InterceptorService} from "./security/interceptor.service";
 import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { TicTacToeComponent } from './tic-tac-toe/tic-tac-toe.component';
+import { MainComponent } from './main/main.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -30,7 +31,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MazeComponent,
     MultiplayerComponent,
     PublicChatComponent,
-    TicTacToeComponent
+    TicTacToeComponent,
+    MainComponent
   ],
   imports: [
     BrowserModule,
