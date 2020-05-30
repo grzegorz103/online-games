@@ -25,11 +25,13 @@ public class Message extends BaseMessage {
 
     private String authorUsername;
 
-    public Message(String message, Instant creationDate, UUID authorRandomId, String authorUsername) {
+    private MessageType type;
+
+    public Message(String message, Instant creationDate, UUID authorRandomId, String authorUsername, MessageType type) {
         super(message);
         this.creationDate = creationDate;
         this.authorRandomId = authorRandomId;
         this.authorUsername = authorUsername;
+        this.type = type;
     }
-
 }

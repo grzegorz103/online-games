@@ -3,6 +3,7 @@ package chess.api.api.socket;
 import chess.api.api.utils.WebSocketUtils;
 import chess.api.domain.publicChat.Member;
 import chess.api.domain.publicChat.Message;
+import chess.api.domain.publicChat.MessageType;
 import chess.api.services.PublicChatServiceImpl;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.*;
@@ -33,7 +34,7 @@ public class PublicChatController {
         chatService.addMember(member);
         messagingTemplate.convertAndSendToUser(sessionId, "/queue/public/chat/id", member.getRandomId(), WebSocketUtils.getMessageHeaders(sessionId));
         messagingTemplate.convertAndSend("/queue/public/chat/users", chatService.getMembers());
-        return new Message(username + " dołącza do chatu", Instant.now(), member.getRandomId(), username);
+        return new Message(username + " dołącza do chatu", Instant.now(), member.getRandomId(), username, MessageType.SYSTEM);
     }
 
     @MessageMapping("/public/chat/send")

@@ -2,6 +2,7 @@ package chess.api.services;
 
 import chess.api.domain.publicChat.Member;
 import chess.api.domain.publicChat.Message;
+import chess.api.domain.publicChat.MessageType;
 import chess.api.services.declarations.PublicChatService;
 import chess.api.utils.MemberComparator;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,7 @@ public class PublicChatServiceImpl implements PublicChatService {
         message.setAuthorUsername(author.getUsername());
         message.setAuthorRandomId(author.getRandomId());
         message.setCreationDate(Instant.now());
+        message.setType(MessageType.MESSAGE);
         return message;
     }
 
