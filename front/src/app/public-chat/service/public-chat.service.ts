@@ -18,6 +18,7 @@ export class PublicChatService {
   socket: WebSocket;
   loading: boolean = true;
   message = new Message();
+
   //scroll: ElementRef;
 
 
@@ -47,7 +48,7 @@ export class PublicChatService {
       });
 
       that.ws.subscribe("/topic/public/chat", message => {
-        that.messages.push(JSON.parse(message.body));
+        that.processMessage(JSON.parse(message.body));
       });
 
       that.ws.subscribe("/queue/public/chat/users", message => {
@@ -66,6 +67,15 @@ export class PublicChatService {
 
     this.ws.send("/app/public/chat/send", {}, JSON.stringify(this.message));
     this.message.clearMessage();
+  }
+
+  processMessage(message: Message) {
+    if (message.type === 'MESSAGE') {
+      message.message = (message.authorRandomId === this.randomId
+        ? 'Ty: '
+        : message.authorUsername + ': ') + message.message;
+    }
+    this.messages.push(message);
   }
 
 }
