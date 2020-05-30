@@ -13,6 +13,11 @@
                       [ngClass]="message.authorRandomId === publicChatService.randomId ? 'my-message' : 'other-message'"
                       style="max-height: 80vh">
               {{ message.message }}
+              <div class="date-text d-flex justify-content-end">
+                <div
+                  matTooltip="{{message.creationDate| amUtc | amLocal | amCalendar }}">{{ message.creationDate | amUtc | amTimeAgo}}
+                </div>
+              </div>
             </mat-card>
           </mat-card>
         </div>
