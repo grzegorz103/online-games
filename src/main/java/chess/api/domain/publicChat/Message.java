@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -26,11 +27,14 @@ public class Message extends BaseMessage {
 
     private String authorUsername;
 
-    public Message(String message, LocalDate creationDate, UUID authorRandomId, String authorUsername) {
+    private Instant date;
+
+    public Message(String message, LocalDate creationDate, UUID authorRandomId, String authorUsername, Instant date) {
         super(message);
         this.creationDate = creationDate;
         this.authorRandomId = authorRandomId;
         this.authorUsername = authorUsername;
+        this.date = date;
     }
 
 }
