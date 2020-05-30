@@ -1,10 +1,14 @@
 package chess.api.services;
 
 import chess.api.domain.publicChat.Member;
+import chess.api.domain.publicChat.Message;
 import chess.api.services.declarations.PublicChatService;
 import chess.api.utils.MemberComparator;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,6 +49,16 @@ public class PublicChatServiceImpl implements PublicChatService {
                 .filter(e -> Objects.equals(e.getSessionId(), sessionId))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    @Override
+    public Message processMessage(Message message,
+                                  String sessionId) {
+        Member author = this.getMemberBySessionId(sessionId);
+        message.setAuthorUsername(author.getUsername());
+        message.setAuthorRandomId(author.getRandomId());
+        message.setCreationDate(Instant.now());
+        return message;
     }
 
 }

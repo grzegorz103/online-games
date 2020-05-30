@@ -1,17 +1,15 @@
 package chess.api.domain.publicChat;
 
 import chess.api.domain.shared.BaseMessage;
+import chess.api.utils.CustomInstantDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import lombok.AllArgsConstructor;
+import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
@@ -19,22 +17,19 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Message extends BaseMessage {
 
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate creationDate;
+    @JsonDeserialize(using = CustomInstantDeserializer.class)
+    @JsonSerialize(using = InstantSerializer.class)
+    private Instant creationDate;
 
     private UUID authorRandomId;
 
     private String authorUsername;
 
-    private Instant date;
-
-    public Message(String message, LocalDate creationDate, UUID authorRandomId, String authorUsername, Instant date) {
+    public Message(String message, Instant creationDate, UUID authorRandomId, String authorUsername) {
         super(message);
         this.creationDate = creationDate;
         this.authorRandomId = authorRandomId;
         this.authorUsername = authorUsername;
-        this.date = date;
     }
 
 }
