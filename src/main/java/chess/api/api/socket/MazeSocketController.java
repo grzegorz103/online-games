@@ -80,16 +80,4 @@ public class MazeSocketController {
         }
     }
 
-    @EventListener
-    public void handleSessionDisconnect(SessionDisconnectEvent event) {
-        Set<Maze> gamesByPlayer = mazeService.getGamesByPlayer(event.getSessionId());
-        mazeService.removePlayer(event.getSessionId());
-        if (gamesByPlayer != null) {
-            gamesByPlayer.forEach(e -> e.getPlayers()
-                    .forEach(f ->
-                            messagingTemplate.convertAndSendToUser(f.getSessionId(), "/queue/reply", e.getPlayers(), WebSocketUtils.getMessageHeaders(f.getSessionId()))
-                    ));
-        }
-    }
-
 }
