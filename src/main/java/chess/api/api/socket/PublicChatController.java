@@ -44,10 +44,4 @@ public class PublicChatController {
         return chatService.processMessage(message, sessionId);
     }
 
-    @EventListener
-    public void handleSessionDisconnect(SessionDisconnectEvent event) {
-        chatService.removeMember(event.getSessionId());
-        messagingTemplate.convertAndSend("/queue/public/chat/users", chatService.getMembers());
-    }
-
 }

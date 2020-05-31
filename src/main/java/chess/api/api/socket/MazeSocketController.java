@@ -80,9 +80,4 @@ public class MazeSocketController {
         }
     }
 
-    @EventListener
-    public void handleSessionDisconnect(SessionDisconnectEvent event) {
-
-    }
-
 }

@@ -18,6 +18,8 @@ public class PublicChatSessionHandler extends SessionHandler {
 
     @Override
     void handleSessionDisconnect(SessionDisconnectEvent sessionDisconnectEvent) {
-
+        chatService.removeMember(sessionDisconnectEvent.getSessionId());
+        sendingOperations.convertAndSend("/queue/public/chat/users", chatService.getMembers());
     }
+
 }
