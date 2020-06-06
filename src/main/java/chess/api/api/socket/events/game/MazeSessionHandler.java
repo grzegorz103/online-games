@@ -1,4 +1,4 @@
-package chess.api.api.socket.events;
+package chess.api.api.socket.events.game;
 
 import chess.api.api.utils.WebSocketUtils;
 import chess.api.domain.maze.Maze;
@@ -11,7 +11,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import java.util.Set;
 
 @Component
-public class MazeSessionHandler extends SessionHandler {
+public class MazeSessionHandler extends GameSessionHandler {
 
     private final MazeService mazeService;
 
@@ -29,7 +29,8 @@ public class MazeSessionHandler extends SessionHandler {
             gamesByPlayer.forEach(e -> e.getPlayers()
                     .forEach(f ->
                             sendingOperations.convertAndSendToUser(f.getSessionId(), "/queue/reply", e.getPlayers(), WebSocketUtils.getMessageHeaders(f.getSessionId()))
-                    ));
+                    )
+            );
         }
     }
 

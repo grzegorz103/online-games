@@ -13,21 +13,27 @@ import java.util.List;
 @Slf4j
 public class SessionDisconnectListener implements ApplicationListener<SessionDisconnectEvent> {
 
-    private final List<SessionHandler> sessionHandlers;
+    private final List<SessionDisconnectHandler> sessionHandlers;
 
-    public SessionDisconnectListener(List<SessionHandler> sessionHandlers) {
+    @Autowired
+    public SessionDisconnectListener(List<SessionDisconnectHandler> sessionHandlers) {
         this.sessionHandlers = sessionHandlers;
     }
 
+
     @Override
     public void onApplicationEvent(@NotNull SessionDisconnectEvent sessionDisconnectEvent) {
-        for (SessionHandler e : this.sessionHandlers) {
+        for (SessionDisconnectHandler sessionDisconnect : this.sessionHandlers) {
             try {
-                e.handleSessionDisconnect(sessionDisconnectEvent);
+                sessionDisconnect.handleSessionDisconnect(sessionDisconnectEvent);
             } catch (Exception exception) {
                 log.error(exception.getMessage());
             }
         }
+    }
+
+    public void addSessionHandler(SessionDisconnectHandler sessionHandler) {
+        this.sessionHandlers.add(sessionHandler);
     }
 
 }
