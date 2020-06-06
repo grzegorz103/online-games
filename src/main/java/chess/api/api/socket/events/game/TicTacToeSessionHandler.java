@@ -1,9 +1,9 @@
-package chess.api.api.socket.events;
+package chess.api.api.socket.events.game;
 
+import chess.api.api.socket.events.game.GameSessionHandler;
 import chess.api.api.utils.WebSocketUtils;
 import chess.api.domain.ticTacToe.Game;
 import chess.api.services.declarations.TicTacToeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -11,7 +11,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import java.util.Objects;
 
 @Component
-public class TicTacToeSessionHandler extends SessionHandler {
+public class TicTacToeSessionHandler extends GameSessionHandler {
 
     private final TicTacToeService ticTacToeService;
 
@@ -22,7 +22,7 @@ public class TicTacToeSessionHandler extends SessionHandler {
     }
 
     @Override
-    void handleSessionDisconnect(SessionDisconnectEvent sessionDisconnectEvent) {
+    public void handleSessionDisconnect(SessionDisconnectEvent sessionDisconnectEvent) {
         String sessionId = sessionDisconnectEvent.getSessionId();
         Game playersGame = ticTacToeService.getByPlayerSessionId(sessionId);
         ticTacToeService.abandonGame(sessionId);
