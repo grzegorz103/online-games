@@ -126,7 +126,7 @@ export class BoardComponent implements OnInit {
       let pieceClicked = this.getPieceByPoint(pointClicked.row, pointClicked.col);
       if (pieceClicked) {
 
-        if (pieceClicked.color === Color.BLACK) {
+        if (pieceClicked.color === Color.BLACK || this.isPieceBound(pieceClicked)) {
           return;
         }
         if (this.whiteKingChecked && (pieceClicked instanceof King)) {
@@ -151,6 +151,19 @@ export class BoardComponent implements OnInit {
         }
       }
     }
+  }
+
+  private isPieceBound(pieceClicked: Piece) {
+    if (pieceClicked instanceof King) {
+      return;
+    }
+    let tempBoard = BoardComponent.pieces;
+    BoardComponent.pieces = BoardComponent.pieces.filter(piece =>
+      (piece.point.col !== pieceClicked.point.col) || (piece.point.row !== pieceClicked.point.row)
+    );
+    let isBound = this.isKingInCheck(Color.WHITE, BoardComponent.pieces);
+    BoardComponent.pieces = tempBoard;
+    return isBound;
   }
 
   getCrossedMoves(whitePieces: Point[]) {
