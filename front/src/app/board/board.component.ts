@@ -1,13 +1,13 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { Point } from '../models/point';
-import { Piece } from '../models/piece';
-import { Pawn } from '../models/pawn';
-import { Color } from '../models/color';
-import { Rook } from '../models/rook';
-import { Bishop } from '../models/bishop';
-import { Knight } from '../models/knight';
-import { Queen } from '../models/queen';
-import { King } from '../models/king';
+import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
+import {Point} from '../models/point';
+import {Piece} from '../models/piece';
+import {Pawn} from '../models/pawn';
+import {Color} from '../models/color';
+import {Rook} from '../models/rook';
+import {Bishop} from '../models/bishop';
+import {Knight} from '../models/knight';
+import {Queen} from '../models/queen';
+import {King} from '../models/king';
 
 
 @Component({
@@ -27,6 +27,7 @@ export class BoardComponent implements OnInit {
   startY: any;
   activePiece: Piece;
 
+  private blackPieceThatGivesCheck: Piece;
   board: number[][];
   static pieces: Piece[];
   possibleMoves: Point[];
@@ -40,7 +41,7 @@ export class BoardComponent implements OnInit {
   blackKingChecked = false;
   whiteKingChecked = false;
 
-  @ViewChild('dragRef', { static: false }) boardRef: ElementRef;
+  @ViewChild('dragRef', {static: false}) boardRef: ElementRef;
 
   constructor() {
     this.board = [];
@@ -111,7 +112,7 @@ export class BoardComponent implements OnInit {
       //   this.possibleMoves = activePiece.getPossibleMoves();
       if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
         this.movePiece(this.activePiece, pointClicked);
-        if (this.isKingInCheck(Color.BLACK)) {
+        if (this.isKingInCheck(Color.BLACK, BoardComponent.pieces)) {
           this.blackKingChecked = true;
         } else {
           this.blackKingChecked = false;
@@ -139,13 +140,25 @@ export class BoardComponent implements OnInit {
           this.possibleCaptures = pieceClicked.getPossibleCaptures();
           this.possibleMoves = pieceClicked.getPossibleMoves();
         } else if (this.whiteKingChecked && !(pieceClicked instanceof King)) {
-         // tu bede musial wybrac tylko te ruchy, ktore moga zablokowac szach
+          this.activePiece = pieceClicked;
+          this.getCrossedMoves(this.activePiece.getPossibleMoves());
+          this.selected = true;
+          // tu bede musial wybrac tylko te ruchy, ktore moga zablokowac szach
           // this.activePiece = pieceClicked;
-         // this.selected = true;
-         // this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
-         // this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
+          // this.selected = true;
+          // this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
+          // this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
         }
       }
+    }
+  }
+
+  getCrossedMoves(whitePieces: Point[]) {
+    this.possibleMoves = this.blackPieceThatGivesCheck.getCoveredFields()
+      .filter(e => whitePieces.some(f => f.col == e.col && f.row === f.row));
+    if (this.activePiece.getPossibleCaptures().some(e => e.row === this.blackPieceThatGivesCheck.point.row && e.col === this.blackPieceThatGivesCheck.point.col)) {
+
+      this.possibleCaptures.push(new Point(this.blackPieceThatGivesCheck.point.row, this.blackPieceThatGivesCheck.point.col));
     }
   }
 
@@ -174,10 +187,10 @@ export class BoardComponent implements OnInit {
       let yPos = event.y - this.boardRef.nativeElement.getBoundingClientRect().top;
       let boardHeight = this.boardRef.nativeElement.getBoundingClientRect().height;
       let boardWidth = this.boardRef.nativeElement.getBoundingClientRect().width;
-  
+
       xPos = Math.floor(xPos / (boardWidth / 8));
       yPos = Math.floor(yPos / (boardHeight / 8));
-  
+
       if (xPos === this.startX && yPos === this.startY) {
         console.log('d'); let piece = this.getPieceByPoint(yPos, xPos);
         if (piece === null) return;
@@ -256,21 +269,21 @@ export class BoardComponent implements OnInit {
         this.movePiece(randomPiece, randomPiece.getPossibleMoves()[Math.floor(Math.random() * randomPiece.getPossibleCaptures().length)]);
       }
 
-      if (this.isKingInCheck(Color.WHITE)) {
+      if (this.isKingInCheck(Color.WHITE, BoardComponent.pieces)) {
         this.whiteKingChecked = true;
+        this.blackPieceThatGivesCheck = randomPiece;
       } else {
         this.whiteKingChecked = false;
       }
     }
   }
 
-  isKingInCheck(color: Color): boolean {
-    let king = BoardComponent
-      .pieces
+  isKingInCheck(color: Color, piece: Piece[]): boolean {
+    let king = piece
       .find(e => e.color === color && e instanceof King);
 
     if (king) {
-      return BoardComponent.pieces.some(e => e.getPossibleCaptures().some(e => e.col === king.point.col && e.row === king.point.row) && e.color !== color);
+      return piece.some(e => e.getPossibleCaptures().some(e => e.col === king.point.col && e.row === king.point.row) && e.color !== color);
     }
     return false;
   }
