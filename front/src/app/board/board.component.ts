@@ -154,10 +154,15 @@ export class BoardComponent implements OnInit {
   }
 
   getCrossedMoves(whitePieces: Point[]) {
-    this.possibleMoves = this.blackPieceThatGivesCheck.getCoveredFields()
-      .filter(e => whitePieces.some(f => f.col == e.col && f.row === f.row));
+    let currentActivePiecePoint = this.activePiece.point;
+    this.activePiece.getPossibleMoves().forEach(piece => {
+      this.activePiece.point = piece;
+      if (!this.isKingInCheck(Color.WHITE, BoardComponent.pieces)) {
+        this.possibleMoves.push(this.activePiece.point);
+      }
+    });
+    this.activePiece.point = currentActivePiecePoint;
     if (this.activePiece.getPossibleCaptures().some(e => e.row === this.blackPieceThatGivesCheck.point.row && e.col === this.blackPieceThatGivesCheck.point.col)) {
-
       this.possibleCaptures.push(new Point(this.blackPieceThatGivesCheck.point.row, this.blackPieceThatGivesCheck.point.col));
     }
   }
