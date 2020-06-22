@@ -294,20 +294,23 @@ export class BoardComponent implements OnInit {
       return;
     }
 
-    if (destPiece instanceof King) {
+    if (piece instanceof King) {
       let squaresMoved = Math.abs(newPoint.col - piece.point.col);
-
       if (squaresMoved > 1) {
-        if (newPoint.col > 4) {
-          //  this.getPieceByPoint(0,)
+        if (newPoint.col < 3) {
+          let leftRook = BoardComponent.getPieceByField(piece.point.row, 0);
+          leftRook.point.col = 3;
         } else {
-
+          let rightRook = BoardComponent.getPieceByField(piece.point.row, 7);
+          rightRook.point.col = 5;
         }
       }
     }
     piece.point = newPoint;
     this.checkForPawnPromote(piece);
     this.checkIfPawnFirstMove(piece);
+    this.checkIfRookMoved(piece);
+    this.checkIfKingMoved(piece);
     // BoardComponent.pieces.push(piece);
     //    BoardComponent.pieces.delete(this.getPointByCoordinates(ySource, xSource));
     //  BoardComponent.pieces.set(new Point(yDest, xDest), piece);
@@ -506,6 +509,18 @@ export class BoardComponent implements OnInit {
     } else if (piece.color === Color.BLACK && piece.point.row === 7) {
       BoardComponent.pieces = BoardComponent.pieces.filter(e => e !== piece);
       BoardComponent.pieces.push(new Queen(piece.point, Color.BLACK, 'queen-black.png'));
+    }
+  }
+
+  private checkIfRookMoved(piece: Piece) {
+    if (piece instanceof Rook) {
+      piece.isMovedAlready = true;
+    }
+  }
+
+  private checkIfKingMoved(piece: Piece) {
+    if (piece instanceof King) {
+      piece.isMovedAlready = true;
     }
   }
 }
