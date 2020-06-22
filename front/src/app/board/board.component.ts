@@ -27,7 +27,7 @@ export class BoardComponent implements OnInit {
   startY: any;
   activePiece: Piece;
 
-  private blackPieceThatGivesCheck: Piece;
+  // private blackPieceThatGivesCheck: Piece;
   board: number[][];
   static pieces: Piece[];
   possibleMoves: Point[];
@@ -126,23 +126,26 @@ export class BoardComponent implements OnInit {
       let pieceClicked = this.getPieceByPoint(pointClicked.row, pointClicked.col);
       if (pieceClicked) {
 
-        if (pieceClicked.color === Color.BLACK || this.isPieceBound(pieceClicked)) {
+        if (pieceClicked.color === Color.BLACK) {
           return;
         }
         if (this.whiteKingChecked && (pieceClicked instanceof King)) {
           this.activePiece = pieceClicked;
           this.selected = true;
-          this.possibleCaptures = this.getPossibleCapturesForKingInCheck(Color.WHITE);
-          this.possibleMoves = this.getPossibleMovesForKingInCheck(Color.WHITE);
+          this.possibleCaptures = this.getPossibleCapturesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
+          this.possibleMoves = this.getPossibleMovesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
         } else if (!this.whiteKingChecked) {
           this.activePiece = pieceClicked;
           this.selected = true;
-          this.possibleCaptures = pieceClicked.getPossibleCaptures();
-          this.possibleMoves = pieceClicked.getPossibleMoves();
+          console.log('ne ma');
+          this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
+          this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !this.willMoveCauseCheck(pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
         } else if (this.whiteKingChecked && !(pieceClicked instanceof King)) {
           this.activePiece = pieceClicked;
-          this.getCrossedMoves(this.activePiece.getPossibleMoves());
+          this.possibleMoves = this.getPossibleMovesForKingInCheck2()
+          //    this.getCrossedMoves(this.activePiece.getPossibleMoves());
           this.selected = true;
+          this.possibleCaptures = this.getPossibleCapturesForKingInCheck2();
           // tu bede musial wybrac tylko te ruchy, ktore moga zablokowac szach
           // this.activePiece = pieceClicked;
           // this.selected = true;
@@ -153,32 +156,95 @@ export class BoardComponent implements OnInit {
     }
   }
 
+  public willMoveCauseCheck(row: number, col: number, destRow?: number, destCol?: number) {
+    let tempBoard = BoardComponent.pieces;
+    BoardComponent.pieces = BoardComponent.pieces.filter(piece =>
+      (piece.point.col !== col) || (piece.point.row !== row)
+    );
+
+    if (destRow && destCol) {
+      let piece = BoardComponent.getPieceByField(row, col);
+      if (piece) {
+        piece.point.row = destRow;
+        piece.point.col = destCol;
+      }
+    }
+    let isBound = this.isKingInCheck(Color.WHITE, BoardComponent.pieces);
+    console.log(isBound + " EE");
+    //let isBound = this.isKingInCheck(Color.WHITE, BoardComponent.pieces) && this.canPieceThatGivesCheckBeCaptured(pieceClicked);
+    BoardComponent.pieces = tempBoard;
+
+    if (destRow && destCol) {
+      let piece = BoardComponent.getPieceByField(row, col);
+      if (piece) {
+        piece.point.col = col;
+        piece.point.row = row;
+      }
+    }
+    return isBound;
+  }
+
+
   private isPieceBound(pieceClicked: Piece) {
     if (pieceClicked instanceof King) {
       return;
     }
+    let c, d;
+    //   if (this.blackPieceThatGivesCheck) {
+    //    c = this.getPossibleCapturesForKingInCheck2().length === 0;
+    //    console.log(c + " CC");
+    //    d = this.getPossibleMovesForKingInCheck2().length === 0;
+    //    console.log(d + " DD")
+    //   }
+
     let tempBoard = BoardComponent.pieces;
     BoardComponent.pieces = BoardComponent.pieces.filter(piece =>
       (piece.point.col !== pieceClicked.point.col) || (piece.point.row !== pieceClicked.point.row)
     );
+
+
     let isBound = this.isKingInCheck(Color.WHITE, BoardComponent.pieces);
+    console.log(isBound + " EE");
+    //let isBound = this.isKingInCheck(Color.WHITE, BoardComponent.pieces) && this.canPieceThatGivesCheckBeCaptured(pieceClicked);
     BoardComponent.pieces = tempBoard;
     return isBound;
   }
 
-  getCrossedMoves(whitePieces: Point[]) {
+  getPossibleMovesForKingInCheck2() {
     let currentActivePiecePoint = this.activePiece.point;
+    let tempPossibleMoves = [];
     this.activePiece.getPossibleMoves().forEach(piece => {
       this.activePiece.point = piece;
       if (!this.isKingInCheck(Color.WHITE, BoardComponent.pieces)) {
-        this.possibleMoves.push(this.activePiece.point);
+        tempPossibleMoves.push(this.activePiece.point);
       }
     });
+    console.log(tempPossibleMoves);
     this.activePiece.point = currentActivePiecePoint;
-    if (this.activePiece.getPossibleCaptures().some(e => e.row === this.blackPieceThatGivesCheck.point.row && e.col === this.blackPieceThatGivesCheck.point.col)) {
-      this.possibleCaptures.push(new Point(this.blackPieceThatGivesCheck.point.row, this.blackPieceThatGivesCheck.point.col));
-    }
+
+    return tempPossibleMoves;
   }
+
+
+  getPossibleCapturesForKingInCheck2() {
+    let currentActivePiecePoint = this.activePiece.point;
+    let tempPossibleCaptures = [];
+    this.activePiece.getPossibleCaptures().forEach(piece => {
+      let removedPiece = BoardComponent.getPieceByField(piece.row, piece.col);
+      console.log(removedPiece);
+      let removedPiecePoint = removedPiece.point;
+      removedPiece.point = new Point(-1, -1);
+      this.activePiece.point = piece;
+      if (!this.isKingInCheck(Color.WHITE, BoardComponent.pieces)) {
+        tempPossibleCaptures.push(this.activePiece.point);
+      }
+      removedPiece.point = removedPiecePoint;
+    });
+    this.activePiece.point = currentActivePiecePoint;
+
+    return tempPossibleCaptures;
+  }
+
 
   static isFieldTakenByEnemy(row: number, col: number, enemyColor: Color): boolean {
     if (row > 7 || row < 0 || col > 7 || col < 0) {
@@ -289,7 +355,7 @@ export class BoardComponent implements OnInit {
 
       if (this.isKingInCheck(Color.WHITE, BoardComponent.pieces)) {
         this.whiteKingChecked = true;
-        this.blackPieceThatGivesCheck = randomPiece;
+        //   this.blackPieceThatGivesCheck = randomPiece;
       } else {
         this.whiteKingChecked = false;
       }
@@ -365,9 +431,6 @@ export class BoardComponent implements OnInit {
 
   //czy jest pod biciem
   static isFieldUnderAttack(row: number, col: number, color: Color) {
-    console.log(BoardComponent.pieces.filter(e => e.color === color).some(e =>
-      e.getCoveredFields().some(f => f.row === row && f.col === col)));
-    BoardComponent.pieces.forEach(e => console.log(e.getCoveredFields()));
     let found = false;
     return BoardComponent.pieces.filter(e => e.color === color).some(e => e.getCoveredFields().some(f => f.col === col && f.row === row));
 
@@ -425,10 +488,11 @@ export class BoardComponent implements OnInit {
 
   static getPieceByField(row: number, col: number): Piece {
     if (BoardComponent.isFieldEmpty(row, col)) {
-      return null;
+      //   throw new Error('Piece not found');
+      return undefined;
     }
 
-    BoardComponent.pieces.find(e => e.point.col === col && e.point.row === row);
+    return BoardComponent.pieces.find(e => e.point.col === col && e.point.row === row);
   }
 
   checkForPawnPromote(piece: Piece) {
