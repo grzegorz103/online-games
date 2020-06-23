@@ -59,36 +59,38 @@ export class King extends Piece {
       possiblePoints.push(new Point(row + 1, col + 1));
     }
 
-    let longCastlePossible = true;
-    for (let i = col - 1; i > 0; --i) {
-      if (!BoardComponent.isFieldEmpty(row, i)) {
-        longCastlePossible = false;
-        break;
-      }
-    }
-
-    if (longCastlePossible && BoardComponent.getPieceByField(row, 0)) {
-      let leftRook = BoardComponent.getPieceByField(row, 0);
-      if (leftRook instanceof Rook) {
-        if (!leftRook.isMovedAlready) {
-          possiblePoints.push(new Point(row, col - 2));
+    if(!this.isMovedAlready){
+      let longCastlePossible = true;
+      for (let i = col - 1; i > 0; --i) {
+        if (!BoardComponent.isFieldEmpty(row, i) || BoardComponent.isFieldUnderAttack(row, i, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+          longCastlePossible = false;
+          break;
         }
       }
-    }
 
-    let shortCastlePossible = true;
-    for (let i = col + 1; i < 7; ++i) {
-      if (!BoardComponent.isFieldEmpty(row, i)) {
-        shortCastlePossible = false;
-        break;
+      if (longCastlePossible && BoardComponent.getPieceByField(row, 0)) {
+        let leftRook = BoardComponent.getPieceByField(row, 0);
+        if (leftRook instanceof Rook) {
+          if (!leftRook.isMovedAlready) {
+            possiblePoints.push(new Point(row, col - 2));
+          }
+        }
       }
-    }
 
-    if (shortCastlePossible && BoardComponent.getPieceByField(row, 7)) {
-      let rightRook = BoardComponent.getPieceByField(row, 7);
-      if (rightRook instanceof Rook) {
-        if (!rightRook.isMovedAlready) {
-          possiblePoints.push(new Point(row, col + 2));
+      let shortCastlePossible = true;
+      for (let i = col + 1; i < 7; ++i) {
+        if (!BoardComponent.isFieldEmpty(row, i) || BoardComponent.isFieldUnderAttack(row, i, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+          shortCastlePossible = false;
+          break;
+        }
+      }
+
+      if (shortCastlePossible && BoardComponent.getPieceByField(row, 7)) {
+        let rightRook = BoardComponent.getPieceByField(row, 7);
+        if (rightRook instanceof Rook) {
+          if (!rightRook.isMovedAlready) {
+            possiblePoints.push(new Point(row, col + 2));
+          }
         }
       }
     }
