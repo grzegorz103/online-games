@@ -146,7 +146,7 @@ export class BoardComponent implements OnInit {
           //    this.getCrossedMoves(this.activePiece.getPossibleMoves());
           this.selected = true;
           this.possibleCaptures = this.getPossibleCapturesForKingInCheck2();
-          // tu bede musial wybrac tylko te ruchy, ktore moga zablokowac szach
+          // tylko te ruchy, ktore moga zablokowac szach
           // this.activePiece = pieceClicked;
           // this.selected = true;
           // this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
@@ -156,30 +156,25 @@ export class BoardComponent implements OnInit {
     }
   }
 
-  public willMoveCauseCheck(row: number, col: number, destRow?: number, destCol?: number) {
+  public willMoveCauseCheck(row: number, col: number, destRow: number, destCol: number) {
     let tempBoard = BoardComponent.pieces;
-    BoardComponent.pieces = BoardComponent.pieces.filter(piece =>
-      (piece.point.col !== col) || (piece.point.row !== row)
-    );
-
-    if (destRow && destCol) {
-      let piece = BoardComponent.getPieceByField(row, col);
-      if (piece) {
-        piece.point.row = destRow;
-        piece.point.col = destCol;
+    /*  BoardComponent.pieces = BoardComponent.pieces.filter(piece =>
+        (piece.point.col !== col) || (piece.point.row !== row)
+      );*/
+    let srcPiece = BoardComponent.getPieceByField(row, col);
+    if (srcPiece) {
+      if (srcPiece) {
+        srcPiece.point.row = destRow;
+        srcPiece.point.col = destCol;
       }
     }
     let isBound = this.isKingInCheck(Color.WHITE, BoardComponent.pieces);
-    console.log(isBound + " EE");
     //let isBound = this.isKingInCheck(Color.WHITE, BoardComponent.pieces) && this.canPieceThatGivesCheckBeCaptured(pieceClicked);
-    BoardComponent.pieces = tempBoard;
+//    BoardComponent.pieces = tempBoard;
 
-    if (destRow && destCol) {
-      let piece = BoardComponent.getPieceByField(row, col);
-      if (piece) {
-        piece.point.col = col;
-        piece.point.row = row;
-      }
+    if (srcPiece) {
+      srcPiece.point.col = col;
+      srcPiece.point.row = row;
     }
     return isBound;
   }
