@@ -117,7 +117,7 @@ export class BoardComponent implements OnInit {
         } else {
           this.blackKingChecked = false;
         }
-        this.computerMove();
+        setTimeout(() => this.computerMove(), 150);
       }
       this.selected = false;
       this.possibleCaptures = [];
@@ -132,14 +132,13 @@ export class BoardComponent implements OnInit {
         if (this.whiteKingChecked && (pieceClicked instanceof King)) {
           this.activePiece = pieceClicked;
           this.selected = true;
-          this.possibleCaptures = this.getPossibleCapturesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(Color.WHITE,pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
-          this.possibleMoves = this.getPossibleMovesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(Color.WHITE,pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
+          this.possibleCaptures = this.getPossibleCapturesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(Color.WHITE, pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
+          this.possibleMoves = this.getPossibleMovesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(Color.WHITE, pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
         } else if (!this.whiteKingChecked) {
           this.activePiece = pieceClicked;
           this.selected = true;
-          console.log('ne ma');
-          this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.WHITE,pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
-          this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.WHITE,pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
+          this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.WHITE, pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
+          this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.WHITE, pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
         } else if (this.whiteKingChecked && !(pieceClicked instanceof King)) {
           this.activePiece = pieceClicked;
           this.possibleMoves = this.getPossibleMovesForKingInCheck2()
@@ -156,7 +155,7 @@ export class BoardComponent implements OnInit {
     }
   }
 
-  public willMoveCauseCheck(currentColor: Color,row: number, col: number, destRow: number, destCol: number) {
+  public willMoveCauseCheck(currentColor: Color, row: number, col: number, destRow: number, destCol: number) {
     let tempBoard = BoardComponent.pieces;
     /*  BoardComponent.pieces = BoardComponent.pieces.filter(piece =>
         (piece.point.col !== col) || (piece.point.row !== row)
@@ -341,13 +340,13 @@ export class BoardComponent implements OnInit {
 
     let blackPieces = BoardComponent.pieces
       .filter(e => e.color === Color.BLACK)
-      .filter(e => e.getPossibleMoves().filter(f => !this.willMoveCauseCheck(Color.BLACK,e.point.row, e.point.col, f.row, f.col)).length > 0
-        || e.getPossibleCaptures().filter(f => !this.willMoveCauseCheck(Color.BLACK,e.point.row, e.point.col, f.row, f.col)).length > 0);
+      .filter(e => e.getPossibleMoves().filter(f => !this.willMoveCauseCheck(Color.BLACK, e.point.row, e.point.col, f.row, f.col)).length > 0
+        || e.getPossibleCaptures().filter(f => !this.willMoveCauseCheck(Color.BLACK, e.point.row, e.point.col, f.row, f.col)).length > 0);
 
     if (blackPieces.length > 0) {
       let randomPiece = blackPieces[Math.floor(Math.random() * blackPieces.length)];
-      let possibleCaptures = randomPiece.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.BLACK,randomPiece.point.row, randomPiece.point.col, e.row, e.col));
-      let possibleMoves = randomPiece.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.BLACK,randomPiece.point.row, randomPiece.point.col, e.row, e.col));
+      let possibleCaptures = randomPiece.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.BLACK, randomPiece.point.row, randomPiece.point.col, e.row, e.col));
+      let possibleMoves = randomPiece.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.BLACK, randomPiece.point.row, randomPiece.point.col, e.row, e.col));
       if (possibleCaptures.length > 0) {
         this.movePiece(randomPiece, possibleCaptures[Math.floor(Math.random() * possibleCaptures.length)]);
       } else if (possibleMoves.length > 0) {
@@ -359,6 +358,12 @@ export class BoardComponent implements OnInit {
         //   this.blackPieceThatGivesCheck = randomPiece;
       } else {
         this.whiteKingChecked = false;
+      }
+
+      if (this.isKingInCheck(Color.BLACK, BoardComponent.pieces)) {
+        this.blackKingChecked = true;
+      } else {
+        this.blackKingChecked = false;
       }
     }
   }
