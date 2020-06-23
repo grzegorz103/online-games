@@ -362,18 +362,26 @@ export class BoardComponent implements OnInit {
       let possibleCaptures = randomPiece.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.BLACK, randomPiece.point.row, randomPiece.point.col, e.row, e.col));
       let possibleMoves = randomPiece.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.BLACK, randomPiece.point.row, randomPiece.point.col, e.row, e.col));
       if (possibleCaptures.length > 0) {
-        console.log('captu')
         this.movePiece(randomPiece, possibleCaptures[Math.floor(Math.random() * possibleCaptures.length)]);
       } else if (possibleMoves.length > 0) {
-        console.log('move')
         this.movePiece(randomPiece, possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
       }
 
       if (this.isKingInCheck(Color.WHITE, BoardComponent.pieces)) {
         this.whiteKingChecked = true;
+        if (!BoardComponent.pieces.filter(e => e.color === Color.WHITE)
+          .some(e => e.getPossibleMoves().some(f => !this.willMoveCauseCheck(Color.WHITE, e.point.row, e.point.col, f.row, f.col)
+            || e.getPossibleCaptures().some(f => !this.willMoveCauseCheck(Color.WHITE, e.point.row, e.point.col, f.row, f.col))))) {
+          alert('Szach mat! Czarny wygrał');
+        }
         //   this.blackPieceThatGivesCheck = randomPiece;
       } else {
         this.whiteKingChecked = false;
+      }
+      if (!BoardComponent.pieces.filter(e => e.color === Color.WHITE)
+        .some(e => e.getPossibleMoves().some(f => !this.willMoveCauseCheck(Color.WHITE, e.point.row, e.point.col, f.row, f.col)
+          || e.getPossibleCaptures().some(f => !this.willMoveCauseCheck(Color.WHITE, e.point.row, e.point.col, f.row, f.col))))) {
+        alert('Pat');
       }
 
       if (this.isKingInCheck(Color.BLACK, BoardComponent.pieces)) {
