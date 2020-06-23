@@ -7,7 +7,7 @@ import { King } from './king';
 export class Bishop extends Piece {
 
     constructor(point: Point, color: Color, image: string) {
-        super(point, color, image);
+        super(point, color, image, 3);
     }
 
     getPossibleMoves(): Point[] {

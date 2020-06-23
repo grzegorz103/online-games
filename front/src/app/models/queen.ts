@@ -7,9 +7,9 @@ import { King } from './king';
 export class Queen extends Piece {
 
     constructor(point: Point, color: Color, image: string) {
-        super(point, color, image);
+        super(point, color, image, 9);
     }
-    
+
     getPossibleMoves(): Point[] {
         let possiblePoints = [];
 
@@ -183,7 +183,7 @@ export class Queen extends Piece {
 
         let row = this.point.row;
         let col = this.point.col;
-        
+
         for (let i = row + 1; i < 8; ++i) { // dol
             if (BoardComponent.isFieldEmpty(i, col)){
                 possiblePoints.push(new Point(i, col));
@@ -275,5 +275,5 @@ export class Queen extends Piece {
 
         return possiblePoints;
     }
- 
+
 }

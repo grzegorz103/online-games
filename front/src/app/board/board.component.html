@@ -1,29 +1,38 @@
 <div class="container">
-    <div class="row">
-        <div class="col-3" style="font-size: 25px">
-            <div class="row" style="height:50%;">
-                AI
-            </div>
-            <div class="row">
-                Gracz
-            </div>
-        </div>
-        <div class="col-6">
-            <div id="board">
-                <div ngResizable id="drag" [rzMinWidth]="240" [rzMaxWidth]="2400" [rzMinHeight]="240"
-                    (mousedown)="onMouseDown($event)" #dragRef [rzMaxHeight]="2400" [rzAspectRatio]="aspectRatio">
-                    <div *ngFor="let row of board; let i = index" class="board-row">
-                        <div *ngFor="let col of row; let j = index" class="board-col"
-                            [ngClass]="[((i + j) %2 === 0 ) ?  'bg-black' : 'bg-shine', isXYInPossibleMoves(i,j) ? 'possible-point' : '', isXYInPossibleCaptures(i,j) ? 'possible-capture' : '']">
-                            <div *ngIf="getPieceByPoint(i, j)" style="height:100%; width:100%">
-                                <div [style.background-image]="'url(assets/'+getPieceByPoint(i,j).image + ')'"
-                                    [ngClass]="isKingChecked(getPieceByPoint(i,j)) ? 'king-check' : ''" class="piece">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="row">
+    <div class="col-md-1 info" style="font-size: 25px">
+      <div class="row" style="height:50%;">
+        AI
+      </div>
+      <div class="row">
+        Gracz
+      </div>
+
     </div>
+
+    <div class="progress progress-bar-vertical">
+      <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"
+           [style.height.%]="calculation">
+        <span class="sr-only"></span>
+      </div>
+    </div>
+
+    <div class="col-md-8" style="padding-left: 5px">
+      <div id="board">
+        <div ngResizable id="drag" [rzMinWidth]="240" [rzMaxWidth]="2400" [rzMinHeight]="240"
+             (mousedown)="onMouseDown($event)" #dragRef [rzMaxHeight]="2400" [rzAspectRatio]="aspectRatio">
+          <div *ngFor="let row of board; let i = index" class="board-row">
+            <div *ngFor="let col of row; let j = index" class="board-col"
+                 [ngClass]="[((i + j) %2 === 0 ) ?  'bg-black' : 'bg-shine', isXYInPossibleMoves(i,j) ? 'possible-point' : '', isXYInPossibleCaptures(i,j) ? 'possible-capture' : '']">
+              <div *ngIf="getPieceByPoint(i, j)" style="height:100%; width:100%">
+                <div [style.background-image]="'url(assets/'+getPieceByPoint(i,j).image + ')'"
+                     [ngClass]="isKingChecked(getPieceByPoint(i,j)) ? 'king-check' : ''" class="piece">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
