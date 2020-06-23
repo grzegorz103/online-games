@@ -2,10 +2,15 @@
   #board {
     width: 80vw !important;
     height: 80vw !important;
+    display: inline-block !important;
   }
 
   .info {
     display: none;
+  }
+
+  .progress-bar-vertical {
+    height: 80vw !important;
   }
 
 }

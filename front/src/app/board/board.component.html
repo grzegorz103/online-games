@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-1 info" style="font-size: 25px">
+    <div class="col-1 info" style="font-size: 25px">
       <div class="row" style="height:50%;">
         AI
       </div>
@@ -10,14 +10,14 @@
 
     </div>
 
-    <div class="progress progress-bar-vertical">
+    <div class="progress progress-bar-vertical"  >
       <div class="progress-bar" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"
            [style.height.%]="calculation">
         <span class="sr-only"></span>
       </div>
     </div>
 
-    <div class="col-md-8" style="padding-left: 5px">
+    <div  style="padding-left: 5px">
       <div id="board">
         <div ngResizable id="drag" [rzMinWidth]="240" [rzMaxWidth]="2400" [rzMinHeight]="240"
              (mousedown)="onMouseDown($event)" #dragRef [rzMaxHeight]="2400" [rzAspectRatio]="aspectRatio">
