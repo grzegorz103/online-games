@@ -27,7 +27,7 @@ export class BoardComponent implements OnInit {
   startY: any;
   activePiece: Piece;
 
-  // private blackPieceThatGivesCheck: Piece;
+  private blackPieceThatGivesCheck: Piece;
   board: number[][];
   static pieces: Piece[];
   possibleMoves: Point[];
