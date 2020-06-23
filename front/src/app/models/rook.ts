@@ -9,7 +9,7 @@ export class Rook extends Piece {
   isMovedAlready = false;
 
   constructor(point: Point, color: Color, image: string) {
-        super(point, color, image);
+        super(point, color, image, 5);
     }
 
     getPossibleMoves(): Point[] {

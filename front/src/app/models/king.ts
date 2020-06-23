@@ -13,7 +13,7 @@ export class King extends Piece {
   isCastling = false;
 
   constructor(point: Point, color: Color, image: string) {
-    super(point, color, image);
+    super(point, color, image, 0);
   }
 
   getPossibleMoves(): Point[] {

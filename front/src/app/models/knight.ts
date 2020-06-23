@@ -8,7 +8,7 @@ export class Knight extends Piece {
   isMovedAlready = false;
 
   constructor(point: Point, color: Color, image: string) {
-    super(point, color, image);
+    super(point, color, image, 3);
   }
 
   getPossibleMoves(): Point[] {
