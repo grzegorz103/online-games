@@ -161,20 +161,27 @@ export class BoardComponent implements OnInit {
         (piece.point.col !== col) || (piece.point.row !== row)
       );*/
     let srcPiece = BoardComponent.getPieceByField(row, col);
+    let destPiece = BoardComponent.getPieceByField(destRow, destCol);
+
     if (srcPiece) {
-      if (srcPiece) {
-        srcPiece.point.row = destRow;
-        srcPiece.point.col = destCol;
-      }
+      srcPiece.point.row = destRow;
+      srcPiece.point.col = destCol;
+    }
+
+    if (destPiece) {
+      BoardComponent.pieces = BoardComponent.pieces.filter(e => e !== destPiece);
     }
     let isBound = this.isKingInCheck(currentColor, BoardComponent.pieces);
-    //let isBound = this.isKingInCheck(Color.WHITE, BoardComponent.pieces) && this.canPieceThatGivesCheckBeCaptured(pieceClicked);
-//    BoardComponent.pieces = tempBoard;
 
     if (srcPiece) {
       srcPiece.point.col = col;
       srcPiece.point.row = row;
     }
+
+    if (destPiece) {
+      BoardComponent.pieces.push(destPiece);
+    }
+
     return isBound;
   }
 
@@ -345,11 +352,14 @@ export class BoardComponent implements OnInit {
 
     if (blackPieces.length > 0) {
       let randomPiece = blackPieces[Math.floor(Math.random() * blackPieces.length)];
+      console.log(randomPiece.point)
       let possibleCaptures = randomPiece.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.BLACK, randomPiece.point.row, randomPiece.point.col, e.row, e.col));
       let possibleMoves = randomPiece.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.BLACK, randomPiece.point.row, randomPiece.point.col, e.row, e.col));
       if (possibleCaptures.length > 0) {
+        console.log('captu')
         this.movePiece(randomPiece, possibleCaptures[Math.floor(Math.random() * possibleCaptures.length)]);
       } else if (possibleMoves.length > 0) {
+        console.log('move')
         this.movePiece(randomPiece, possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
       }
 
@@ -365,6 +375,8 @@ export class BoardComponent implements OnInit {
       } else {
         this.blackKingChecked = false;
       }
+    } else {
+      alert('Szach mat!');
     }
   }
 

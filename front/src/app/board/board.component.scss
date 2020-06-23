@@ -1,3 +1,10 @@
+@media only screen and (max-width: 768px) {
+ #board{
+   width: 70vw !important;
+   height: 70vw !important;
+ }
+}
+
 
 #board {
   width: 40vw;
