@@ -28,7 +28,7 @@ export class BoardComponent implements OnInit {
   startY: any;
   activePiece: Piece;
 
-  private blackPieceThatGivesCheck: Piece;
+  // private blackPieceThatGivesCheck: Piece;
   board: number[][];
   static pieces: Piece[];
   possibleMoves: Point[];
@@ -137,6 +137,7 @@ export class BoardComponent implements OnInit {
         if (this.whiteKingChecked && (pieceClicked instanceof King)) {
           this.activePiece = pieceClicked;
           this.selected = true;
+
           this.possibleCaptures = this.getPossibleCapturesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(Color.WHITE, pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
           this.possibleMoves = this.getPossibleMovesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(Color.WHITE, pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
         } else if (!this.whiteKingChecked) {
@@ -144,12 +145,14 @@ export class BoardComponent implements OnInit {
           this.selected = true;
           this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.WHITE, pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
           this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.WHITE, pieceClicked.point.row, pieceClicked.point.col, e.row, e.col));
+
         } else if (this.whiteKingChecked && !(pieceClicked instanceof King)) {
           this.activePiece = pieceClicked;
           this.possibleMoves = this.getPossibleMovesForKingInCheck2()
           //    this.getCrossedMoves(this.activePiece.getPossibleMoves());
           this.selected = true;
           this.possibleCaptures = this.getPossibleCapturesForKingInCheck2();
+
           // tylko te ruchy, ktore moga zablokowac szach
           // this.activePiece = pieceClicked;
           // this.selected = true;
@@ -250,7 +253,6 @@ export class BoardComponent implements OnInit {
 
     return tempPossibleCaptures;
   }
-
 
   static isFieldTakenByEnemy(row: number, col: number, enemyColor: Color): boolean {
     if (row > 7 || row < 0 || col > 7 || col < 0) {
@@ -369,6 +371,7 @@ export class BoardComponent implements OnInit {
 
       if (this.isKingInCheck(Color.WHITE, BoardComponent.pieces)) {
         this.whiteKingChecked = true;
+
         if (!BoardComponent.pieces.filter(e => e.color === Color.WHITE)
           .some(e => e.getPossibleMoves().some(f => !this.willMoveCauseCheck(Color.WHITE, e.point.row, e.point.col, f.row, f.col)
             || e.getPossibleCaptures().some(f => !this.willMoveCauseCheck(Color.WHITE, e.point.row, e.point.col, f.row, f.col))))) {
