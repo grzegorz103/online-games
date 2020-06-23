@@ -8,6 +8,7 @@ import {Bishop} from '../models/bishop';
 import {Knight} from '../models/knight';
 import {Queen} from '../models/queen';
 import {King} from '../models/king';
+import {log} from "util";
 
 
 @Component({
@@ -40,6 +41,8 @@ export class BoardComponent implements OnInit {
 
   blackKingChecked = false;
   whiteKingChecked = false;
+
+  calculation: number;
 
   @ViewChild('dragRef', {static: false}) boardRef: ElementRef;
 
@@ -90,6 +93,8 @@ export class BoardComponent implements OnInit {
     BoardComponent.pieces.push(new Bishop(new Point(7, 5), Color.WHITE, 'bishop-white.png'));
     BoardComponent.pieces.push(new Knight(new Point(7, 6), Color.WHITE, 'knight-white.png'));
     BoardComponent.pieces.push(new Rook(new Point(7, 7), Color.WHITE, 'rook-white.png'));
+
+    this.calculateAdvantage();
   }
 
   getPieceByPoint(row: number, col: number): Piece {
@@ -312,6 +317,7 @@ export class BoardComponent implements OnInit {
     this.checkIfPawnFirstMove(piece);
     this.checkIfRookMoved(piece);
     this.checkIfKingMoved(piece);
+    this.calculateAdvantage();
     // BoardComponent.pieces.push(piece);
     //    BoardComponent.pieces.delete(this.getPointByCoordinates(ySource, xSource));
     //  BoardComponent.pieces.set(new Point(yDest, xDest), piece);
@@ -356,18 +362,26 @@ export class BoardComponent implements OnInit {
       let possibleCaptures = randomPiece.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.BLACK, randomPiece.point.row, randomPiece.point.col, e.row, e.col));
       let possibleMoves = randomPiece.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.BLACK, randomPiece.point.row, randomPiece.point.col, e.row, e.col));
       if (possibleCaptures.length > 0) {
-        console.log('captu')
         this.movePiece(randomPiece, possibleCaptures[Math.floor(Math.random() * possibleCaptures.length)]);
       } else if (possibleMoves.length > 0) {
-        console.log('move')
         this.movePiece(randomPiece, possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
       }
 
       if (this.isKingInCheck(Color.WHITE, BoardComponent.pieces)) {
         this.whiteKingChecked = true;
+        if (!BoardComponent.pieces.filter(e => e.color === Color.WHITE)
+          .some(e => e.getPossibleMoves().some(f => !this.willMoveCauseCheck(Color.WHITE, e.point.row, e.point.col, f.row, f.col)
+            || e.getPossibleCaptures().some(f => !this.willMoveCauseCheck(Color.WHITE, e.point.row, e.point.col, f.row, f.col))))) {
+          alert('Szach mat! Czarny wygrał');
+        }
         //   this.blackPieceThatGivesCheck = randomPiece;
       } else {
         this.whiteKingChecked = false;
+      }
+      if (!BoardComponent.pieces.filter(e => e.color === Color.WHITE)
+        .some(e => e.getPossibleMoves().some(f => !this.willMoveCauseCheck(Color.WHITE, e.point.row, e.point.col, f.row, f.col)
+          || e.getPossibleCaptures().some(f => !this.willMoveCauseCheck(Color.WHITE, e.point.row, e.point.col, f.row, f.col))))) {
+        alert('Pat');
       }
 
       if (this.isKingInCheck(Color.BLACK, BoardComponent.pieces)) {
@@ -538,4 +552,12 @@ export class BoardComponent implements OnInit {
       piece.isMovedAlready = true;
     }
   }
+
+  private calculateAdvantage() {
+    let blackPoints = BoardComponent.pieces.filter(e => e.color === Color.BLACK).map(e => e.relValue).reduce((acc, cur) => acc + cur, 0);
+    let whitePoints = BoardComponent.pieces.filter(e => e.color === Color.WHITE).map(e => e.relValue).reduce((acc, cur) => acc + cur, 0);
+    console.log(blackPoints);
+    this.calculation = whitePoints / (whitePoints + blackPoints) * 100;
+  }
+
 }

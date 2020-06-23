@@ -6,11 +6,13 @@ export abstract class Piece {
     color: Color;
     image: string;
     checkPoints: Point[] = [];
+    relValue: number;
 
-    constructor(point: Point, color: Color, image: string) {
+    constructor(point: Point, color: Color, image: string, relValue: number) {
         this.color = color;
         this.image = image;
         this.point = point;
+        this.relValue = relValue;
     }
 
     abstract getPossibleMoves(): Point[];

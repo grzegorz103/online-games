@@ -8,7 +8,7 @@ export class Pawn extends Piece {
     isMovedAlready = false;
 
     constructor(point: Point, color: Color, image: string) {
-        super(point, color, image);
+        super(point, color, image, 1);
     }
 
     getPossibleMoves(): Point[] {
@@ -73,7 +73,7 @@ export class Pawn extends Piece {
 
             possiblePoints.push(new Point(row + 1, col + 1));
         }
-        
+
         return possiblePoints;
     }
 
