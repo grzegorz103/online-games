@@ -6,7 +6,9 @@ import { King } from './king';
 
 export class Rook extends Piece {
 
-    constructor(point: Point, color: Color, image: string) {
+  isMovedAlready = false;
+
+  constructor(point: Point, color: Color, image: string) {
         super(point, color, image);
     }
 
@@ -110,7 +112,7 @@ export class Rook extends Piece {
 
         let row = this.point.row;
         let col = this.point.col;
-        
+
         for (let i = row + 1; i < 8; ++i) { // dol
             if (BoardComponent.isFieldEmpty(i, col)){
                 possiblePoints.push(new Point(i, col));

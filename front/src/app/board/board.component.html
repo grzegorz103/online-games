@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-        <div class="col-3" style="font-size: 25px">
+        <div class="col-md-1 info" style="font-size: 25px">
             <div class="row" style="height:50%;">
                 AI
             </div>
@@ -8,7 +8,7 @@
                 Gracz
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-md-6">
             <div id="board">
                 <div ngResizable id="drag" [rzMinWidth]="240" [rzMaxWidth]="2400" [rzMinHeight]="240"
                     (mousedown)="onMouseDown($event)" #dragRef [rzMaxHeight]="2400" [rzAspectRatio]="aspectRatio">
