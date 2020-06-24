@@ -666,6 +666,9 @@ export class ChessMultiplayerComponent implements OnInit {
         }
       }
     }
+    if (ChessMultiplayerComponent.currentColor === Color.BLACK) {
+      [whitePoints, blackPoints] = [blackPoints, whitePoints]
+    }
 
     this.calculation = whitePoints / (whitePoints + blackPoints) * 100;
   }

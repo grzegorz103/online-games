@@ -36,7 +36,7 @@ export class Knight extends Piece {
 
     // prawo -> gora
     if (ChessMultiplayerComponent.isFieldEmpty(row - 1, col + 2)) {
-      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row-1, col+ 1));
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row-1, col+ 2));
     }
 
     // lewo -> dol
