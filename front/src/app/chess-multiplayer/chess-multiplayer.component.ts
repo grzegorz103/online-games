@@ -100,18 +100,21 @@ export class ChessMultiplayerComponent implements OnInit {
       if (coords0.length > 3) {
         let destPoint = this.coordsToPoint(coords0.substring(2, 4));
         this.checkIfPawnFirstMove(srcPiece.piece);
+
+        if (coords0.endsWith('@')) {
+          ChessMultiplayerComponent.enPassantPoint = null;
+          if (ChessMultiplayerComponent.enPassantable != null)
+            ChessMultiplayerComponent.enPassantable.piece = null;
+        }
         this.checkIfPawnEnPassant(srcPiece, destPoint);
+
         // this.checkIfPawnCaptuerEnPassant(srcPiece, destPoint);
         destPoint.piece = srcPiece.piece;
         srcPiece.piece = null;
       }
 
-      if (coords0.endsWith('@')) {
-        ChessMultiplayerComponent.enPassantPoint = null;
-        if (ChessMultiplayerComponent.enPassantable != null)
-          ChessMultiplayerComponent.enPassantable.piece = null;
-      }
-
+      if (ChessMultiplayerComponent.enPassantable)
+        console.log(ChessMultiplayerComponent.enPassantable.piece);
       if (coords0.length > 7) {
         let rook = this.coordsToPoint(coords0.substring(4, 6));
         let newPointForRook = this.coordsToPoint(coords0.substring(6, 8));
@@ -229,10 +232,9 @@ export class ChessMultiplayerComponent implements OnInit {
           }
         }
 
-        if (pointClicked == ChessMultiplayerComponent.enPassantPoint) {
+        if (this.activePoint.piece instanceof Pawn && pointClicked == ChessMultiplayerComponent.enPassantPoint) {
           params += '@';
         }
-        console.log(params)
         this.ws.send(params, {}, {});
       }
 
@@ -519,8 +521,6 @@ export class ChessMultiplayerComponent implements OnInit {
         let piece = ChessMultiplayerComponent.board[i][j].piece
         if (piece && piece.color === color && piece instanceof King) {
           kingPiece = ChessMultiplayerComponent.board[i][j];
-          console.log(kingPiece)
-          console.log('znalazlo krola')
         }
       }
     }
@@ -634,8 +634,7 @@ export class ChessMultiplayerComponent implements OnInit {
       );*/
     let srcPiece = ChessMultiplayerComponent.getPointByCoords(row, col);
     let destPiece = ChessMultiplayerComponent.getPointByCoords(destRow, destCol);
-    console.log(srcPiece + 'zrodlowy')
-    console.log(destPiece + ' doce')
+
     let tempPiece = null;
     if (destPiece.piece) {
       tempPiece = destPiece.piece;
