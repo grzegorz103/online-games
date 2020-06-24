@@ -20,6 +20,7 @@ import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { TicTacToeComponent } from './tic-tac-toe/tic-tac-toe.component';
 import { MainComponent } from './main/main.component';
 import { MomentModule } from 'ngx-moment';
+import { ChessMultiplayerComponent } from './chess-multiplayer/chess-multiplayer.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -33,7 +34,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MultiplayerComponent,
     PublicChatComponent,
     TicTacToeComponent,
-    MainComponent
+    MainComponent,
+    ChessMultiplayerComponent
   ],
   imports: [
     BrowserModule,

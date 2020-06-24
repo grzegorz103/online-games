@@ -7,6 +7,7 @@ import {PublicChatComponent} from "./public-chat/public-chat.component";
 import {AuthGuard} from "./security/auth.guard";
 import {TicTacToeComponent} from "./tic-tac-toe/tic-tac-toe.component";
 import {MainComponent} from "./main/main.component";
+import {ChessMultiplayerComponent} from "./chess-multiplayer/chess-multiplayer.component";
 
 
 const routes: Routes = [
@@ -17,6 +18,8 @@ const routes: Routes = [
   {path: 'maze/multi/:game', component: MultiplayerComponent},
   {path: 'tic', component: TicTacToeComponent},
   {path: 'tic/:game', component: TicTacToeComponent},
+  {path: 'chess', component: ChessMultiplayerComponent},
+  {path: 'chess/:game', component: ChessMultiplayerComponent},
   {component: MainComponent, path: '**'}
   ];
 
