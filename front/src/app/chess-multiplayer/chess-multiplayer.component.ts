@@ -40,6 +40,8 @@ export class ChessMultiplayerComponent implements OnInit {
   private selected: any;
 
   isCurrentPlayer = false;
+  private whiteKingChecked: boolean;
+  private blackKingChecked: boolean;
 
   constructor(private route: ActivatedRoute,
               private snackBar: MatSnackBar) {
@@ -89,14 +91,44 @@ export class ChessMultiplayerComponent implements OnInit {
     if (srcPiece) {
       console.log('Znaleziono')
       let destPoint = this.coordsToPoint(coords0.substring(2, 4));
+      this.checkIfPawnFirstMove(srcPiece.piece);
       destPoint.piece = srcPiece.piece;
       srcPiece.piece = null;
       console.log(coords0.substring(2, 4))
+
+      this.whiteKingChecked = this.isKingInCheck(Color.WHITE);
+      this.blackKingChecked = this.isKingInCheck(Color.BLACK);
+
     } else {
       console.log('Nie znaleziono')
     }
   }
 
+  isKingInCheck(color: Color): boolean {
+    let kingPiece;
+
+    for (var i = 0; i < 8; ++i) {
+      for (var j = 0; j < 8; ++j) {
+        let piece = ChessMultiplayerComponent.board[i][j].piece
+        if (piece && piece.color === color && piece instanceof King) {
+          kingPiece = ChessMultiplayerComponent.board[i][j];
+        }
+      }
+    }
+    if (kingPiece) {
+      for (var i = 0; i < 8; ++i) {
+        for (var j = 0; j < 8; ++j) {
+          let piece = ChessMultiplayerComponent.board[i][j].piece
+          if (piece && piece.color !== color) {
+            if (piece.getPossibleCaptures().some(e => e === kingPiece)) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
 
   coordsToPoint(coords: string) {
     for (var i = 0; i < 8; ++i) {
@@ -141,11 +173,13 @@ export class ChessMultiplayerComponent implements OnInit {
 
     let pointClicked = this.getClickPoint(event);
 
-    if (pointClicked.piece && pointClicked.piece.color !== ChessMultiplayerComponent.currentColor) {
+    if (pointClicked.piece && (!this.activePoint && pointClicked.piece.color !== ChessMultiplayerComponent.currentColor)) {
       return;
     }
 
     if (this.selected) {
+      console.log(this.isPointInPossibleCaptures(pointClicked) + 'clicked');
+      console.log(this.isPointInPossibleMoves(pointClicked) + 'mves');
       if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
         this.ws.send("/app/chess/" + ChessMultiplayerComponent.uri + '/move/' + this.activePoint.pointChar + this.getCharPointByCoords(pointClicked.row, pointClicked.col), {}, {});
       }
@@ -210,7 +244,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
   isKingChecked(piece: Piece) {
     if (piece instanceof King) {
-      //return piece.color === Color.WHITE ? this.whiteKingChecked : this.blackKingChecked;
+      return piece.color === Color.WHITE ? this.whiteKingChecked : this.blackKingChecked;
     }
   }
 
@@ -255,8 +289,8 @@ export class ChessMultiplayerComponent implements OnInit {
       ChessMultiplayerComponent.getPointByCoords(0, 0).piece = new Rook(Color.WHITE, 'rook-white.png');
       ChessMultiplayerComponent.getPointByCoords(0, 1).piece = new Knight(Color.WHITE, 'knight-white.png');
       ChessMultiplayerComponent.getPointByCoords(0, 2).piece = new Bishop(Color.WHITE, 'bishop-white.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 3).piece = new Queen(Color.WHITE, 'queen-white.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 4).piece = new King(Color.WHITE, 'king-white.png');
+      ChessMultiplayerComponent.getPointByCoords(0, 3).piece = new King(Color.WHITE, 'king-white.png');
+      ChessMultiplayerComponent.getPointByCoords(0, 4).piece = new Queen(Color.WHITE, 'queen-white.png');
       ChessMultiplayerComponent.getPointByCoords(0, 5).piece = new Bishop(Color.WHITE, 'bishop-white.png');
       ChessMultiplayerComponent.getPointByCoords(0, 6).piece = new Knight(Color.WHITE, 'knight-white.png');
       ChessMultiplayerComponent.getPointByCoords(0, 7).piece = new Rook(Color.WHITE, 'rook-white.png');
@@ -269,8 +303,8 @@ export class ChessMultiplayerComponent implements OnInit {
       ChessMultiplayerComponent.getPointByCoords(7, 0).piece = new Rook(Color.BLACK, 'rook-black.jpg');
       ChessMultiplayerComponent.getPointByCoords(7, 1).piece = new Knight(Color.BLACK, 'knight-black.png');
       ChessMultiplayerComponent.getPointByCoords(7, 2).piece = new Bishop(Color.BLACK, 'bishop-black.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 3).piece = new Queen(Color.BLACK, 'queen-black.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 4).piece = new King(Color.BLACK, 'king-black.png');
+      ChessMultiplayerComponent.getPointByCoords(7, 3).piece = new King(Color.BLACK, 'king-black.png');
+      ChessMultiplayerComponent.getPointByCoords(7, 4).piece = new Queen(Color.BLACK, 'queen-black.png');
       ChessMultiplayerComponent.getPointByCoords(7, 5).piece = new Bishop(Color.BLACK, 'bishop-black.png');
       ChessMultiplayerComponent.getPointByCoords(7, 6).piece = new Knight(Color.BLACK, 'knight-black.png');
       ChessMultiplayerComponent.getPointByCoords(7, 7).piece = new Rook(Color.BLACK, 'rook-black.jpg');
@@ -344,5 +378,11 @@ export class ChessMultiplayerComponent implements OnInit {
 
   getUri() {
     return ChessMultiplayerComponent.uri;
+  }
+
+  private checkIfPawnFirstMove(piece: Piece) {
+    if (piece instanceof Pawn) {
+      (piece as Pawn).isMovedAlready = true;
+    }
   }
 }
