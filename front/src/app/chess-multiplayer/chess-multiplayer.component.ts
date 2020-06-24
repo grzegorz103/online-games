@@ -43,7 +43,7 @@ export class ChessMultiplayerComponent implements OnInit {
   private blackKingChecked: boolean;
   isLoading: boolean = true;
   playersReady: boolean = false;
-  private calculation: number;
+  calculation: number;
 
   constructor(private route: ActivatedRoute,
               private snackBar: MatSnackBar) {
