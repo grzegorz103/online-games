@@ -156,7 +156,7 @@ export class BoardComponent implements OnInit {
           // tylko te ruchy, ktore moga zablokowac szach
           // this.activePiece = pieceClicked;
           // this.selected = true;
-          // this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
+          // this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !BoardComponent.isFiieldUnderAttack(e.row, e.col, Color.BLACK));
           // this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !BoardComponent.isFieldUnderAttack(e.row, e.col, Color.BLACK));
         }
       }
