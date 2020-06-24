@@ -1,6 +1,21 @@
 <div class="container">
-  localhost:4200/chess/{{getUri()}}
-  <div class="row">
+  <div class="row" *ngIf="isLoading">
+    <div class="col-12 w-100">
+      <mat-spinner class="mx-auto"></mat-spinner>
+      <div class="text-center w-100"><i>Uruchamianie serwera. Proszę czekać</i></div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !playersReady" class="col-12 w-100">
+    <div class="text-center w-100">
+      <button class="btn btn-info my-3 mx-auto"
+              (click)="copyMessage(apiUrl() + 'chess/' + getUri())"
+              value="Zaproś znajomego">
+        Zaproś drugiego gracza, aby rozpocząć grę (naciśnij)
+      </button>
+    </div>
+  </div>
+  <div class="row" *ngIf="!isLoading && playersReady">
     <div class="col-1 info" style="font-size: 25px">
       <div class="row" style="height:50%;">
         AI

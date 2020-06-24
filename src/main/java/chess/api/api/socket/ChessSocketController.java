@@ -31,7 +31,7 @@ public class ChessSocketController {
     public void createGame(@Payload boolean whiteStarts,
                            @Header("simpSessionId") String sessionId) {
         String uri = URIGenerator.getAvailableURI(chessService.getGames());
-  log.info("Creating game with uri " + uri);
+        log.info("Creating game with uri " + uri);
         Chess chess = chessService.addGame(uri, whiteStarts, sessionId);
         sendingOperations.convertAndSendToUser(sessionId, "/queue/chess/uri", uri, WebSocketUtils.getMessageHeaders(sessionId));
         sendingOperations.convertAndSendToUser(sessionId, "/queue/chess/create", chess, WebSocketUtils.getMessageHeaders(sessionId));
@@ -41,7 +41,10 @@ public class ChessSocketController {
     public void joinGame(@Header("simpSessionId") String sessionId,
                          @DestinationVariable String uri) {
         log.info("Joining game with uri " + uri);
-        chessService.joinGame(uri, sessionId);
+        Chess chess = chessService.joinGame(uri, sessionId);
+
+        sendingOperations.convertAndSendToUser(chess.getWhitePlayer().getSessionId(), "/queue/chess/start", true, WebSocketUtils.getMessageHeaders(chess.getWhitePlayer().getSessionId()));
+        sendingOperations.convertAndSendToUser(chess.getBlackPlayer().getSessionId(), "/queue/chess/start", true, WebSocketUtils.getMessageHeaders(chess.getBlackPlayer().getSessionId()));
     }
 
     @MessageMapping("/chess/{uri}/move/{move}")

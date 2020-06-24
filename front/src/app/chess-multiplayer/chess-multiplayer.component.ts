@@ -41,6 +41,8 @@ export class ChessMultiplayerComponent implements OnInit {
   isCurrentPlayer = false;
   private whiteKingChecked: boolean;
   private blackKingChecked: boolean;
+  isLoading: boolean = true;
+  playersReady: boolean = false;
 
   constructor(private route: ActivatedRoute,
               private snackBar: MatSnackBar) {
@@ -75,6 +77,11 @@ export class ChessMultiplayerComponent implements OnInit {
       that.ws.subscribe("/user/queue/chess/move", message => {
         that.isCurrentPlayer = !that.isCurrentPlayer;
         that.movePiece(message.body);
+      });
+
+      that.ws.subscribe("/user/queue/chess/start", message => {
+        that.isLoading = false;
+        that.playersReady = true;
       });
 
       that.ws.send("/app/chess/" + ChessMultiplayerComponent.uri + '/join', {}, true);
@@ -143,6 +150,12 @@ export class ChessMultiplayerComponent implements OnInit {
 
       that.ws.subscribe("/user/queue/chess/uri", message => {
         ChessMultiplayerComponent.uri = message.body;
+        that.isLoading = false;
+        that.playersReady = false;
+      });
+
+      that.ws.subscribe("/user/queue/chess/start", message => {
+        that.playersReady = true;
       });
 
       that.ws.subscribe("/user/queue/chess/move", message => {
@@ -603,4 +616,22 @@ export class ChessMultiplayerComponent implements OnInit {
     return isBound;
   }
 
+  apiUrl() {
+    return environment.appUrl;
+  }
+
+  copyMessage(val: string) {
+    const selBox = document.createElement('textarea');
+    selBox.style.position = 'fixed';
+    selBox.style.left = '0';
+    selBox.style.top = '0';
+    selBox.style.opacity = '0';
+    selBox.value = val;
+    document.body.appendChild(selBox);
+    selBox.focus();
+    selBox.select();
+    document.execCommand('copy');
+    document.body.removeChild(selBox);
+    this.snackBar.open('Skopiowano link do schowka')
+  }
 }
