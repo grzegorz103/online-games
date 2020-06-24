@@ -43,6 +43,7 @@ export class ChessMultiplayerComponent implements OnInit {
   private blackKingChecked: boolean;
   isLoading: boolean = true;
   playersReady: boolean = false;
+  calculation: number;
 
   constructor(private route: ActivatedRoute,
               private snackBar: MatSnackBar) {
@@ -82,6 +83,7 @@ export class ChessMultiplayerComponent implements OnInit {
       that.ws.subscribe("/user/queue/chess/start", message => {
         that.isLoading = false;
         that.playersReady = true;
+        that.calculateAdvantage();
       });
 
       that.ws.send("/app/chess/" + ChessMultiplayerComponent.uri + '/join', {}, true);
@@ -100,6 +102,8 @@ export class ChessMultiplayerComponent implements OnInit {
 
       this.whiteKingChecked = this.isKingInCheck(Color.WHITE);
       this.blackKingChecked = this.isKingInCheck(Color.BLACK);
+
+      this.calculateAdvantage();
 
     } else {
     }
@@ -152,6 +156,7 @@ export class ChessMultiplayerComponent implements OnInit {
         ChessMultiplayerComponent.uri = message.body;
         that.isLoading = false;
         that.playersReady = false;
+        that.calculateAdvantage();
       });
 
       that.ws.subscribe("/user/queue/chess/start", message => {
@@ -170,6 +175,9 @@ export class ChessMultiplayerComponent implements OnInit {
     });
   }
 
+  isCurrentWhiteColor(){
+    return ChessMultiplayerComponent.currentColor === Color.WHITE;
+  }
 
   onMouseDown(event) {
 
@@ -245,16 +253,19 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   getPossibleMovesForKingInCheck2(color: Color) {
-    let currentActivePoint = this.activePoint;
+    let currentActivePiece = this.activePoint.piece;
     let tempPossibleMoves = [];
+    console.log('ilosc ' + this.activePoint.piece.getPossibleMoves())
     this.activePoint.piece.getPossibleMoves().forEach(piece => {
-      this.activePoint = piece;
+      piece.piece = this.activePoint.piece;
+      this.activePoint.piece = null;
       if (!this.isKingInCheck(color)) {
-        tempPossibleMoves.push(this.activePoint);
+        tempPossibleMoves.push(piece);
       }
+      this.activePoint.piece = piece.piece;
+      piece.piece = null
     });
     console.log(tempPossibleMoves);
-    this.activePoint = currentActivePoint;
 
     return tempPossibleMoves;
   }
@@ -633,5 +644,23 @@ export class ChessMultiplayerComponent implements OnInit {
     document.execCommand('copy');
     document.body.removeChild(selBox);
     this.snackBar.open('Skopiowano link do schowka')
+  }
+
+  private calculateAdvantage() {
+    let blackPoints = 0, whitePoints = 0;
+    for (var i = 0; i < 8; ++i) {
+      for (var j = 0; j < 8; ++j) {
+        let piece = ChessMultiplayerComponent.board[i][j].piece
+        if (piece) {
+          if (piece.color === Color.WHITE) {
+            whitePoints += piece.relValue;
+          } else {
+            blackPoints += piece.relValue;
+          }
+        }
+      }
+    }
+
+    this.calculation = whitePoints / (whitePoints + blackPoints) * 100;
   }
 }
