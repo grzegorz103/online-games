@@ -9,6 +9,8 @@ import {Knight} from '../models/knight';
 import {Queen} from '../models/queen';
 import {King} from '../models/king';
 import {log} from "util";
+import {MatDialog} from "@angular/material/dialog";
+import {ChessPromoteDialogComponent} from "../chess-promote-dialog/chess-promote-dialog.component";
 
 
 @Component({
@@ -46,7 +48,7 @@ export class BoardComponent implements OnInit {
 
   @ViewChild('dragRef', {static: false}) boardRef: ElementRef;
 
-  constructor() {
+  constructor(public dialog: MatDialog) {
     this.board = [];
     this.possibleMoves = [];
     this.possibleCaptures = [];
@@ -62,6 +64,7 @@ export class BoardComponent implements OnInit {
   }
 
   ngOnInit() {
+
   }
 
   addPieces() {
@@ -110,13 +113,18 @@ export class BoardComponent implements OnInit {
     return BoardComponent.pieces.find(e => e.point.col === col && e.point.row).point;
   }
 
-  onMouseDown(event) {
+  async onMouseDown(event) {
     let pointClicked = this.getClickPoint(event);
 
     if (this.selected) {
       //   this.possibleMoves = activePiece.getPossibleMoves();
       if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
-        this.movePiece(this.activePiece, pointClicked);
+        await this.movePiece(this.activePiece, pointClicked);
+        this.checkIfPawnFirstMove(this.activePiece);
+        this.checkIfRookMoved(this.activePiece);
+        this.checkIfKingMoved(this.activePiece);
+        this.calculateAdvantage();
+
         if (this.isKingInCheck(Color.BLACK, BoardComponent.pieces)) {
           this.blackKingChecked = true;
         } else {
@@ -293,7 +301,7 @@ export class BoardComponent implements OnInit {
       this.movePiece(this.startX, this.startY, xPos, yPos);
     } */
 
-  movePiece(piece: Piece, newPoint: Point) {
+  async movePiece(piece: Piece, newPoint: Point) {
     let destPiece = BoardComponent.pieces.find(e => e.point.col === newPoint.col && e.point.row === newPoint.row);
 
     if (destPiece && piece.color != destPiece.color) {
@@ -315,11 +323,7 @@ export class BoardComponent implements OnInit {
       }
     }
     piece.point = newPoint;
-    this.checkForPawnPromote(piece);
-    this.checkIfPawnFirstMove(piece);
-    this.checkIfRookMoved(piece);
-    this.checkIfKingMoved(piece);
-    this.calculateAdvantage();
+    return this.checkForPawnPromote(piece);
     // BoardComponent.pieces.push(piece);
     //    BoardComponent.pieces.delete(this.getPointByCoordinates(ySource, xSource));
     //  BoardComponent.pieces.set(new Point(yDest, xDest), piece);
@@ -530,18 +534,51 @@ export class BoardComponent implements OnInit {
     return BoardComponent.pieces.find(e => e.point.col === col && e.point.row === row);
   }
 
-  checkForPawnPromote(piece: Piece) {
+  async checkForPawnPromote(piece: Piece) {
     if (!(piece instanceof Pawn)) {
       return;
     }
-
+    document.querySelectorAll('button').forEach($button =>
+      $button.onclick = () => document.querySelector('dialog').removeAttribute('open'))
     if (piece.color === Color.WHITE && piece.point.row === 0) {
-      BoardComponent.pieces = BoardComponent.pieces.filter(e => e !== piece);
-      BoardComponent.pieces.push(new Queen(piece.point, Color.WHITE, 'queen-white.png'));
+      return this.openPromoteDialog(piece);
+      console.log('dalej poszlo')
     } else if (piece.color === Color.BLACK && piece.point.row === 7) {
       BoardComponent.pieces = BoardComponent.pieces.filter(e => e !== piece);
       BoardComponent.pieces.push(new Queen(piece.point, Color.BLACK, 'queen-black.png'));
     }
+  }
+
+  async openPromoteDialog(piece: Piece) {
+    const dialogRef = this.dialog.open(ChessPromoteDialogComponent, {
+      width: '450px',
+      data: {}
+    });
+
+    return dialogRef.afterClosed()
+      .toPromise()
+      .then(result => {
+        BoardComponent.pieces = BoardComponent.pieces.filter(e => e !== piece);
+        if (result) {
+          switch (result) {
+            case 1:
+              BoardComponent.pieces.push(new Queen(piece.point, Color.WHITE, 'queen-white.png'));
+              break;
+            case 2:
+              BoardComponent.pieces.push(new Rook(piece.point, Color.WHITE, 'rook-white.png'));
+              break;
+            case 3:
+              BoardComponent.pieces.push(new Bishop(piece.point, Color.WHITE, 'bishop-white.png'));
+              break;
+            case 4:
+              BoardComponent.pieces.push(new Knight(piece.point, Color.WHITE, 'knight-white.png'));
+              break;
+          }
+        } else {
+          BoardComponent.pieces.push(new Queen(piece.point, Color.WHITE, 'queen-white.png'));
+        }
+        console.log(result);
+      });
   }
 
   private checkIfRookMoved(piece: Piece) {

@@ -18,6 +18,7 @@ import {
   MatNativeDateModule,
   MatChipsModule,
   MatTooltipModule,
+  MatDialogModule,
   MatTableModule,
   MatPaginatorModule,
   MatCardModule
@@ -37,6 +38,7 @@ import {
     MatInputModule,
     MatSelectModule,
     MatSnackBarModule,
+    MatDialogModule,
     MatRadioModule,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -57,6 +59,7 @@ import {
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
+    MatDialogModule,
     MatRadioModule,
     MatDatepickerModule,
     MatChipsModule,

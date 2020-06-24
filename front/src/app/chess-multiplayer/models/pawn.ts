@@ -19,7 +19,6 @@ export class Pawn extends Piece {
     let col = point.col;
 
     if (ChessMultiplayerComponent.currentColor === Color.WHITE) {
-      console.log('nie ma')
       if (this.color === Color.WHITE) {
         if (ChessMultiplayerComponent.isFieldEmpty(row - 1, col)) {
           possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col));
@@ -38,7 +37,6 @@ export class Pawn extends Piece {
         }
       }
     } else {
-      console.log('jest')
       if (this.color === Color.WHITE) {
         if (ChessMultiplayerComponent.isFieldEmpty(row + 1, col)) {
           possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col));
