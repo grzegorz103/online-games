@@ -108,7 +108,17 @@ export class ChessMultiplayerComponent implements OnInit {
       }
 
       this.whiteKingChecked = this.isKingInCheck(Color.WHITE);
+      if (this.whiteKingChecked) {
+        // mat biale
+        this.checkForMate(Color.WHITE);
+      }
+
       this.blackKingChecked = this.isKingInCheck(Color.BLACK);
+
+      if (this.blackKingChecked) {
+        //  mat czarne
+        this.checkForMate(Color.BLACK);
+      }
 
       this.calculateAdvantage();
 
@@ -672,4 +682,28 @@ export class ChessMultiplayerComponent implements OnInit {
 
     this.calculation = whitePoints / (whitePoints + blackPoints) * 100;
   }
+
+  private checkForMate(color: Color) {
+    let arr: Point[] = [];
+    for (var i = 0; i < 8; ++i) {
+      for (var j = 0; j < 8; ++j) {
+        let point = ChessMultiplayerComponent.board[i][j]
+        if (point.piece) {
+          if (point.piece.color === color) {
+            arr.push(point);
+          }
+        }
+      }
+    }
+
+    if (arr
+      .every(point =>
+        point.piece.getPossibleMoves().every(e => this.willMoveCauseCheck(point.piece.color, point.row, point.col, e.row, e.col))
+        && point.piece.getPossibleCaptures().every(e => this.willMoveCauseCheck(point.piece.color, point.row, point.col, e.row, e.col))
+      )) {
+      alert('Szach mat!');
+    }
+
+  }
+
 }
