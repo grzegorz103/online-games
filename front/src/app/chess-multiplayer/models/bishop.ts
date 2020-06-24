@@ -6,19 +6,21 @@ import { King } from './king';
 
 export class Bishop extends Piece {
 
-    constructor(point: Point, color: Color, image: string) {
-        super(point, color, image, 3);
+    constructor( color: Color, image: string) {
+        super( color, image, 3);
     }
 
     getPossibleMoves(): Point[] {
         let possiblePoints = [];
 
-        let row = this.point.row;
-        let col = this.point.col;
+        let point = ChessMultiplayerComponent.getPointByPiece(this);
+
+        let row = point.row;
+        let col = point.col;
 
         for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) { // lewa gorna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j)) {
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
             } //else if (ChessMultiplayerComponent.getPieceByField(i, j) instanceof King && (ChessMultiplayerComponent.getPieceByField(i, j).color !== this.color)){
                // for( let a = row - 1, b = col - 1; a > i && j >= col; --a, --b){
                  //   possiblePoints.push(new Point(i, j));
@@ -31,7 +33,7 @@ export class Bishop extends Piece {
 
         for (let i = row - 1, j = col + 1; i >= 0 && j < 8; --i, ++j) { // prawa gorna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j)) {
-                possiblePoints.push(new Point(i, j));
+              possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
             } else {
                 break;
             }
@@ -39,7 +41,7 @@ export class Bishop extends Piece {
 
         for (let i = row + 1, j = col - 1; i < 8 && j >= 0; ++i, --j) { // lewa dolna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j)) {
-                possiblePoints.push(new Point(i, j));
+              possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
             } else {
                 break;
             }
@@ -47,7 +49,7 @@ export class Bishop extends Piece {
 
         for (let i = row + 1, j = col + 1; i < 8 && j < 8; ++i, ++j) { // prawa dolna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j)) {
-                possiblePoints.push(new Point(i, j));
+              possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
             } else {
                 break;
             }
@@ -59,12 +61,14 @@ export class Bishop extends Piece {
     getPossibleCaptures() {
         let possiblePoints = [];
 
-        let row = this.point.row;
-        let col = this.point.col;
+      let point = ChessMultiplayerComponent.getPointByPiece(this);
+
+      let row = point.row;
+      let col = point.col;
 
         for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) { // lewa gorna przekatna
             if (ChessMultiplayerComponent.isFieldTakenByEnemy(i, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
-                possiblePoints.push(new Point(i, j));
+              possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
                 break;
             } else {
                 if (!ChessMultiplayerComponent.isFieldEmpty(i, j)) {
@@ -75,7 +79,7 @@ export class Bishop extends Piece {
 
         for (let i = row - 1, j = col + 1; i >= 0 && j < 8; --i, ++j) { // prawa gorna przekatna
             if (ChessMultiplayerComponent.isFieldTakenByEnemy(i, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
-                possiblePoints.push(new Point(i, j));
+              possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
                 break;
             } else {
                 if (!ChessMultiplayerComponent.isFieldEmpty(i, j)) {
@@ -86,7 +90,7 @@ export class Bishop extends Piece {
 
         for (let i = row + 1, j = col - 1; i < 8 && j >= 0; ++i, --j) { // lewa dolna przekatna
             if (ChessMultiplayerComponent.isFieldTakenByEnemy(i, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
-                possiblePoints.push(new Point(i, j));
+              possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
                 break;
             } else {
                 if (!ChessMultiplayerComponent.isFieldEmpty(i, j)) {
@@ -97,7 +101,7 @@ export class Bishop extends Piece {
 
         for (let i = row + 1, j = col + 1; i < 8 && j < 8; ++i, ++j) { // prawa dolna przekatna
             if (ChessMultiplayerComponent.isFieldTakenByEnemy(i, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
-                possiblePoints.push(new Point(i, j));
+              possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
                 break;
             } else {
                 if (!ChessMultiplayerComponent.isFieldEmpty(i, j)) {
@@ -112,15 +116,17 @@ export class Bishop extends Piece {
     getCoveredFields(): Point[] {
         let possiblePoints = [];
 
-        let row = this.point.row;
-        let col = this.point.col;
+      let point = ChessMultiplayerComponent.getPointByPiece(this);
+
+      let row = point.row;
+      let col = point.col;
 
         for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) { // lewa gorna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j))
-                possiblePoints.push(new Point(i, j));
+              possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
             else {
-                if (!(ChessMultiplayerComponent.getPieceByField(i, j) instanceof King)) {
-                    possiblePoints.push(new Point(i, j));
+                if (!(ChessMultiplayerComponent.getPointByCoords(i, j).piece instanceof King)) {
+                  possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
                     break;
                 }
             }
@@ -128,34 +134,34 @@ export class Bishop extends Piece {
 
         for (let i = row - 1, j = col + 1; i >= 0 && j < 8; --i, ++j) { // prawa gorna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j))
-                possiblePoints.push(new Point(i, j));
+              possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
             else {
-                if (!(ChessMultiplayerComponent.getPieceByField(i, j) instanceof King)) {
-                    possiblePoints.push(new Point(i, j));
-                    break;
-                }
+              if (!(ChessMultiplayerComponent.getPointByCoords(i, j).piece instanceof King)) {
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
+                break;
+              }
             }
         }
 
         for (let i = row + 1, j = col - 1; i < 8 && j >= 0; ++i, --j) { // lewa dolna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j))
-                possiblePoints.push(new Point(i, j));
+              possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
             else {
-                if (!(ChessMultiplayerComponent.getPieceByField(i, j) instanceof King)) {
-                    possiblePoints.push(new Point(i, j));
-                    break;
-                }
+              if (!(ChessMultiplayerComponent.getPointByCoords(i, j).piece instanceof King)) {
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
+                break;
+              }
             }
         }
 
         for (let i = row + 1, j = col + 1; i < 8 && j < 8; ++i, ++j) { // prawa dolna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j))
-                possiblePoints.push(new Point(i, j));
+              possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
             else {
-                if (!(ChessMultiplayerComponent.getPieceByField(i, j) instanceof King)) {
-                    possiblePoints.push(new Point(i, j));
-                    break;
-                }
+              if (!(ChessMultiplayerComponent.getPointByCoords(i, j).piece instanceof King)) {
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i,j))
+                break;
+              }
             }
         }
 

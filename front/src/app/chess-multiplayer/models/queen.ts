@@ -6,19 +6,21 @@ import { King } from './king';
 
 export class Queen extends Piece {
 
-    constructor(point: Point, color: Color, image: string) {
-        super(point, color, image, 9);
+    constructor( color: Color, image: string) {
+        super(color, image, 9);
     }
 
     getPossibleMoves(): Point[] {
         let possiblePoints = [];
 
-        let row = this.point.row;
-        let col = this.point.col;
+      let point = ChessMultiplayerComponent.getPointByPiece(this);
+
+      let row = point.row;
+      let col = point.col;
 
         for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) { // lewa gorna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j)) {
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
             } else {
                 break;
             }
@@ -26,7 +28,7 @@ export class Queen extends Piece {
 
         for (let i = row - 1, j = col + 1; i >= 0 && j < 8; --i, ++j) { // prawa gorna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j)) {
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
             } else {
                 break;
             }
@@ -34,7 +36,7 @@ export class Queen extends Piece {
 
         for (let i = row + 1, j = col - 1; i < 8 && j >= 0; ++i, --j) { // lewa dolna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j)) {
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
             } else {
                 break;
             }
@@ -42,7 +44,7 @@ export class Queen extends Piece {
 
         for (let i = row + 1, j = col + 1; i < 8 && j < 8; ++i, ++j) { // prawa dolna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j)) {
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
             } else {
                 break;
             }
@@ -50,7 +52,7 @@ export class Queen extends Piece {
 
         for (let i = row + 1; i < 8; ++i) { // dol
             if (ChessMultiplayerComponent.isFieldEmpty(i, col)) {
-                possiblePoints.push(new Point(i, col));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, col));
             } else {
                 break;
             }
@@ -58,7 +60,7 @@ export class Queen extends Piece {
 
         for (let i = row - 1; i >= 0; --i) { // gora
             if (ChessMultiplayerComponent.isFieldEmpty(i, col)) {
-                possiblePoints.push(new Point(i, col));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, col));
             } else {
                 break;
             }
@@ -66,7 +68,7 @@ export class Queen extends Piece {
 
         for (let j = col - 1; j >= 0; --j) { // lewo
             if (ChessMultiplayerComponent.isFieldEmpty(row, j)) {
-                possiblePoints.push(new Point(row, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, j));
             } else {
                 break;
             }
@@ -74,7 +76,7 @@ export class Queen extends Piece {
 
         for (let j = col + 1; j < 8; ++j) { // prawo
             if (ChessMultiplayerComponent.isFieldEmpty(row, j)) {
-                possiblePoints.push(new Point(row, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, j));
             } else {
                 break;
             }
@@ -86,12 +88,14 @@ export class Queen extends Piece {
     getPossibleCaptures(): Point[] {
         let possiblePoints = [];
 
-        let row = this.point.row;
-        let col = this.point.col;
+      let point = ChessMultiplayerComponent.getPointByPiece(this);
+
+      let row = point.row;
+      let col = point.col;
 
         for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) { // lewa gorna przekatna
             if (ChessMultiplayerComponent.isFieldTakenByEnemy(i, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
                 break;
             } else {
                 if (!ChessMultiplayerComponent.isFieldEmpty(i, j)) {
@@ -102,7 +106,7 @@ export class Queen extends Piece {
 
         for (let i = row - 1, j = col + 1; i >= 0 && j < 8; --i, ++j) { // prawa gorna przekatna
             if (ChessMultiplayerComponent.isFieldTakenByEnemy(i, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
                 break;
             } else {
                 if (!ChessMultiplayerComponent.isFieldEmpty(i, j)) {
@@ -113,7 +117,7 @@ export class Queen extends Piece {
 
         for (let i = row + 1, j = col - 1; i < 8 && j >= 0; ++i, --j) { // lewa dolna przekatna
             if (ChessMultiplayerComponent.isFieldTakenByEnemy(i, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
                 break;
             } else {
                 if (!ChessMultiplayerComponent.isFieldEmpty(i, j)) {
@@ -124,7 +128,7 @@ export class Queen extends Piece {
 
         for (let i = row + 1, j = col + 1; i < 8 && j < 8; ++i, ++j) { // prawa dolna przekatna
             if (ChessMultiplayerComponent.isFieldTakenByEnemy(i, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
                 break;
             } else {
                 if (!ChessMultiplayerComponent.isFieldEmpty(i, j)) {
@@ -134,7 +138,7 @@ export class Queen extends Piece {
         }
         for (let i = row + 1; i < 8; ++i) { // dol
             if (ChessMultiplayerComponent.isFieldTakenByEnemy(i, col, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
-                possiblePoints.push(new Point(i, col));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, col));
                 break;
             } else {
                 if (!ChessMultiplayerComponent.isFieldEmpty(i, col)) {
@@ -145,7 +149,7 @@ export class Queen extends Piece {
 
         for (let i = row - 1; i >= 0; --i) { // gora
             if (ChessMultiplayerComponent.isFieldTakenByEnemy(i, col, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
-                possiblePoints.push(new Point(i, col));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, col));
                 break;
             } else {
                 if (!ChessMultiplayerComponent.isFieldEmpty(i, col)) {
@@ -156,7 +160,7 @@ export class Queen extends Piece {
 
         for (let j = col - 1; j >= 0; --j) { // lewo
             if (ChessMultiplayerComponent.isFieldTakenByEnemy(row, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
-                possiblePoints.push(new Point(row,j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row,j));
                 break;
             } else {
                 if (!ChessMultiplayerComponent.isFieldEmpty(row,j)) {
@@ -167,7 +171,7 @@ export class Queen extends Piece {
 
         for (let j = col + 1; j < 8; ++j) { // prawo
             if (ChessMultiplayerComponent.isFieldTakenByEnemy(row, j, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
-                possiblePoints.push(new Point(row, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, j));
                 break;
             } else {
                 if (!ChessMultiplayerComponent.isFieldEmpty(row, j)) {
@@ -181,15 +185,17 @@ export class Queen extends Piece {
     getCoveredFields(): Point[] {
         let possiblePoints = [];
 
-        let row = this.point.row;
-        let col = this.point.col;
+      let point = ChessMultiplayerComponent.getPointByPiece(this);
+
+      let row = point.row;
+      let col = point.col;
 
         for (let i = row + 1; i < 8; ++i) { // dol
             if (ChessMultiplayerComponent.isFieldEmpty(i, col)){
-                possiblePoints.push(new Point(i, col));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, col));
             } else {
-                if (!(ChessMultiplayerComponent.getPieceByField(i,col) instanceof King)) {
-                    possiblePoints.push(new Point(i, col));
+                if (!(ChessMultiplayerComponent.getPointByCoords(i,col).piece instanceof King)) {
+                    possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, col));
                     break;
                 }
             }
@@ -197,10 +203,10 @@ export class Queen extends Piece {
 
         for (let i = row - 1; i >= 0; --i) { // gora
             if (ChessMultiplayerComponent.isFieldEmpty(i, col)){
-                possiblePoints.push(new Point(i, col));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, col));
             } else {
-                if (!(ChessMultiplayerComponent.getPieceByField(i,col) instanceof King)) {
-                    possiblePoints.push(new Point(i, col));
+                if (!(ChessMultiplayerComponent.getPointByCoords(i,col).piece instanceof King)) {
+                    possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, col));
                     break;
                 }
             }
@@ -208,10 +214,10 @@ export class Queen extends Piece {
 
         for (let j = col - 1; j >= 0; --j) { // lewo
             if (ChessMultiplayerComponent.isFieldEmpty(row, j)){
-                possiblePoints.push(new Point(row, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, j));
             } else {
-                if (!(ChessMultiplayerComponent.getPieceByField(row,j)instanceof King)) {
-                    possiblePoints.push(new Point(row, j));
+                if (!(ChessMultiplayerComponent.getPointByCoords(row,j).piece instanceof King)) {
+                    possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, j));
                     break;
                 }
             }
@@ -219,10 +225,10 @@ export class Queen extends Piece {
 
         for (let j = col + 1; j < 8; ++j) { // prawo
             if (ChessMultiplayerComponent.isFieldEmpty(row, j)){
-                possiblePoints.push(new Point(row, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, j));
             } else {
-                if (!(ChessMultiplayerComponent.getPieceByField(row,j) instanceof King)) {
-                    possiblePoints.push(new Point(row, j));
+                if (!(ChessMultiplayerComponent.getPointByCoords(row,col).piece instanceof King)) {
+                    possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, j));
                     break;
                 }
             }
@@ -231,10 +237,10 @@ export class Queen extends Piece {
 
         for (let i = row - 1, j = col - 1; i >= 0 && j >= 0; --i, --j) { // lewa gorna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j))
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
             else {
-                if (!(ChessMultiplayerComponent.getPieceByField(i, j) instanceof King)) {
-                    possiblePoints.push(new Point(i, j));
+                if (!(ChessMultiplayerComponent.getPointByCoords(i, j) instanceof King)) {
+                    possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
                     break;
                 }
             }
@@ -242,10 +248,10 @@ export class Queen extends Piece {
 
         for (let i = row - 1, j = col + 1; i >= 0 && j < 8; --i, ++j) { // prawa gorna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j))
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
             else {
-                if (!(ChessMultiplayerComponent.getPieceByField(i, j) instanceof King)) {
-                    possiblePoints.push(new Point(i, j));
+                if (!(ChessMultiplayerComponent.getPointByCoords(i, j) instanceof King)) {
+                    possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
                     break;
                 }
             }
@@ -253,10 +259,10 @@ export class Queen extends Piece {
 
         for (let i = row + 1, j = col - 1; i < 8 && j >= 0; ++i, --j) { // lewa dolna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j))
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
             else {
-                if (!(ChessMultiplayerComponent.getPieceByField(i, j) instanceof King)) {
-                    possiblePoints.push(new Point(i, j));
+                if (!(ChessMultiplayerComponent.getPointByCoords(i, j) instanceof King)) {
+                    possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
                     break;
                 }
             }
@@ -264,10 +270,10 @@ export class Queen extends Piece {
 
         for (let i = row + 1, j = col + 1; i < 8 && j < 8; ++i, ++j) { // prawa dolna przekatna
             if (ChessMultiplayerComponent.isFieldEmpty(i, j))
-                possiblePoints.push(new Point(i, j));
+                possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
             else {
-                if (!(ChessMultiplayerComponent.getPieceByField(i, j) instanceof King)) {
-                    possiblePoints.push(new Point(i, j));
+                if (!(ChessMultiplayerComponent.getPointByCoords(i, j) instanceof King)) {
+                    possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(i, j));
                     break;
                 }
             }

@@ -7,30 +7,33 @@ export class Pawn extends Piece {
 
   isMovedAlready = false;
 
-  constructor(point: Point, color: Color, image: string) {
-    super(point, color, image, 1);
+  constructor(color: Color, image: string) {
+    super(color, image, 1);
   }
 
   getPossibleMoves(): Point[] {
     let possiblePoints = [];
-    let row = this.point.row;
-    let col = this.point.col;
+    let point = ChessMultiplayerComponent.getPointByPiece(this);
+
+    let row = point.row;
+    let col = point.col;
+
     if (ChessMultiplayerComponent.currentColor === Color.WHITE) {
 console.log('nie ma')
       if (this.color === Color.WHITE) {
         if (ChessMultiplayerComponent.isFieldEmpty(row - 1, col)) {
-          possiblePoints.push(new Point(row - 1, col));
+          possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col));
 
           if (!this.isMovedAlready && ChessMultiplayerComponent.isFieldEmpty(row - 2, col)) {
-            possiblePoints.push(new Point(row - 2, col));
+            possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 2, col));
           }
         }
       } else {
         if (/*!ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col, Color.WHITE) &&*/ ChessMultiplayerComponent.isFieldEmpty(row + 1, col)) {
-          possiblePoints.push(new Point(row + 1, col));
+          possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col));
 
           if (!this.isMovedAlready && ChessMultiplayerComponent.isFieldEmpty(row + 2, col)) {
-            possiblePoints.push(new Point(row + 2, col));
+            possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 2, col));
           }
         }
       }
@@ -38,18 +41,18 @@ console.log('nie ma')
       console.log('jest')
       if (this.color === Color.WHITE) {
         if (ChessMultiplayerComponent.isFieldEmpty(row + 1, col)) {
-          possiblePoints.push(new Point(row + 1, col));
+          possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col));
 
           if (!this.isMovedAlready && ChessMultiplayerComponent.isFieldEmpty(row + 2, col)) {
-            possiblePoints.push(new Point(row + 2, col));
+            possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 2, col));
           }
         }
       } else {
         if (/*!ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col, Color.WHITE) &&*/ ChessMultiplayerComponent.isFieldEmpty(row - 1, col)) {
-          possiblePoints.push(new Point(row - 1, col));
+          possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col));
 
           if (!this.isMovedAlready && ChessMultiplayerComponent.isFieldEmpty(row - 2, col)) {
-            possiblePoints.push(new Point(row - 2, col));
+            possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 2, col));
           }
         }
       }
@@ -59,21 +62,23 @@ console.log('nie ma')
 
   getPossibleCaptures(): Point[] {
     let possiblePoints = [];
-    let row = this.point.row;
-    let col = this.point.col;
+    let point = ChessMultiplayerComponent.getPointByPiece(this);
+
+    let row = point.row;
+    let col = point.col;
     if (this.color === Color.WHITE) {
       if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col - 1, Color.BLACK)) {
-        possiblePoints.push(new Point(row - 1, col - 1));
+        possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1));
       }
       if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col + 1, Color.BLACK)) {
-        possiblePoints.push(new Point(row - 1, col + 1));
+        possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1));
       }
     } else {
       if (ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col - 1, Color.WHITE)) {
-        possiblePoints.push(new Point(row + 1, col - 1));
+        possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col - 1));
       }
       if (ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col + 1, Color.WHITE)) {
-        possiblePoints.push(new Point(row + 1, col + 1));
+        possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1));
       }
     }
 
@@ -82,18 +87,20 @@ console.log('nie ma')
 
   getCoveredFields(): Point[] {
     let possiblePoints = [];
-    let row = this.point.row;
-    let col = this.point.col;
+    let point = ChessMultiplayerComponent.getPointByPiece(this);
+
+    let row = point.row;
+    let col = point.col;
 
     if (this.color === Color.WHITE) {
 
-      possiblePoints.push(new Point(row - 1, col - 1));
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1));
 
-      possiblePoints.push(new Point(row - 1, col + 1));
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1));
     } else {
-      possiblePoints.push(new Point(row + 1, col - 1));
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col - 1));
 
-      possiblePoints.push(new Point(row + 1, col + 1));
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1));
     }
 
     return possiblePoints;

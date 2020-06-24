@@ -2,16 +2,16 @@ import { Point } from './point';
 import { Color } from './color';
 
 export abstract class Piece {
-    point: Point;
+ //   point: Point;
     color: Color;
     image: string;
     checkPoints: Point[] = [];
     relValue: number;
 
-    constructor(point: Point, color: Color, image: string, relValue: number) {
+    constructor(color: Color, image: string, relValue: number) {
         this.color = color;
         this.image = image;
-        this.point = point;
+     //   this.point = point;
         this.relValue = relValue;
     }
 
