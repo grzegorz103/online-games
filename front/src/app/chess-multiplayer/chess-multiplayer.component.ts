@@ -100,6 +100,13 @@ export class ChessMultiplayerComponent implements OnInit {
       destPoint.piece = srcPiece.piece;
       srcPiece.piece = null;
 
+      if (coords0.length > 7) {
+        let rook = this.coordsToPoint(coords0.substring(4, 6));
+        let newPointForRook = this.coordsToPoint(coords0.substring(6, 8));
+        newPointForRook.piece = rook.piece;
+        rook.piece = null;
+      }
+
       this.whiteKingChecked = this.isKingInCheck(Color.WHITE);
       this.blackKingChecked = this.isKingInCheck(Color.BLACK);
 
@@ -175,7 +182,7 @@ export class ChessMultiplayerComponent implements OnInit {
     });
   }
 
-  isCurrentWhiteColor(){
+  isCurrentWhiteColor() {
     return ChessMultiplayerComponent.currentColor === Color.WHITE;
   }
 
@@ -189,10 +196,19 @@ export class ChessMultiplayerComponent implements OnInit {
 
 
     if (this.selected) {
-      console.log(this.isPointInPossibleCaptures(pointClicked) + 'clicked');
-      console.log(this.isPointInPossibleMoves(pointClicked) + 'mves');
       if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
-        this.ws.send("/app/chess/" + ChessMultiplayerComponent.uri + '/move/' + this.activePoint.pointChar + this.getCharPointByCoords(pointClicked.row, pointClicked.col), {}, {});
+        let params = "/app/chess/" + ChessMultiplayerComponent.uri + '/move/' + this.activePoint.pointChar + this.getCharPointByCoords(pointClicked.row, pointClicked.col)
+        if (this.activePoint.piece instanceof King) {
+          if (Math.abs(pointClicked.col - this.activePoint.col) > 1) {
+            if (pointClicked.col < this.activePoint.col) {
+              params += this.getCharPointByCoords(7, 0) + this.getCharPointByCoords(7, this.activePoint.col - 1);
+            } else {
+              params += this.getCharPointByCoords(7, 7) + this.getCharPointByCoords(7, this.activePoint.col + 1);
+            }
+          }
+        }
+        console.log(params)
+        this.ws.send(params, {}, {});
       }
       this.selected = false;
       this.possibleCaptures = [];
@@ -201,7 +217,6 @@ export class ChessMultiplayerComponent implements OnInit {
       let pieceClicked = pointClicked.piece;
       if (pieceClicked) {
         if (pieceClicked.color !== ChessMultiplayerComponent.currentColor) {
-          console.log('return')
           return;
         }
         if (ChessMultiplayerComponent.currentColor === Color.WHITE) {
@@ -216,12 +231,10 @@ export class ChessMultiplayerComponent implements OnInit {
             this.selected = true;
             this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
             this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
-            console.log(this.possibleMoves)
 
           } else if (this.whiteKingChecked && !(pieceClicked instanceof King)) {
             this.selected = true;
             this.activePoint = pointClicked;
-            console.log("ccccc")
             this.possibleMoves = this.getPossibleMovesForKingInCheck2(Color.WHITE);
             this.possibleCaptures = this.getPossibleCapturesForKingInCheck2(Color.WHITE);
           }
@@ -242,7 +255,6 @@ export class ChessMultiplayerComponent implements OnInit {
           } else if (this.blackKingChecked && !(pieceClicked instanceof King)) {
             this.selected = true;
             this.activePoint = pointClicked;
-            console.log("dddddd")
             this.possibleMoves = this.getPossibleMovesForKingInCheck2(Color.BLACK)
             this.possibleCaptures = this.getPossibleCapturesForKingInCheck2(Color.BLACK);
           }
@@ -255,7 +267,6 @@ export class ChessMultiplayerComponent implements OnInit {
   getPossibleMovesForKingInCheck2(color: Color) {
     let currentActivePiece = this.activePoint.piece;
     let tempPossibleMoves = [];
-    console.log('ilosc ' + this.activePoint.piece.getPossibleMoves())
     this.activePoint.piece.getPossibleMoves().forEach(piece => {
       piece.piece = this.activePoint.piece;
       this.activePoint.piece = null;
@@ -265,7 +276,6 @@ export class ChessMultiplayerComponent implements OnInit {
       this.activePoint.piece = piece.piece;
       piece.piece = null
     });
-    console.log(tempPossibleMoves);
 
     return tempPossibleMoves;
   }
@@ -276,7 +286,6 @@ export class ChessMultiplayerComponent implements OnInit {
     let tempPossibleCaptures = [];
     this.activePoint.piece.getPossibleCaptures().forEach(piece => {
       let removedPoint = ChessMultiplayerComponent.getPointByCoords(piece.row, piece.col);
-      console.log(removedPoint);
       let removedPiece = removedPoint.piece;
       removedPoint.piece = null;
       this.activePoint = piece;
@@ -372,7 +381,6 @@ export class ChessMultiplayerComponent implements OnInit {
         ++c;
       }
 
-      console.log(ChessMultiplayerComponent.board);
 
       let cw = 104;
       for (let i = 0; i < 8; ++i) {
@@ -409,14 +417,12 @@ export class ChessMultiplayerComponent implements OnInit {
         let d = 97;
         ChessMultiplayerComponent.board[i] = [];
         for (var j: number = 0; j < 8; ++j) {
-          console.log(c);
           ChessMultiplayerComponent.board[i][j] = new Point(i, j, String.fromCharCode(d) + c, null);
           ++d;
         }
         --c;
       }
 
-      console.log(ChessMultiplayerComponent.board);
 
       let cx = 97;
       // piony czarne

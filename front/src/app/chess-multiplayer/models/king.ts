@@ -9,7 +9,7 @@ export class King extends Piece {
   castledAlready = false;
   shortCastled = false;
   longCastled = false;
-  isMovedAlready;
+  isMovedAlready = false;
   isCastling = false;
 
   constructor(color: Color, image: string) {
@@ -72,9 +72,9 @@ export class King extends Piece {
       }
 
       if (longCastlePossible && ChessMultiplayerComponent.getPointByCoords(row, 0)) {
-        let leftRook = ChessMultiplayerComponent.getPointByCoords(row, 0).piece;
-        if (leftRook instanceof Rook) {
-          if (!leftRook.isMovedAlready) {
+        let leftRookPoint = ChessMultiplayerComponent.getPointByCoords(row, 0);
+        if (leftRookPoint && leftRookPoint.piece instanceof Rook) {
+          if (!leftRookPoint.piece.isMovedAlready) {
             possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, col - 2));
           }
         }
@@ -89,10 +89,10 @@ export class King extends Piece {
       }
 
       if (shortCastlePossible && ChessMultiplayerComponent.getPointByCoords(row, 7)) {
-        let rightRook = ChessMultiplayerComponent.getPointByCoords(row, 7);
-        if (rightRook instanceof Rook) {
-          if (!rightRook.isMovedAlready) {
-            possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, col + 1));
+        let rightRookPoint = ChessMultiplayerComponent.getPointByCoords(row, 7);
+        if (rightRookPoint && rightRookPoint.piece instanceof Rook) {
+          if (!rightRookPoint.piece.isMovedAlready) {
+            possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, col + 2));
           }
         }
       }
@@ -180,7 +180,7 @@ export class King extends Piece {
 
     // lewo gora
     if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col - 1, this.color)) {
-      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col -1));
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1));
     }
     // prawo gora
     if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col + 1, this.color)) {
