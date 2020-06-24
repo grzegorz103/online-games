@@ -39,6 +39,8 @@ export class ChessMultiplayerComponent implements OnInit {
   static currentColor: Color;
   private selected: any;
 
+  isCurrentPlayer = false;
+
   constructor(private route: ActivatedRoute,
               private snackBar: MatSnackBar) {
   }
@@ -71,6 +73,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
       that.ws.subscribe("/user/queue/chess/move", message => {
         console.log(message.body);
+        that.isCurrentPlayer = !that.isCurrentPlayer;
         that.movePiece(message.body);
       });
 
@@ -118,6 +121,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
       that.ws.subscribe("/user/queue/chess/move", message => {
         console.log(message);
+        that.isCurrentPlayer = !that.isCurrentPlayer;
         that.movePiece(message.body);
       });
 
@@ -130,7 +134,16 @@ export class ChessMultiplayerComponent implements OnInit {
 
 
   onMouseDown(event) {
+
+    if (!this.isCurrentPlayer) {
+      return;
+    }
+
     let pointClicked = this.getClickPoint(event);
+
+    if (pointClicked.piece && pointClicked.piece.color !== ChessMultiplayerComponent.currentColor) {
+      return;
+    }
 
     if (this.selected) {
       if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
@@ -168,7 +181,7 @@ export class ChessMultiplayerComponent implements OnInit {
     return this.possibleMoves.some(e => e.row === point.row && e.col === point.col);
   }
 
-  getBoard(){
+  getBoard() {
     return ChessMultiplayerComponent.board;
   }
 
@@ -221,6 +234,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
     if (ChessMultiplayerComponent.uri) {
       let c = 1;
+      this.isCurrentPlayer = false;
       for (var i: number = 0; i < 8; ++i) {
         let d = 104;
         ChessMultiplayerComponent.board[i] = [];
@@ -238,7 +252,7 @@ export class ChessMultiplayerComponent implements OnInit {
         ChessMultiplayerComponent.getPointByCoords(1, i).piece = new Pawn(Color.WHITE, 'pawn-white.png');
         --cw;
       }
-      ChessMultiplayerComponent.getPointByCoords(0, 0).piece = new Rook(Color.WHITE, 'rook-white.jpg');
+      ChessMultiplayerComponent.getPointByCoords(0, 0).piece = new Rook(Color.WHITE, 'rook-white.png');
       ChessMultiplayerComponent.getPointByCoords(0, 1).piece = new Knight(Color.WHITE, 'knight-white.png');
       ChessMultiplayerComponent.getPointByCoords(0, 2).piece = new Bishop(Color.WHITE, 'bishop-white.png');
       ChessMultiplayerComponent.getPointByCoords(0, 3).piece = new Queen(Color.WHITE, 'queen-white.png');
@@ -259,9 +273,10 @@ export class ChessMultiplayerComponent implements OnInit {
       ChessMultiplayerComponent.getPointByCoords(7, 4).piece = new King(Color.BLACK, 'king-black.png');
       ChessMultiplayerComponent.getPointByCoords(7, 5).piece = new Bishop(Color.BLACK, 'bishop-black.png');
       ChessMultiplayerComponent.getPointByCoords(7, 6).piece = new Knight(Color.BLACK, 'knight-black.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 7).piece = new Rook(Color.BLACK, 'rook-black.png');
+      ChessMultiplayerComponent.getPointByCoords(7, 7).piece = new Rook(Color.BLACK, 'rook-black.jpg');
 
     } else {
+      this.isCurrentPlayer = true;
       let c = 8;
       for (var i: number = 0; i < 8; ++i) {
         let d = 97;
@@ -290,7 +305,7 @@ export class ChessMultiplayerComponent implements OnInit {
       ChessMultiplayerComponent.getPointByCoords(0, 4).piece = new King(Color.BLACK, 'king-black.png');
       ChessMultiplayerComponent.getPointByCoords(0, 5).piece = new Bishop(Color.BLACK, 'bishop-black.png');
       ChessMultiplayerComponent.getPointByCoords(0, 6).piece = new Knight(Color.BLACK, 'knight-black.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 7).piece = new Rook(Color.BLACK, 'rook-black.png');
+      ChessMultiplayerComponent.getPointByCoords(0, 7).piece = new Rook(Color.BLACK, 'rook-black.jpg');
 
       let x = 97;
       for (let i = 0; i < 8; ++i) {
@@ -298,7 +313,7 @@ export class ChessMultiplayerComponent implements OnInit {
         ++x;
       }
 
-      ChessMultiplayerComponent.getPointByCoords(7, 0).piece = new Rook(Color.WHITE, 'rook-white.jpg');
+      ChessMultiplayerComponent.getPointByCoords(7, 0).piece = new Rook(Color.WHITE, 'rook-white.png');
       ChessMultiplayerComponent.getPointByCoords(7, 1).piece = new Knight(Color.WHITE, 'knight-white.png');
       ChessMultiplayerComponent.getPointByCoords(7, 2).piece = new Bishop(Color.WHITE, 'bishop-white.png');
       ChessMultiplayerComponent.getPointByCoords(7, 3).piece = new Queen(Color.WHITE, 'queen-white.png');
