@@ -12,7 +12,6 @@ import {Bishop} from "./models/bishop";
 import {Queen} from "./models/queen";
 import * as Stomp from 'stompjs';
 import {environment} from "../../environments/environment";
-import {BoardComponent} from "../board/board.component";
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -74,7 +73,6 @@ export class ChessMultiplayerComponent implements OnInit {
       });
 
       that.ws.subscribe("/user/queue/chess/move", message => {
-        console.log(message.body);
         that.isCurrentPlayer = !that.isCurrentPlayer;
         that.movePiece(message.body);
       });
@@ -86,21 +84,17 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   movePiece(coords0: string) {
-    console.log('Move' + coords0.substring(0, 2));
     let srcPiece = this.coordsToPoint(coords0.substring(0, 2));
     if (srcPiece) {
-      console.log('Znaleziono')
       let destPoint = this.coordsToPoint(coords0.substring(2, 4));
       this.checkIfPawnFirstMove(srcPiece.piece);
       destPoint.piece = srcPiece.piece;
       srcPiece.piece = null;
-      console.log(coords0.substring(2, 4))
 
       this.whiteKingChecked = this.isKingInCheck(Color.WHITE);
       this.blackKingChecked = this.isKingInCheck(Color.BLACK);
 
     } else {
-      console.log('Nie znaleziono')
     }
   }
 
@@ -152,7 +146,6 @@ export class ChessMultiplayerComponent implements OnInit {
       });
 
       that.ws.subscribe("/user/queue/chess/move", message => {
-        console.log(message);
         that.isCurrentPlayer = !that.isCurrentPlayer;
         that.movePiece(message.body);
       });
@@ -173,9 +166,6 @@ export class ChessMultiplayerComponent implements OnInit {
 
     let pointClicked = this.getClickPoint(event);
 
-    if (pointClicked.piece && (!this.activePoint && pointClicked.piece.color !== ChessMultiplayerComponent.currentColor)) {
-      return;
-    }
 
     if (this.selected) {
       console.log(this.isPointInPossibleCaptures(pointClicked) + 'clicked');
@@ -189,11 +179,54 @@ export class ChessMultiplayerComponent implements OnInit {
     } else {
       let pieceClicked = pointClicked.piece;
       if (pieceClicked) {
-        this.selected = true;
-        console.log("ccccc")
-        this.possibleMoves = pieceClicked.getPossibleMoves();
-        this.possibleCaptures = pieceClicked.getPossibleCaptures();
-        this.activePoint = pointClicked;
+        if (pieceClicked.color !== ChessMultiplayerComponent.currentColor) {
+          console.log('return')
+          return;
+        }
+        if (ChessMultiplayerComponent.currentColor === Color.WHITE) {
+          if (this.whiteKingChecked && (pieceClicked instanceof King)) {
+            this.activePoint = pointClicked;
+            this.possibleCaptures = this.getPossibleCapturesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
+            this.possibleMoves = this.getPossibleMovesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
+
+            this.selected = true;
+          } else if (!this.whiteKingChecked) {
+            this.activePoint = pointClicked;
+            this.selected = true;
+            this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
+            this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
+            console.log(this.possibleMoves)
+
+          } else {
+            this.selected = true;
+            console.log("ccccc")
+            this.possibleMoves = pieceClicked.getPossibleMoves();
+            this.possibleCaptures = pieceClicked.getPossibleCaptures();
+            this.activePoint = pointClicked;
+          }
+
+        } else {
+          if (this.blackKingChecked && (pieceClicked instanceof King)) {
+            this.activePoint = pointClicked;
+            this.possibleCaptures = this.getPossibleCapturesForKingInCheck(Color.BLACK).filter(e => !this.willMoveCauseCheck(Color.BLACK, pointClicked.row, pointClicked.col, e.row, e.col));
+            this.possibleMoves = this.getPossibleMovesForKingInCheck(Color.BLACK).filter(e => !this.willMoveCauseCheck(Color.BLACK, pointClicked.row, pointClicked.col, e.row, e.col));
+
+            this.selected = true;
+          } else if (!this.blackKingChecked) {
+            this.activePoint = pointClicked;
+            this.selected = true;
+            this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.BLACK, pointClicked.row, pointClicked.col, e.row, e.col));
+            this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.BLACK, pointClicked.row,pointClicked.col, e.row, e.col));
+
+          } else {
+            this.selected = true;
+            console.log("ccccc")
+            this.possibleMoves = pieceClicked.getPossibleMoves();
+            this.possibleCaptures = pieceClicked.getPossibleCaptures();
+            this.activePoint = pointClicked;
+          }
+        }
+
       }
     }
   }
@@ -364,7 +397,7 @@ export class ChessMultiplayerComponent implements OnInit {
     }
     let piece = ChessMultiplayerComponent.board[row][col].piece;
 
-    return piece !== null && piece.color === enemyColor;
+    return piece && piece.color === enemyColor;
     //   return ChessMultiplayerComponent.board.some(e => e.point.col === col && e.point.row === row && e.color === enemyColor);
   }
 
@@ -385,4 +418,151 @@ export class ChessMultiplayerComponent implements OnInit {
       (piece as Pawn).isMovedAlready = true;
     }
   }
+
+  getPossibleCapturesForKingInCheck(color: Color) {
+    let kingPiece;
+
+    for (var i = 0; i < 8; ++i) {
+      for (var j = 0; j < 8; ++j) {
+        let piece = ChessMultiplayerComponent.board[i][j].piece
+        if (piece && piece.color === color && piece instanceof King) {
+          kingPiece = ChessMultiplayerComponent.board[i][j];
+        }
+      }
+    }
+
+    let possiblePoints = [];
+
+    let row = kingPiece.point.row;
+    let col = kingPiece.point.col;
+
+    // lewo
+    if (ChessMultiplayerComponent.isFieldTakenByEnemy(row, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !ChessMultiplayerComponent.isFieldUnderAttack(row, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, col - 1));
+    }
+
+    // prawo
+    if (ChessMultiplayerComponent.isFieldTakenByEnemy(row, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !ChessMultiplayerComponent.isFieldUnderAttack(row, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, col + 1));
+    }
+
+    // dol
+    if (ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !ChessMultiplayerComponent.isFieldUnderAttack(row + 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col));
+    }
+
+    // gora
+    if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !ChessMultiplayerComponent.isFieldUnderAttack(row - 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col));
+    }
+
+    // lewo gora
+    if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !ChessMultiplayerComponent.isFieldUnderAttack(row - 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1));
+    }
+    // prawo gora
+    if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !ChessMultiplayerComponent.isFieldUnderAttack(row - 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1));
+    }
+
+    // lewo dol
+    if (ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !ChessMultiplayerComponent.isFieldUnderAttack(row + 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col - 1));
+    }
+    // prawo dol
+    if (ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE) && !ChessMultiplayerComponent.isFieldUnderAttack(row + 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1));
+    }
+
+    return possiblePoints;
+  }
+
+  getPossibleMovesForKingInCheck(color: Color) {
+    let kingPiece;
+
+    for (var i = 0; i < 8; ++i) {
+      for (var j = 0; j < 8; ++j) {
+        let piece = ChessMultiplayerComponent.board[i][j].piece
+        if (piece && piece.color === color && piece instanceof King) {
+          kingPiece = ChessMultiplayerComponent.board[i][j];
+        }
+      }
+    }
+    let possiblePoints = [];
+
+    let row = kingPiece.point.row;
+    let col = kingPiece.point.col;
+
+    // lewo
+    if (ChessMultiplayerComponent.isFieldEmpty(row, col - 1) && !ChessMultiplayerComponent.isFieldUnderAttack(row, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, col - 1));
+    }
+
+    // prawo
+    if (ChessMultiplayerComponent.isFieldEmpty(row, col + 1) && !ChessMultiplayerComponent.isFieldUnderAttack(row, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row, col + 1));
+    }
+
+    // dol
+    if (ChessMultiplayerComponent.isFieldEmpty(row + 1, col) && !ChessMultiplayerComponent.isFieldUnderAttack(row + 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col));
+    }
+
+    // gora
+    if (ChessMultiplayerComponent.isFieldEmpty(row - 1, col) && !ChessMultiplayerComponent.isFieldUnderAttack(row - 1, col, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col));
+    }
+
+    // lewo gora
+    if (ChessMultiplayerComponent.isFieldEmpty(row - 1, col - 1) && !ChessMultiplayerComponent.isFieldUnderAttack(row - 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1));
+    }
+    // prawo gora
+    if (ChessMultiplayerComponent.isFieldEmpty(row - 1, col + 1) && !ChessMultiplayerComponent.isFieldUnderAttack(row - 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1));
+    }
+
+    // lewo dol
+    if (ChessMultiplayerComponent.isFieldEmpty(row + 1, col - 1) && !ChessMultiplayerComponent.isFieldUnderAttack(row + 1, col - 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col - 1));
+    }
+    // prawo dol
+    if (ChessMultiplayerComponent.isFieldEmpty(row + 1, col + 1) && !ChessMultiplayerComponent.isFieldUnderAttack(row + 1, col + 1, color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1));
+    }
+    return possiblePoints;
+  }
+
+  public willMoveCauseCheck(currentColor: Color, row: number, col: number, destRow: number, destCol: number) {
+    let tempBoard = ChessMultiplayerComponent.board;
+    /*  BoardComponent.pieces = BoardComponent.pieces.filter(piece =>
+        (piece.point.col !== col) || (piece.point.row !== row)
+      );*/
+    let srcPiece = ChessMultiplayerComponent.getPointByCoords(row, col);
+    let destPiece = ChessMultiplayerComponent.getPointByCoords(destRow, destCol);
+    console.log(srcPiece + 'zrodlowy')
+    console.log(destPiece + ' doce')
+    let tempPiece = null;
+    if (destPiece.piece) {
+      tempPiece = destPiece.piece;
+    }
+
+    if (srcPiece) {
+      destPiece.piece = srcPiece.piece;
+      srcPiece.piece = null;
+    }
+
+    let isBound = this.isKingInCheck(currentColor);
+
+    if (srcPiece) {
+      srcPiece.piece = destPiece.piece;
+    }
+
+    if (destPiece.piece) {
+      destPiece.piece = tempPiece;
+    }
+
+    return isBound;
+  }
+
 }
