@@ -373,6 +373,11 @@ export class BoardComponent implements OnInit {
         this.movePiece(randomPiece, possibleMoves[Math.floor(Math.random() * possibleMoves.length)]);
       }
 
+      this.checkIfPawnFirstMove(this.activePiece);
+      this.checkIfRookMoved(this.activePiece);
+      this.checkIfKingMoved(this.activePiece);
+      this.calculateAdvantage();
+
       if (this.isKingInCheck(Color.WHITE, BoardComponent.pieces)) {
         this.whiteKingChecked = true;
 

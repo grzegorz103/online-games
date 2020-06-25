@@ -12,6 +12,8 @@ import {Bishop} from "./models/bishop";
 import {Queen} from "./models/queen";
 import * as Stomp from 'stompjs';
 import {environment} from "../../environments/environment";
+import {ChessPromoteDialogComponent} from "../chess-promote-dialog/chess-promote-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -44,10 +46,12 @@ export class ChessMultiplayerComponent implements OnInit {
   isLoading: boolean = true;
   playersReady: boolean = false;
   calculation: number;
-  static enPassantPoint: Point;
-  static enPassantable: Point;
+  static enPassantPoint: Point = null;
+  static enPassantable: Point = null;
+  private promotionResult: number;
 
   constructor(private route: ActivatedRoute,
+              public dialog: MatDialog,
               private snackBar: MatSnackBar) {
   }
 
@@ -99,22 +103,24 @@ export class ChessMultiplayerComponent implements OnInit {
     if (srcPiece) {
       if (coords0.length > 3) {
         let destPoint = this.coordsToPoint(coords0.substring(2, 4));
-        this.checkIfPawnFirstMove(srcPiece.piece);
 
         if (coords0.endsWith('@')) {
           ChessMultiplayerComponent.enPassantPoint = null;
           if (ChessMultiplayerComponent.enPassantable != null)
             ChessMultiplayerComponent.enPassantable.piece = null;
         }
-        this.checkIfPawnEnPassant(srcPiece, destPoint);
 
+        if (coords0.match('[a-z0-9]*#\\d')) {
+          this.isPawnPromoting(srcPiece, destPoint, Number(coords0.substring(coords0.length - 1, coords0.length)));
+        }
+
+        this.checkIfPawnEnPassant(srcPiece, destPoint);
+        this.checkIfPawnFirstMove(srcPiece.piece);
         // this.checkIfPawnCaptuerEnPassant(srcPiece, destPoint);
         destPoint.piece = srcPiece.piece;
         srcPiece.piece = null;
       }
 
-      if (ChessMultiplayerComponent.enPassantable)
-        console.log(ChessMultiplayerComponent.enPassantable.piece);
       if (coords0.length > 7) {
         let rook = this.coordsToPoint(coords0.substring(4, 6));
         let newPointForRook = this.coordsToPoint(coords0.substring(6, 8));
@@ -211,7 +217,7 @@ export class ChessMultiplayerComponent implements OnInit {
     return ChessMultiplayerComponent.currentColor === Color.WHITE;
   }
 
-  onMouseDown(event) {
+  async onMouseDown(event) {
 
     if (!this.isCurrentPlayer) {
       return;
@@ -234,6 +240,11 @@ export class ChessMultiplayerComponent implements OnInit {
 
         if (this.activePoint.piece instanceof Pawn && pointClicked == ChessMultiplayerComponent.enPassantPoint) {
           params += '@';
+        }
+
+        await this.checkPawnForPromotion(this.activePoint, pointClicked);
+        if (this.promotionResult > 0) {
+          params += '#' + this.promotionResult;
         }
         this.ws.send(params, {}, {});
       }
@@ -258,7 +269,8 @@ export class ChessMultiplayerComponent implements OnInit {
             this.activePoint = pointClicked;
             this.selected = true;
             this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
-            this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
+            this.possibleMoves = pieceClicked.getPossibleMoves().filter(e =>
+              !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
 
           } else if (this.whiteKingChecked && !(pieceClicked instanceof King)) {
             this.selected = true;
@@ -731,4 +743,52 @@ export class ChessMultiplayerComponent implements OnInit {
     }
   }
 
+  private async checkPawnForPromotion(srcPiece: Point, destPoint: Point) {
+    if (srcPiece.piece instanceof Pawn && destPoint.row === 0) {
+      return this.openPromoteDialog(srcPiece);
+    }
+  }
+
+  async openPromoteDialog(point: Point) {
+    const dialogRef = this.dialog.open(ChessPromoteDialogComponent, {
+      width: '450px',
+      data: {}
+    });
+
+    return dialogRef.afterClosed()
+      .toPromise()
+      .then(result => {
+        if (result) {
+          this.promotionResult = result;
+        } else {
+          this.promotionResult = 1;
+        }
+        console.log(result);
+      });
+  }
+
+  private isPawnPromoting(srcPoint: Point, destPoint: Point, promotionChose: number) {
+    console.log('match' + promotionChose)
+    if (srcPoint.piece instanceof Pawn && (destPoint.row === 0 || destPoint.row === 7)) {
+      let isWhite = srcPoint.piece.color === Color.WHITE;
+      console.log(promotionChose + ' wybor')
+      switch (promotionChose) {
+        case 1:
+          srcPoint.piece = new Queen(srcPoint.piece.color, isWhite ? 'queen-white.png' : 'queen-black.png');
+          break;
+        case 2:
+          srcPoint.piece = new Rook(srcPoint.piece.color, isWhite ? 'rook-white-png' : 'rook-black.jpg');
+          break;
+        case 3:
+          srcPoint.piece = new Bishop(srcPoint.piece.color, isWhite ? 'bishop-white.png' : 'bishop-black.png');
+          break;
+        case 4:
+          srcPoint.piece = new Knight(srcPoint.piece.color, isWhite ? 'knight-white.png' : 'knight-black.png');
+          break;
+        default:
+          srcPoint.piece = new Queen(srcPoint.piece.color, isWhite ? 'queen-white.png' : 'queen-black.png');
+          break;
+      }
+    }
+  }
 }
