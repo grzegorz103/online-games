@@ -20,6 +20,8 @@ public class Chess {
 
     private boolean whiteStarts;
 
+    private State state;
+
     @JsonIgnore
     public String getLastMoveHistory() {
         return moveHistory.get(moveHistory.size() - 1);

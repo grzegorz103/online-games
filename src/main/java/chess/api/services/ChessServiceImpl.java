@@ -2,12 +2,15 @@ package chess.api.services;
 
 import chess.api.domain.chess.Chess;
 import chess.api.domain.chess.Player;
+import chess.api.domain.chess.State;
 import chess.api.services.declarations.ChessService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -19,10 +22,11 @@ public class ChessServiceImpl implements ChessService {
     public Chess addGame(String gameUri, boolean whiteStarts, String sessionId) {
         if (StringUtils.isNotBlank(gameUri)) {
             Chess chess = new Chess(
-                    whiteStarts ? new Player(sessionId, null) : null,
-                    whiteStarts ? null : new Player(sessionId, null),
+                    whiteStarts ? new Player(sessionId, null, false) : null,
+                    whiteStarts ? null : new Player(sessionId, null, false),
                     new ArrayList<>(),
-                    whiteStarts
+                    whiteStarts,
+                    State.RUNNING
             );
             games.put(gameUri, chess);
             return chess;
@@ -36,9 +40,9 @@ public class ChessServiceImpl implements ChessService {
         Chess game = games.get(gameUri);
         if (game != null) {
             if (game.isWhiteStarts()) {
-                game.setBlackPlayer(new Player(sessionId, null));
+                game.setBlackPlayer(new Player(sessionId, null, false));
             } else {
-                game.setWhitePlayer(new Player(sessionId, null));
+                game.setWhitePlayer(new Player(sessionId, null, false));
             }
         }
         return game;
@@ -57,6 +61,34 @@ public class ChessServiceImpl implements ChessService {
     @Override
     public Map<String, Chess> getGames() {
         return this.games;
+    }
+
+    @Override
+    public Chess rematch(String gameUri, String sessionId) {
+        Chess game = games.get(gameUri);
+        if (game != null) {
+          //  if (game.getState() == State.CLOSED) {
+                if (Objects.equals(game.getWhitePlayer().getSessionId(), sessionId)) {
+                    game.getWhitePlayer().setRematchSent(true);
+                } else if (Objects.equals(game.getBlackPlayer().getSessionId(), sessionId)) {
+                    game.getBlackPlayer().setRematchSent(true);
+         //       }
+            }
+        } else {
+            throw new IllegalArgumentException();
+        }
+
+        return game;
+    }
+
+    public void resetGame(Chess game) {
+        Player whitePlayer = game.getWhitePlayer();
+        whitePlayer.setRematchSent(false);
+        game.getBlackPlayer().setRematchSent(false);
+        game.setWhitePlayer(game.getBlackPlayer());
+        game.setBlackPlayer(whitePlayer);
+        game.setMoveHistory(new ArrayList<>());
+        game.setState(State.RUNNING);
     }
 
 }

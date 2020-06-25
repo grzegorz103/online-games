@@ -46,8 +46,6 @@ export class Pawn extends Piece {
       }
     }
 
-    console.log(this.color === Color.WHITE)
-    console.log(possiblePoints)
     return possiblePoints;
   }
 
@@ -57,37 +55,20 @@ export class Pawn extends Piece {
 
     let row = point.row;
     let col = point.col;
-    if (ChessMultiplayerComponent.currentColor === Color.WHITE) {
-      if (this.color === Color.WHITE) {
-        if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col - 1, Color.BLACK)) {
-          possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1));
-        }
-        if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col + 1, Color.BLACK)) {
-          possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1));
-        }
-      } else {
-        if (ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col - 1, Color.WHITE)) {
-          possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col - 1));
-        }
-        if (ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col + 1, Color.WHITE)) {
-          possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1));
-        }
+
+    if ((ChessMultiplayerComponent.isWhiteBottom && this.color === Color.WHITE) || (!ChessMultiplayerComponent.isWhiteBottom && this.color === Color.BLACK)) {
+      if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col - 1, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+        possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1));
+      }
+      if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col + 1, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+        possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1));
       }
     } else {
-      if (this.color === Color.WHITE) {
-        if (ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col + 1, Color.BLACK)) {
-          possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1));
-        }
-        if (ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col - 1, Color.BLACK)) {
-          possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col - 1));
-        }
-      } else {
-        if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col + 1, Color.WHITE)) {
-          possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1));
-        }
-        if (ChessMultiplayerComponent.isFieldTakenByEnemy(row - 1, col - 1, Color.WHITE)) {
-          possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1));
-        }
+      if (ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col + 1, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+        possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1));
+      }
+      if (ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col - 1, this.color === Color.WHITE ? Color.BLACK : Color.WHITE)) {
+        possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col - 1));
       }
     }
 
