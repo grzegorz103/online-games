@@ -19,7 +19,6 @@ export class Pawn extends Piece {
     let col = point.col;
 
     if (ChessMultiplayerComponent.currentColor === Color.WHITE) {
-      console.log('nie ma')
       if (this.color === Color.WHITE) {
         if (ChessMultiplayerComponent.isFieldEmpty(row - 1, col)) {
           possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col));
@@ -27,6 +26,11 @@ export class Pawn extends Piece {
           if (!this.isMovedAlready && ChessMultiplayerComponent.isFieldEmpty(row - 2, col)) {
             possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 2, col));
           }
+        }
+
+        if (ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
+          || ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1) === ChessMultiplayerComponent.enPassantPoint) {
+          possiblePoints.push(ChessMultiplayerComponent.enPassantPoint);
         }
       } else {
         if (/*!ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col, Color.WHITE) &&*/ ChessMultiplayerComponent.isFieldEmpty(row + 1, col)) {
@@ -36,9 +40,12 @@ export class Pawn extends Piece {
             possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 2, col));
           }
         }
+        if (ChessMultiplayerComponent.getPointByCoords(row+ 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
+          || ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1) === ChessMultiplayerComponent.enPassantPoint) {
+          possiblePoints.push(ChessMultiplayerComponent.enPassantPoint);
+        }
       }
     } else {
-      console.log('jest')
       if (this.color === Color.WHITE) {
         if (ChessMultiplayerComponent.isFieldEmpty(row + 1, col)) {
           possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col));
@@ -47,6 +54,10 @@ export class Pawn extends Piece {
             possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 2, col));
           }
         }
+        if (ChessMultiplayerComponent.getPointByCoords(row + 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
+          || ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1) === ChessMultiplayerComponent.enPassantPoint) {
+          possiblePoints.push(ChessMultiplayerComponent.enPassantPoint);
+        }
       } else {
         if (/*!ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col, Color.WHITE) &&*/ ChessMultiplayerComponent.isFieldEmpty(row - 1, col)) {
           possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col));
@@ -54,6 +65,10 @@ export class Pawn extends Piece {
           if (!this.isMovedAlready && ChessMultiplayerComponent.isFieldEmpty(row - 2, col)) {
             possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 2, col));
           }
+        }
+        if (ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
+          || ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1) === ChessMultiplayerComponent.enPassantPoint) {
+          possiblePoints.push(ChessMultiplayerComponent.enPassantPoint);
         }
       }
     }
