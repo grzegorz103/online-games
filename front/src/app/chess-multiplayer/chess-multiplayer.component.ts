@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
 import {Color} from "./models/color";
 import {King} from "./models/king";
 import {Point} from "./models/point";
@@ -691,7 +691,13 @@ export class ChessMultiplayerComponent implements OnInit {
     selBox.select();
     document.execCommand('copy');
     document.body.removeChild(selBox);
-    this.snackBar.open('Skopiowano link do schowka')
+
+    let config = new MatSnackBarConfig();
+    config.verticalPosition = 'top';
+    config.horizontalPosition = 'center';
+    config.duration = 2000;
+    config.panelClass = ['share-friend-bar'];
+    this.snackBar.open('Skopiowano link do schowka', null, config);
   }
 
   private calculateAdvantage() {

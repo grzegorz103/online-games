@@ -28,7 +28,7 @@ export class Pawn extends Piece {
           }
         }
 
-        if (ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
+        if (ChessMultiplayerComponent.enPassantable && ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
           || ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1) === ChessMultiplayerComponent.enPassantPoint) {
           possiblePoints.push(ChessMultiplayerComponent.enPassantPoint);
         }
@@ -40,7 +40,7 @@ export class Pawn extends Piece {
             possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 2, col));
           }
         }
-        if (ChessMultiplayerComponent.getPointByCoords(row+ 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
+        if (ChessMultiplayerComponent.enPassantable && ChessMultiplayerComponent.getPointByCoords(row+ 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
           || ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1) === ChessMultiplayerComponent.enPassantPoint) {
           possiblePoints.push(ChessMultiplayerComponent.enPassantPoint);
         }
@@ -54,7 +54,7 @@ export class Pawn extends Piece {
             possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 2, col));
           }
         }
-        if (ChessMultiplayerComponent.getPointByCoords(row + 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
+        if (ChessMultiplayerComponent.enPassantable && ChessMultiplayerComponent.getPointByCoords(row + 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
           || ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1) === ChessMultiplayerComponent.enPassantPoint) {
           possiblePoints.push(ChessMultiplayerComponent.enPassantPoint);
         }
@@ -66,7 +66,7 @@ export class Pawn extends Piece {
             possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 2, col));
           }
         }
-        if (ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
+        if (ChessMultiplayerComponent.enPassantable && ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
           || ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1) === ChessMultiplayerComponent.enPassantPoint) {
           possiblePoints.push(ChessMultiplayerComponent.enPassantPoint);
         }
