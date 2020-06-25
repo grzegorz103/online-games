@@ -44,6 +44,8 @@ export class ChessMultiplayerComponent implements OnInit {
   isLoading: boolean = true;
   playersReady: boolean = false;
   calculation: number;
+  static enPassantPoint: Point;
+  static enPassantable: Point;
 
   constructor(private route: ActivatedRoute,
               private snackBar: MatSnackBar) {
@@ -95,11 +97,24 @@ export class ChessMultiplayerComponent implements OnInit {
   movePiece(coords0: string) {
     let srcPiece = this.coordsToPoint(coords0.substring(0, 2));
     if (srcPiece) {
-      let destPoint = this.coordsToPoint(coords0.substring(2, 4));
-      this.checkIfPawnFirstMove(srcPiece.piece);
-      destPoint.piece = srcPiece.piece;
-      srcPiece.piece = null;
+      if (coords0.length > 3) {
+        let destPoint = this.coordsToPoint(coords0.substring(2, 4));
+        this.checkIfPawnFirstMove(srcPiece.piece);
 
+        if (coords0.endsWith('@')) {
+          ChessMultiplayerComponent.enPassantPoint = null;
+          if (ChessMultiplayerComponent.enPassantable != null)
+            ChessMultiplayerComponent.enPassantable.piece = null;
+        }
+        this.checkIfPawnEnPassant(srcPiece, destPoint);
+
+        // this.checkIfPawnCaptuerEnPassant(srcPiece, destPoint);
+        destPoint.piece = srcPiece.piece;
+        srcPiece.piece = null;
+      }
+
+      if (ChessMultiplayerComponent.enPassantable)
+        console.log(ChessMultiplayerComponent.enPassantable.piece);
       if (coords0.length > 7) {
         let rook = this.coordsToPoint(coords0.substring(4, 6));
         let newPointForRook = this.coordsToPoint(coords0.substring(6, 8));
@@ -204,7 +219,6 @@ export class ChessMultiplayerComponent implements OnInit {
 
     let pointClicked = this.getClickPoint(event);
 
-
     if (this.selected) {
       if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
         let params = "/app/chess/" + ChessMultiplayerComponent.uri + '/move/' + this.activePoint.pointChar + this.getCharPointByCoords(pointClicked.row, pointClicked.col)
@@ -217,9 +231,13 @@ export class ChessMultiplayerComponent implements OnInit {
             }
           }
         }
-        console.log(params)
+
+        if (this.activePoint.piece instanceof Pawn && pointClicked == ChessMultiplayerComponent.enPassantPoint) {
+          params += '@';
+        }
         this.ws.send(params, {}, {});
       }
+
       this.selected = false;
       this.possibleCaptures = [];
       this.possibleMoves = [];
@@ -503,8 +521,6 @@ export class ChessMultiplayerComponent implements OnInit {
         let piece = ChessMultiplayerComponent.board[i][j].piece
         if (piece && piece.color === color && piece instanceof King) {
           kingPiece = ChessMultiplayerComponent.board[i][j];
-          console.log(kingPiece)
-          console.log('znalazlo krola')
         }
       }
     }
@@ -618,8 +634,7 @@ export class ChessMultiplayerComponent implements OnInit {
       );*/
     let srcPiece = ChessMultiplayerComponent.getPointByCoords(row, col);
     let destPiece = ChessMultiplayerComponent.getPointByCoords(destRow, destCol);
-    console.log(srcPiece + 'zrodlowy')
-    console.log(destPiece + ' doce')
+
     let tempPiece = null;
     if (destPiece.piece) {
       tempPiece = destPiece.piece;
@@ -704,6 +719,16 @@ export class ChessMultiplayerComponent implements OnInit {
       alert('Szach mat!');
     }
 
+  }
+
+  private checkIfPawnEnPassant(srcPoint: Point, destPoint: Point) {
+    if (srcPoint.piece instanceof Pawn && (Math.abs(srcPoint.row - destPoint.row) > 1)) {
+      ChessMultiplayerComponent.enPassantPoint = ChessMultiplayerComponent.getPointByCoords((srcPoint.row + destPoint.row) / 2, srcPoint.col);
+      ChessMultiplayerComponent.enPassantable = destPoint;
+    } else {
+      ChessMultiplayerComponent.enPassantable = null;
+      ChessMultiplayerComponent.enPassantPoint = null;
+    }
   }
 
 }

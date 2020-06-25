@@ -27,6 +27,11 @@ export class Pawn extends Piece {
             possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 2, col));
           }
         }
+
+        if (ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
+          || ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1) === ChessMultiplayerComponent.enPassantPoint) {
+          possiblePoints.push(ChessMultiplayerComponent.enPassantPoint);
+        }
       } else {
         if (/*!ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col, Color.WHITE) &&*/ ChessMultiplayerComponent.isFieldEmpty(row + 1, col)) {
           possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col));
@@ -34,6 +39,10 @@ export class Pawn extends Piece {
           if (!this.isMovedAlready && ChessMultiplayerComponent.isFieldEmpty(row + 2, col)) {
             possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 2, col));
           }
+        }
+        if (ChessMultiplayerComponent.getPointByCoords(row+ 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
+          || ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1) === ChessMultiplayerComponent.enPassantPoint) {
+          possiblePoints.push(ChessMultiplayerComponent.enPassantPoint);
         }
       }
     } else {
@@ -45,6 +54,10 @@ export class Pawn extends Piece {
             possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 2, col));
           }
         }
+        if (ChessMultiplayerComponent.getPointByCoords(row + 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
+          || ChessMultiplayerComponent.getPointByCoords(row + 1, col + 1) === ChessMultiplayerComponent.enPassantPoint) {
+          possiblePoints.push(ChessMultiplayerComponent.enPassantPoint);
+        }
       } else {
         if (/*!ChessMultiplayerComponent.isFieldTakenByEnemy(row + 1, col, Color.WHITE) &&*/ ChessMultiplayerComponent.isFieldEmpty(row - 1, col)) {
           possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col));
@@ -52,6 +65,10 @@ export class Pawn extends Piece {
           if (!this.isMovedAlready && ChessMultiplayerComponent.isFieldEmpty(row - 2, col)) {
             possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 2, col));
           }
+        }
+        if (ChessMultiplayerComponent.getPointByCoords(row - 1, col - 1) === ChessMultiplayerComponent.enPassantPoint
+          || ChessMultiplayerComponent.getPointByCoords(row - 1, col + 1) === ChessMultiplayerComponent.enPassantPoint) {
+          possiblePoints.push(ChessMultiplayerComponent.enPassantPoint);
         }
       }
     }
