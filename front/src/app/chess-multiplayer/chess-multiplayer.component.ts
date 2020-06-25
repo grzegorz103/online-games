@@ -14,6 +14,7 @@ import * as Stomp from 'stompjs';
 import {environment} from "../../environments/environment";
 import {ChessPromoteDialogComponent} from "../chess-promote-dialog/chess-promote-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
+import {log} from "util";
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -37,7 +38,7 @@ export class ChessMultiplayerComponent implements OnInit {
   @ViewChild('dragRef', {static: false})
   boardRef: ElementRef;
 
-  static currentColor: Color;
+  static  currentColor: Color;
   private selected: any;
 
   isCurrentPlayer = false;
@@ -158,7 +159,7 @@ export class ChessMultiplayerComponent implements OnInit {
         }
       }
     }
-    console.log(color === Color.WHITE);
+
     if (kingPiece) {
       for (var i = 0; i < 8; ++i) {
         for (var j = 0; j < 8; ++j) {
@@ -343,7 +344,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
   static isFieldUnderAttack(row: number, col: number, color: Color) {
     let found = false;
-    console.log((color === Color.WHITE?'white':'black') + ' +  ' + row + ' ' + col);
+
     let field = ChessMultiplayerComponent.board[row][col];
 
     return field.piece && field.piece.getCoveredFields().some(e => e === field);
@@ -734,11 +735,11 @@ export class ChessMultiplayerComponent implements OnInit {
       }
     }
 
-    if (arr
-      .every(point =>
-        point.piece.getPossibleMoves().every(e => this.willMoveCauseCheck(point.piece.color, point.row, point.col, e.row, e.col))
+    if (arr.every(point => {
+      console.log(point.pointChar)
+      return point.piece.getPossibleMoves().every(e => this.willMoveCauseCheck(point.piece.color, point.row, point.col, e.row, e.col))
         && point.piece.getPossibleCaptures().every(e => this.willMoveCauseCheck(point.piece.color, point.row, point.col, e.row, e.col))
-      )) {
+    })) {
       alert('Szach mat!');
     }
 
