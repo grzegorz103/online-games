@@ -38,7 +38,7 @@ export class ChessMultiplayerComponent implements OnInit {
   @ViewChild('dragRef', {static: false})
   boardRef: ElementRef;
 
-  static  currentColor: Color;
+  static currentColor: Color;
   private selected: any;
 
   isCurrentPlayer = false;
@@ -50,6 +50,7 @@ export class ChessMultiplayerComponent implements OnInit {
   static enPassantPoint: Point = null;
   static enPassantable: Point = null;
   private promotionResult: number;
+  static isWhiteBottom: boolean;
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -67,9 +68,11 @@ export class ChessMultiplayerComponent implements OnInit {
     this.addPieces();
     if (ChessMultiplayerComponent.uri) {
       ChessMultiplayerComponent.currentColor = Color.BLACK;
+      ChessMultiplayerComponent.isWhiteBottom = false;
       this.joinGame();
     } else {
       ChessMultiplayerComponent.currentColor = Color.WHITE;
+      ChessMultiplayerComponent.isWhiteBottom = true;
       this.createGame();
     }
 
@@ -273,6 +276,7 @@ export class ChessMultiplayerComponent implements OnInit {
             this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
             this.possibleMoves = pieceClicked.getPossibleMoves().filter(e =>
               !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
+            console.log(this.possibleMoves)
 
           } else if (this.whiteKingChecked && !(pieceClicked instanceof King)) {
             this.selected = true;
@@ -803,4 +807,5 @@ export class ChessMultiplayerComponent implements OnInit {
       }
     }
   }
+
 }
