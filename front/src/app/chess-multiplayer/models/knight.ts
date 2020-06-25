@@ -7,8 +7,8 @@ export class Knight extends Piece {
 
   isMovedAlready = false;
 
-  constructor( color: Color, image: string) {
-    super( color, image, 3);
+  constructor(color: Color, image: string) {
+    super(color, image, 3);
   }
 
   getPossibleMoves(): Point[] {
@@ -21,22 +21,22 @@ export class Knight extends Piece {
 
     // gora -> lewo
     if (ChessMultiplayerComponent.isFieldEmpty(row - 2, col - 1)) {
-      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row-2, col - 1));
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 2, col - 1));
     }
 
     // gora -> prawo
     if (ChessMultiplayerComponent.isFieldEmpty(row - 2, col + 1)) {
-      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row-2, col +1));
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 2, col + 1));
     }
 
     // lewo -> gora
     if (ChessMultiplayerComponent.isFieldEmpty(row - 1, col - 2)) {
-      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row-1, col - 2));
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col - 2));
     }
 
     // prawo -> gora
     if (ChessMultiplayerComponent.isFieldEmpty(row - 1, col + 2)) {
-      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row-1, col+ 2));
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col + 2));
     }
 
     // lewo -> dol
@@ -122,29 +122,39 @@ export class Knight extends Piece {
     let col = point.col;
 
     // gora -> lewo
-    possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 2, col - 1));
+    if (ChessMultiplayerComponent.getPointByCoords(row - 2, col - 1)) {
+      possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 2, col - 1));
+    }
 
 
     // gora -> prawo
+    if(ChessMultiplayerComponent.getPointByCoords(row - 2, col + 1))
     possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 2, col + 1));
 
     // lewo -> gora
+
+    if(ChessMultiplayerComponent.getPointByCoords(row - 1, col - 2) )
     possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col - 2));
 
     // prawo -> gora
+    if(ChessMultiplayerComponent.getPointByCoords(row - 1, col + 2))
     possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row - 1, col + 2));
 
     // lewo -> dol
+    if(ChessMultiplayerComponent.getPointByCoords(row + 1, col - 2))
     possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col - 2));
 
     // prawo -> dol
+    if(ChessMultiplayerComponent.getPointByCoords(row + 1, col + 2))
     possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 1, col + 2));
 
     // dol -> lewo
+    if(ChessMultiplayerComponent.getPointByCoords(row + 2, col - 1))
     possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 2, col - 1));
 
 
     // dol -> prawo
+    if(ChessMultiplayerComponent.getPointByCoords(row + 2, col + 1))
     possiblePoints.push(ChessMultiplayerComponent.getPointByCoords(row + 2, col + 1));
 
 

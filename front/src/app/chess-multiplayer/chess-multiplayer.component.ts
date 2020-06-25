@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
 import {Color} from "./models/color";
 import {King} from "./models/king";
 import {Point} from "./models/point";
@@ -158,6 +158,7 @@ export class ChessMultiplayerComponent implements OnInit {
         }
       }
     }
+    console.log(color === Color.WHITE);
     if (kingPiece) {
       for (var i = 0; i < 8; ++i) {
         for (var j = 0; j < 8; ++j) {
@@ -342,6 +343,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
   static isFieldUnderAttack(row: number, col: number, color: Color) {
     let found = false;
+    console.log((color === Color.WHITE?'white':'black') + ' +  ' + row + ' ' + col);
     let field = ChessMultiplayerComponent.board[row][col];
 
     return field.piece && field.piece.getCoveredFields().some(e => e === field);
@@ -402,6 +404,9 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   static getPointByCoords(row: number, col: number) {
+    if (row > 7 || row < 0 || col > 7 || col < 0) {
+      return null;
+    }
     return this.board[row][col];
   }
 
@@ -686,7 +691,13 @@ export class ChessMultiplayerComponent implements OnInit {
     selBox.select();
     document.execCommand('copy');
     document.body.removeChild(selBox);
-    this.snackBar.open('Skopiowano link do schowka')
+
+    let config = new MatSnackBarConfig();
+    config.verticalPosition = 'top';
+    config.horizontalPosition = 'center';
+    config.duration = 2000;
+    config.panelClass = ['share-friend-bar'];
+    this.snackBar.open('Skopiowano link do schowka', null, config);
   }
 
   private calculateAdvantage() {
