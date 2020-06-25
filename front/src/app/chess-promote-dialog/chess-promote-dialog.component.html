@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Wybierz figurę</h1>
+<div mat-dialog-content>
+  <div [style.background-image]="'url(assets/queen-white.png)'" class="icon" (click)="setChoose(1)"
+       [ngClass]="choose == 1 ? 'highlight':''"></div>
+  <div [style.background-image]="'url(assets/rook-white.png)'" [ngClass]="choose == 2 ? 'highlight':''"
+       (click)="setChoose(2)"
+       class="icon"></div>
+  <div [style.background-image]="'url(assets/bishop-white.png)'" [ngClass]="choose == 3 ? 'highlight':''"
+       (click)="setChoose(3)"
+       class="icon"></div>
+  <div [style.background-image]="'url(assets/knight-white.png)'" class="icon" (click)="setChoose(4)"
+       [ngClass]="choose == 4 ? 'highlight':''"></div>
+</div>
+<div class="row">
+  <div mat-dialog-actions class="mx-auto">
+    <button mat-button class="btn btn-success" [mat-dialog-close]="choose" cdkFocusInitial>Ok</button>
+  </div>
+</div>
