@@ -53,6 +53,7 @@ export class ChessMultiplayerComponent implements OnInit {
   static isWhiteBottom: boolean;
   static isGameFinished: boolean = false;
   colorChoosen: boolean = false;
+  abandoned: boolean = false;
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -69,7 +70,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
     if (ChessMultiplayerComponent.uri) {
       this.joinGame();
-    }else{
+    } else {
       this.createGame();
     }
 
@@ -87,12 +88,13 @@ export class ChessMultiplayerComponent implements OnInit {
         that.movePiece(message.body);
       });
 
-      that.ws.subscribe("/user/queue/chess/update", message => {
+      that.ws.subscribe("/user/queue/chess/abandon", message => {
+        that.abandoned = true;
+      });
 
-        console.log('kolor bialy przed ' + (ChessMultiplayerComponent.currentColor === Color.WHITE ? 'tak' : 'nie'));
+      that.ws.subscribe("/user/queue/chess/update", message => {
         ChessMultiplayerComponent.currentColor = ChessMultiplayerComponent.currentColor === Color.BLACK ? Color.WHITE : Color.BLACK;
         that.addPieces();
-        console.log('kolor bialy po ' + (ChessMultiplayerComponent.currentColor === Color.WHITE ? 'tak' : 'nie'));
       });
 
       that.ws.subscribe("/user/queue/chess/start", message => {
@@ -208,6 +210,10 @@ export class ChessMultiplayerComponent implements OnInit {
         that.isLoading = false;
         log(that.isLoading)
         that.playersReady = false;
+      });
+
+      that.ws.subscribe("/user/queue/chess/abandon", message => {
+        that.abandoned = true;
       });
 
       that.ws.subscribe("/user/queue/chess/update", message => {
