@@ -54,6 +54,8 @@ export class ChessMultiplayerComponent implements OnInit {
   static isGameFinished: boolean = false;
   colorChoosen: boolean = false;
   abandoned: boolean = false;
+  private destMove: string;
+  private sourceMove: string;
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -132,6 +134,8 @@ export class ChessMultiplayerComponent implements OnInit {
         // this.checkIfPawnCaptuerEnPassant(srcPiece, destPoint);
         destPoint.piece = srcPiece.piece;
         srcPiece.piece = null;
+        this.sourceMove = coords0.substring(0,2);
+        this.destMove = coords0.substring(2,4);
       }
 
       if (coords0.length > 7) {
@@ -897,4 +901,13 @@ export class ChessMultiplayerComponent implements OnInit {
     this.ws.send("/app/chess/host", {}, ChessMultiplayerComponent.currentColor === Color.WHITE);
   }
 
+  isXYInSourceMove(i: number, j: number) {
+    let sourceMove = ChessMultiplayerComponent.getPointByCoords(i, j);
+    return sourceMove.pointChar === this.sourceMove;
+  }
+
+  isXYInDestMove(i: number, j: number) {
+    let destMove = ChessMultiplayerComponent.getPointByCoords(i, j);
+    return destMove.pointChar === this.destMove;
+  }
 }
