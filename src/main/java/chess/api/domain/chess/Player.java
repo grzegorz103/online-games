@@ -11,8 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Player extends BaseUser {
 
-    public Player(String sessionId, String username) {
+    private boolean rematchSent;
+
+    public Player(String sessionId, String username, boolean rematchSent) {
         super(sessionId, username);
+        this.rematchSent = rematchSent;
     }
 
 }

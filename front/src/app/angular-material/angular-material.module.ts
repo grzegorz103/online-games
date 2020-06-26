@@ -23,6 +23,7 @@ import {
   MatPaginatorModule,
   MatCardModule
 } from '@angular/material';
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import {
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatButtonToggleModule,
     MatSnackBarModule,
     MatDialogModule,
     MatRadioModule,
@@ -51,6 +53,7 @@ import {
   exports: [
     MatButtonModule,
     MatToolbarModule,
+    MatButtonToggleModule,
     MatIconModule,
     MatSidenavModule,
     MatBadgeModule,

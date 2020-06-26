@@ -44,7 +44,7 @@ public class ChessSocketController {
         Chess chess = chessService.joinGame(uri, sessionId);
 
         sendingOperations.convertAndSendToUser(chess.getWhitePlayer().getSessionId(), "/queue/chess/start", true, WebSocketUtils.getMessageHeaders(chess.getWhitePlayer().getSessionId()));
-        sendingOperations.convertAndSendToUser(chess.getBlackPlayer().getSessionId(), "/queue/chess/start", true, WebSocketUtils.getMessageHeaders(chess.getBlackPlayer().getSessionId()));
+        sendingOperations.convertAndSendToUser(chess.getBlackPlayer().getSessionId(), "/queue/chess/start", false, WebSocketUtils.getMessageHeaders(chess.getBlackPlayer().getSessionId()));
     }
 
     @MessageMapping("/chess/{uri}/move/{move}")
@@ -54,6 +54,19 @@ public class ChessSocketController {
         Chess chess = chessService.makeMove(uri, sessionId, move);
         sendingOperations.convertAndSendToUser(chess.getWhitePlayer().getSessionId(), "/queue/chess/move", chess.getLastMoveHistory(), WebSocketUtils.getMessageHeaders(chess.getWhitePlayer().getSessionId()));
         sendingOperations.convertAndSendToUser(chess.getBlackPlayer().getSessionId(), "/queue/chess/move", chess.getLastMoveHistory(), WebSocketUtils.getMessageHeaders(chess.getBlackPlayer().getSessionId()));
+    }
+
+    @MessageMapping("/chess/{uri}/rematch")
+    public void rematch(@Header("simpSessionId") String sessionId,
+                         @DestinationVariable String uri){
+        Chess game = chessService.rematch(uri, sessionId);
+        log.info("Receive rematch request url " + uri);
+        if (game.getBlackPlayer().isRematchSent() && game.getWhitePlayer().isRematchSent()) {
+            chessService.resetGame(game);
+            log.info("Reseting game with url " + uri);
+            sendingOperations.convertAndSendToUser(game.getWhitePlayer().getSessionId(), "/queue/chess/update", true, WebSocketUtils.getMessageHeaders(game.getWhitePlayer().getSessionId()));
+            sendingOperations.convertAndSendToUser(game.getBlackPlayer().getSessionId(), "/queue/chess/update", true, WebSocketUtils.getMessageHeaders(game.getBlackPlayer().getSessionId()));
+        }
     }
 
 }
