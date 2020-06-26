@@ -38,18 +38,21 @@ export class ChessMultiplayerComponent implements OnInit {
   @ViewChild('dragRef', {static: false})
   boardRef: ElementRef;
 
-  static  currentColor: Color;
+  static currentColor: Color;
   private selected: any;
 
   isCurrentPlayer = false;
   private whiteKingChecked: boolean;
   private blackKingChecked: boolean;
-  isLoading: boolean = true;
+  isLoading: boolean = false;
   playersReady: boolean = false;
   calculation: number;
   static enPassantPoint: Point = null;
   static enPassantable: Point = null;
   private promotionResult: number;
+  static isWhiteBottom: boolean;
+  static isGameFinished: boolean = false;
+  colorChoosen: boolean = false;
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -64,12 +67,9 @@ export class ChessMultiplayerComponent implements OnInit {
     this.socket = new WebSocket(environment.wsUrl);
     this.ws = Stomp.over(this.socket);
 
-    this.addPieces();
     if (ChessMultiplayerComponent.uri) {
-      ChessMultiplayerComponent.currentColor = Color.BLACK;
       this.joinGame();
-    } else {
-      ChessMultiplayerComponent.currentColor = Color.WHITE;
+    }else{
       this.createGame();
     }
 
@@ -87,9 +87,19 @@ export class ChessMultiplayerComponent implements OnInit {
         that.movePiece(message.body);
       });
 
+      that.ws.subscribe("/user/queue/chess/update", message => {
+
+        console.log('kolor bialy przed ' + (ChessMultiplayerComponent.currentColor === Color.WHITE ? 'tak' : 'nie'));
+        ChessMultiplayerComponent.currentColor = ChessMultiplayerComponent.currentColor === Color.BLACK ? Color.WHITE : Color.BLACK;
+        that.addPieces();
+        console.log('kolor bialy po ' + (ChessMultiplayerComponent.currentColor === Color.WHITE ? 'tak' : 'nie'));
+      });
+
       that.ws.subscribe("/user/queue/chess/start", message => {
         that.isLoading = false;
         that.playersReady = true;
+        ChessMultiplayerComponent.currentColor = (JSON.parse(message.body)) ? Color.WHITE : Color.BLACK;
+        that.addPieces();
         that.calculateAdvantage();
       });
 
@@ -187,6 +197,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
   private createGame() {
     let that = this;
+    console.log('create')
     this.ws.connect({}, function (frame) {
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
@@ -195,12 +206,23 @@ export class ChessMultiplayerComponent implements OnInit {
       that.ws.subscribe("/user/queue/chess/uri", message => {
         ChessMultiplayerComponent.uri = message.body;
         that.isLoading = false;
+        log(that.isLoading)
         that.playersReady = false;
-        that.calculateAdvantage();
+      });
+
+      that.ws.subscribe("/user/queue/chess/update", message => {
+        console.log('kolor bialy przed ' + (ChessMultiplayerComponent.currentColor === Color.WHITE ? 'tak' : 'nie'));
+        ChessMultiplayerComponent.currentColor = ChessMultiplayerComponent.currentColor === Color.BLACK ? Color.WHITE : Color.BLACK;
+        that.addPieces();
+        console.log('kolor bialy po ' + (ChessMultiplayerComponent.currentColor === Color.WHITE ? 'tak' : 'nie'));
       });
 
       that.ws.subscribe("/user/queue/chess/start", message => {
+        that.isLoading = false;
         that.playersReady = true;
+        ChessMultiplayerComponent.currentColor = (JSON.parse(message.body)) ? Color.WHITE : Color.BLACK;
+        that.addPieces();
+        that.calculateAdvantage();
       });
 
       that.ws.subscribe("/user/queue/chess/move", message => {
@@ -208,7 +230,6 @@ export class ChessMultiplayerComponent implements OnInit {
         that.movePiece(message.body);
       });
 
-      that.ws.send("/app/chess/host", {}, true);
 
     }, function (error) {
       that.socket.close();
@@ -220,13 +241,11 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   async onMouseDown(event) {
-
+    console.log('przed')
     if (!this.isCurrentPlayer) {
       return;
     }
-
     let pointClicked = this.getClickPoint(event);
-
     if (this.selected) {
       if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
         let params = "/app/chess/" + ChessMultiplayerComponent.uri + '/move/' + this.activePoint.pointChar + this.getCharPointByCoords(pointClicked.row, pointClicked.col)
@@ -256,6 +275,8 @@ export class ChessMultiplayerComponent implements OnInit {
       this.possibleMoves = [];
     } else {
       let pieceClicked = pointClicked.piece;
+      console.log('piececlick')
+      console.log(ChessMultiplayerComponent.currentColor === Color.WHITE)
       if (pieceClicked) {
         if (pieceClicked.color !== ChessMultiplayerComponent.currentColor) {
           return;
@@ -273,6 +294,7 @@ export class ChessMultiplayerComponent implements OnInit {
             this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
             this.possibleMoves = pieceClicked.getPossibleMoves().filter(e =>
               !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
+            console.log(this.possibleMoves)
 
           } else if (this.whiteKingChecked && !(pieceClicked instanceof King)) {
             this.selected = true;
@@ -413,8 +435,17 @@ export class ChessMultiplayerComponent implements OnInit {
 
   addPieces() {
     //  ChessMultiplayerComponent.board = [];
-
-    if (ChessMultiplayerComponent.uri) {
+    ChessMultiplayerComponent.isGameFinished = false;
+    this.blackKingChecked = false;
+    this.whiteKingChecked = false;
+    if (ChessMultiplayerComponent.currentColor === Color.WHITE) {
+      this.isCurrentPlayer = true;
+      ChessMultiplayerComponent.isWhiteBottom = true;
+    } else {
+      this.isCurrentPlayer = false;
+      ChessMultiplayerComponent.isWhiteBottom = false;
+    }
+    if (ChessMultiplayerComponent.currentColor === Color.BLACK) {
       let c = 1;
       this.isCurrentPlayer = false;
       for (var i: number = 0; i < 8; ++i) {
@@ -501,6 +532,9 @@ export class ChessMultiplayerComponent implements OnInit {
       ChessMultiplayerComponent.getPointByCoords(7, 6).piece = new Knight(Color.WHITE, 'knight-white.png');
       ChessMultiplayerComponent.getPointByCoords(7, 7).piece = new Rook(Color.WHITE, 'rook-white.png');
     }
+
+    this.calculateAdvantage();
+
   }
 
   static isFieldTakenByEnemy(row: number, col: number, enemyColor: Color): boolean {
@@ -715,7 +749,7 @@ export class ChessMultiplayerComponent implements OnInit {
         }
       }
     }
-    if (ChessMultiplayerComponent.currentColor === Color.BLACK) {
+    if (!ChessMultiplayerComponent.isWhiteBottom) {
       [whitePoints, blackPoints] = [blackPoints, whitePoints]
     }
 
@@ -741,6 +775,7 @@ export class ChessMultiplayerComponent implements OnInit {
         && point.piece.getPossibleCaptures().every(e => this.willMoveCauseCheck(point.piece.color, point.row, point.col, e.row, e.col))
     })) {
       alert('Szach mat!');
+      ChessMultiplayerComponent.isGameFinished = true;
     }
 
   }
@@ -803,4 +838,57 @@ export class ChessMultiplayerComponent implements OnInit {
       }
     }
   }
+
+  rotateBoard() {
+    ChessMultiplayerComponent.isWhiteBottom = !ChessMultiplayerComponent.isWhiteBottom;
+
+    ChessMultiplayerComponent.board = ChessMultiplayerComponent.board.reverse();
+    for (let i = 0; i < 8; ++i) {
+      ChessMultiplayerComponent.board[i] = ChessMultiplayerComponent.board[i].reverse()
+    }
+
+    for (let i = 0; i < 8; ++i) {
+      for (let j = 0; j < 8; ++j) {
+        ChessMultiplayerComponent.board[i][j].col = j;
+        ChessMultiplayerComponent.board[i][j].row = i;
+      }
+    }
+    console.log(ChessMultiplayerComponent.board);
+    this.calculateAdvantage();
+  }
+
+  isWhiteBottom() {
+    return ChessMultiplayerComponent.isWhiteBottom;
+  }
+
+  sendRematchOffer() {
+    this.ws.send("/app/chess/" + this.getUri() + "/rematch", {}, {});
+  }
+
+  getIsGameFinished() {
+    return ChessMultiplayerComponent.isGameFinished;
+  }
+
+  changeColor(number: number) {
+    switch (number) {
+      case 1:
+        ChessMultiplayerComponent.currentColor = Color.BLACK;
+        break;
+      case 2:
+        ChessMultiplayerComponent.currentColor = Color.WHITE;
+        break;
+      case 3:
+        ChessMultiplayerComponent.currentColor = (Math.floor(Math.random() * 2) + 1 === 1) ? Color.BLACK : Color.WHITE;
+        break;
+      default:
+        ChessMultiplayerComponent.currentColor = Color.WHITE;
+    }
+  }
+
+  sendCreateGameRequest() {
+    this.colorChoosen = true;
+    this.isLoading = false;
+    this.ws.send("/app/chess/host", {}, ChessMultiplayerComponent.currentColor === Color.WHITE);
+  }
+
 }

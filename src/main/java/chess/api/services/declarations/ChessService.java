@@ -14,4 +14,7 @@ public interface ChessService {
 
     Map<String, Chess> getGames();
 
+    Chess rematch(String gameUri, String sessionId);
+
+    void resetGame(Chess game);
 }
