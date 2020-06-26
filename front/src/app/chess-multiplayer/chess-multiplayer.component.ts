@@ -56,6 +56,10 @@ export class ChessMultiplayerComponent implements OnInit {
   abandoned: boolean = false;
   private destMove: string;
   private sourceMove: string;
+  currentPlayerTime: number = 300;
+  enemyPlayerTime: number = 300;
+  currentPlayerTimeString: string = new Date(this.currentPlayerTime * 1000).toISOString().substring(11,19);
+  enemyPlayerTimeString: string = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11,19);
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -105,6 +109,7 @@ export class ChessMultiplayerComponent implements OnInit {
         ChessMultiplayerComponent.currentColor = (JSON.parse(message.body)) ? Color.WHITE : Color.BLACK;
         that.addPieces();
         that.calculateAdvantage();
+        that.startTimer();
       });
 
       that.ws.send("/app/chess/" + ChessMultiplayerComponent.uri + '/join', {}, true);
@@ -134,8 +139,8 @@ export class ChessMultiplayerComponent implements OnInit {
         // this.checkIfPawnCaptuerEnPassant(srcPiece, destPoint);
         destPoint.piece = srcPiece.piece;
         srcPiece.piece = null;
-        this.sourceMove = coords0.substring(0,2);
-        this.destMove = coords0.substring(2,4);
+        this.sourceMove = coords0.substring(0, 2);
+        this.destMove = coords0.substring(2, 4);
       }
 
       if (coords0.length > 7) {
@@ -233,6 +238,7 @@ export class ChessMultiplayerComponent implements OnInit {
         ChessMultiplayerComponent.currentColor = (JSON.parse(message.body)) ? Color.WHITE : Color.BLACK;
         that.addPieces();
         that.calculateAdvantage();
+        that.startTimer();
       });
 
       that.ws.subscribe("/user/queue/chess/move", message => {
@@ -910,4 +916,19 @@ export class ChessMultiplayerComponent implements OnInit {
     let destMove = ChessMultiplayerComponent.getPointByCoords(i, j);
     return destMove.pointChar === this.destMove;
   }
+
+  startTimer() {
+    if (!this.getIsGameFinished()) {
+      if (this.isCurrentPlayer) {
+        this.currentPlayerTime--;
+        this.currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11,19)
+      } else {
+        this.enemyPlayerTime--;
+        this.enemyPlayerTimeString = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11,19);
+        console.log(this.enemyPlayerTimeString)
+      }
+      setTimeout(() => this.startTimer(), 1000);
+    }
+  }
+
 }
