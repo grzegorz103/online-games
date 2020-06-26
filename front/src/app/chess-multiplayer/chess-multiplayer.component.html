@@ -6,6 +6,9 @@
     </div>
   </div>
 
+  <div class="row w-100" *ngIf="abandoned">
+    <div class="mx-auto h2 my-auto">Przeciwnik opuścił grę</div>
+  </div>
 
   <div *ngIf="!isLoading && !colorChoosen && !playersReady" class="col-12 w-100">
     <div class="mx-auto text-center">
@@ -36,7 +39,7 @@
 
     </div>
   </div>
-  <div class="row" *ngIf="!isLoading && playersReady">
+  <div class="row" *ngIf="!isLoading && playersReady && !abandoned">
     <div class="col-2 info" style="font-size: 25px">
       <div class="row" style="height:50%;">
         Przeciwnik
