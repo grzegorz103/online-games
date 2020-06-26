@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-md-8">
-      <div *ngIf="isLoading()" class="col-12 w-100">
+      <div *ngIf="isLoading()" class="col-12 h-100">
         <mat-spinner class="mx-auto"></mat-spinner>
         <div class="text-center w-100"><i>Uruchamianie serwera. Proszę czekać</i></div>
       </div>
@@ -34,7 +34,7 @@
             </button>
             <span *ngIf="game.state === 'ABANDONED'">Przeciwnik porzucił grę</span>
             <span
-              *ngIf="game.state==='CLOSED'&&(randomId===game.oplayer.randomId && game.oplayer.rematchRequestSend)
+               *ngIf="game.state==='CLOSED'&&(randomId===game.oplayer.randomId && game.oplayer.rematchRequestSend)
           || (randomId === game.xplayer.randomId && game.xplayer.rematchRequestSend)" class="blinking">Wysłano prośbę o rewanż</span>
             <span
               *ngIf="game.state==='CLOSED' && (randomId!==game.oplayer.randomId && game.oplayer.rematchRequestSend)
