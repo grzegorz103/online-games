@@ -90,13 +90,35 @@
   border: 5px solid red;
 }
 
-.blinking{
+.blinking {
   animation: blink 1s linear infinite;
   color: white;
 }
 
-@keyframes blink{
-  0%{opacity: 0;}
-  50%{opacity: .5;}
-  100%{opacity: 1;}
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: .5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
+
+.mat-button-toggle-checked:nth-child(1) {
+  box-shadow: 0 0 30px #000 !important;
+  border: 1px #000 solid !important;
+  border-radius: 5px !important;
+  background-color: #000 !important;
+}
+
+.mat-button-toggle-checked:nth-child(2) {
+  box-shadow: 0 0 30px #000 !important;
+  border: 1px #000 solid !important;
+  border-radius: 5px !important;
+  color: black!important;
+  background-color: #FFF !important;
+}
+

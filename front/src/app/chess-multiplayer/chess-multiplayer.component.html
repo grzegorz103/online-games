@@ -11,9 +11,9 @@
     <div class="mx-auto text-center">
       <div class="h2">Wybierz kolor</div>
       <mat-button-toggle-group name="color" aria-label="Color">
-        <mat-button-toggle (click)="changeColor(1)">Czarne</mat-button-toggle>
-        <mat-button-toggle (click)="changeColor(2)">Białe</mat-button-toggle>
-        <mat-button-toggle (click)="changeColor(3)">Losowo</mat-button-toggle>
+        <mat-button-toggle (click)="changeColor(1)" id="blackButton" >Czarne</mat-button-toggle>
+        <mat-button-toggle (click)="changeColor(2)"id="whiteButton">Białe</mat-button-toggle>
+        <mat-button-toggle (click)="changeColor(3)" id="randomButton"><span class="blackWhite">Losowo</span></mat-button-toggle>
       </mat-button-toggle-group>
       <div class="row">
         <button class="btn btn-success my-3 mx-auto"
