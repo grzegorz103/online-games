@@ -17,4 +17,8 @@ public interface ChessService {
     Chess rematch(String gameUri, String sessionId);
 
     void resetGame(Chess game);
+
+    Chess getGameBySessionId(String sessionId);
+
+    void delete(Chess chess);
 }

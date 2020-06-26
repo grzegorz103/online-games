@@ -3,6 +3,7 @@ package chess.api.services;
 import chess.api.domain.chess.Chess;
 import chess.api.domain.chess.Player;
 import chess.api.domain.chess.State;
+import chess.api.domain.ticTacToe.Game;
 import chess.api.services.declarations.ChessService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -67,12 +68,12 @@ public class ChessServiceImpl implements ChessService {
     public Chess rematch(String gameUri, String sessionId) {
         Chess game = games.get(gameUri);
         if (game != null) {
-          //  if (game.getState() == State.CLOSED) {
-                if (Objects.equals(game.getWhitePlayer().getSessionId(), sessionId)) {
-                    game.getWhitePlayer().setRematchSent(true);
-                } else if (Objects.equals(game.getBlackPlayer().getSessionId(), sessionId)) {
-                    game.getBlackPlayer().setRematchSent(true);
-         //       }
+            //  if (game.getState() == State.CLOSED) {
+            if (Objects.equals(game.getWhitePlayer().getSessionId(), sessionId)) {
+                game.getWhitePlayer().setRematchSent(true);
+            } else if (Objects.equals(game.getBlackPlayer().getSessionId(), sessionId)) {
+                game.getBlackPlayer().setRematchSent(true);
+                //       }
             }
         } else {
             throw new IllegalArgumentException();
@@ -89,6 +90,26 @@ public class ChessServiceImpl implements ChessService {
         game.setBlackPlayer(whitePlayer);
         game.setMoveHistory(new ArrayList<>());
         game.setState(State.RUNNING);
+    }
+
+    @Override
+    public Chess getGameBySessionId(String sessionId) {
+        return games.values()
+                .stream()
+                .filter(e -> isPlayerInGame(sessionId, e))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Player not found in chess games"));
+    }
+
+    @Override
+    public void delete(Chess chess) {
+        this.games.values()
+                .remove(chess);
+    }
+
+    private boolean isPlayerInGame(String sessionId, Chess chess) {
+        return (chess.getWhitePlayer() != null && Objects.equals(chess.getWhitePlayer().getSessionId(), sessionId))
+                || (chess.getBlackPlayer() != null && Objects.equals(chess.getBlackPlayer().getSessionId(), sessionId));
     }
 
 }
