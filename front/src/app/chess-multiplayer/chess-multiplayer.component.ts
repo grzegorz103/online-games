@@ -44,7 +44,7 @@ export class ChessMultiplayerComponent implements OnInit {
   isCurrentPlayer = false;
   private whiteKingChecked: boolean;
   private blackKingChecked: boolean;
-  isLoading: boolean = true;
+  isLoading: boolean = false;
   playersReady: boolean = false;
   calculation: number;
   static enPassantPoint: Point = null;
@@ -52,6 +52,7 @@ export class ChessMultiplayerComponent implements OnInit {
   private promotionResult: number;
   static isWhiteBottom: boolean;
   static isGameFinished: boolean = false;
+  colorChoosen: boolean = false;
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -67,16 +68,11 @@ export class ChessMultiplayerComponent implements OnInit {
     this.ws = Stomp.over(this.socket);
 
     if (ChessMultiplayerComponent.uri) {
-      ChessMultiplayerComponent.currentColor = Color.BLACK;
-      ChessMultiplayerComponent.isWhiteBottom = false;
       this.joinGame();
-    } else {
-      ChessMultiplayerComponent.currentColor = Color.WHITE;
-      ChessMultiplayerComponent.isWhiteBottom = true;
+    }else{
       this.createGame();
     }
 
-    this.addPieces();
   }
 
   private joinGame() {
@@ -102,6 +98,8 @@ export class ChessMultiplayerComponent implements OnInit {
       that.ws.subscribe("/user/queue/chess/start", message => {
         that.isLoading = false;
         that.playersReady = true;
+        ChessMultiplayerComponent.currentColor = (JSON.parse(message.body)) ? Color.WHITE : Color.BLACK;
+        that.addPieces();
         that.calculateAdvantage();
       });
 
@@ -199,6 +197,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
   private createGame() {
     let that = this;
+    console.log('create')
     this.ws.connect({}, function (frame) {
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
@@ -207,8 +206,8 @@ export class ChessMultiplayerComponent implements OnInit {
       that.ws.subscribe("/user/queue/chess/uri", message => {
         ChessMultiplayerComponent.uri = message.body;
         that.isLoading = false;
+        log(that.isLoading)
         that.playersReady = false;
-        that.calculateAdvantage();
       });
 
       that.ws.subscribe("/user/queue/chess/update", message => {
@@ -219,7 +218,11 @@ export class ChessMultiplayerComponent implements OnInit {
       });
 
       that.ws.subscribe("/user/queue/chess/start", message => {
+        that.isLoading = false;
         that.playersReady = true;
+        ChessMultiplayerComponent.currentColor = (JSON.parse(message.body)) ? Color.WHITE : Color.BLACK;
+        that.addPieces();
+        that.calculateAdvantage();
       });
 
       that.ws.subscribe("/user/queue/chess/move", message => {
@@ -227,7 +230,6 @@ export class ChessMultiplayerComponent implements OnInit {
         that.movePiece(message.body);
       });
 
-      that.ws.send("/app/chess/host", {}, true);
 
     }, function (error) {
       that.socket.close();
@@ -865,6 +867,28 @@ export class ChessMultiplayerComponent implements OnInit {
 
   getIsGameFinished() {
     return ChessMultiplayerComponent.isGameFinished;
+  }
+
+  changeColor(number: number) {
+    switch (number) {
+      case 1:
+        ChessMultiplayerComponent.currentColor = Color.BLACK;
+        break;
+      case 2:
+        ChessMultiplayerComponent.currentColor = Color.WHITE;
+        break;
+      case 3:
+        ChessMultiplayerComponent.currentColor = (Math.floor(Math.random() * 2) + 1 === 1) ? Color.BLACK : Color.WHITE;
+        break;
+      default:
+        ChessMultiplayerComponent.currentColor = Color.WHITE;
+    }
+  }
+
+  sendCreateGameRequest() {
+    this.colorChoosen = true;
+    this.isLoading = false;
+    this.ws.send("/app/chess/host", {}, ChessMultiplayerComponent.currentColor === Color.WHITE);
   }
 
 }

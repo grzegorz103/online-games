@@ -6,13 +6,34 @@
     </div>
   </div>
 
-  <div *ngIf="!isLoading && !playersReady" class="col-12 w-100">
+
+  <div *ngIf="!isLoading && !colorChoosen" class="col-12 w-100">
+    <div class="mx-auto text-center">
+      <div class="h2">Wybierz kolor</div>
+      <mat-button-toggle-group name="color" aria-label="Color">
+        <mat-button-toggle (click)="changeColor(1)">Czarne</mat-button-toggle>
+        <mat-button-toggle (click)="changeColor(2)">Białe</mat-button-toggle>
+        <mat-button-toggle (click)="changeColor(3)">Losowo</mat-button-toggle>
+      </mat-button-toggle-group>
+      <div class="row">
+        <button class="btn btn-success my-3 mx-auto"
+                (click)="sendCreateGameRequest()"
+                value="Zaproś znajomego">
+          Utwórz grę!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && colorChoosen" class="col-12 w-100">
     <div class="text-center w-100">
       <button class="btn btn-info my-3 mx-auto"
               (click)="copyMessage(apiUrl() + 'chess/' + getUri())"
               value="Zaproś znajomego">
         Zaproś drugiego gracza, aby rozpocząć grę (naciśnij)
       </button>
+
+
     </div>
   </div>
   <div class="row" *ngIf="!isLoading && playersReady">

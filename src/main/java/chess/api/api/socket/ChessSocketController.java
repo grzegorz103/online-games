@@ -44,7 +44,7 @@ public class ChessSocketController {
         Chess chess = chessService.joinGame(uri, sessionId);
 
         sendingOperations.convertAndSendToUser(chess.getWhitePlayer().getSessionId(), "/queue/chess/start", true, WebSocketUtils.getMessageHeaders(chess.getWhitePlayer().getSessionId()));
-        sendingOperations.convertAndSendToUser(chess.getBlackPlayer().getSessionId(), "/queue/chess/start", true, WebSocketUtils.getMessageHeaders(chess.getBlackPlayer().getSessionId()));
+        sendingOperations.convertAndSendToUser(chess.getBlackPlayer().getSessionId(), "/queue/chess/start", false, WebSocketUtils.getMessageHeaders(chess.getBlackPlayer().getSessionId()));
     }
 
     @MessageMapping("/chess/{uri}/move/{move}")
