@@ -897,7 +897,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
   sendCreateGameRequest() {
     this.colorChoosen = true;
-    this.isLoading = false;
+    this.isLoading = true;
     this.ws.send("/app/chess/host", {}, ChessMultiplayerComponent.currentColor === Color.WHITE);
   }
 
