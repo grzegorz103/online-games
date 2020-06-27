@@ -6,7 +6,7 @@ import java.util.Map;
 
 public interface ChessService {
 
-    Chess addGame(String gameUri, boolean whiteStarts, String sessionId);
+    Chess addGame(String gameUri, boolean whiteStarts, String sessionId, Integer time);
 
     Chess joinGame(String gameUri, String sessionId);
 

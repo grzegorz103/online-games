@@ -56,11 +56,13 @@ export class ChessMultiplayerComponent implements OnInit {
   abandoned: boolean = false;
   private destMove: string;
   private sourceMove: string;
-  currentPlayerTime: number = 15;
-  enemyPlayerTime: number = 15;
-  currentPlayerTimeString: string = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19);
-  enemyPlayerTimeString: string = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
+  currentPlayerTime: number;
+  enemyPlayerTime: number;
+  currentPlayerTimeString: string
+  enemyPlayerTimeString: string
   boardClone: string;
+  availableTimes = [60, 180, 300];
+  timeChoosen: number;
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -97,6 +99,10 @@ export class ChessMultiplayerComponent implements OnInit {
 
       that.ws.subscribe("/user/queue/chess/abandon", message => {
         that.abandoned = true;
+      });
+
+      that.ws.subscribe("/user/queue/chess/time", message => {
+        that.timeChoosen = JSON.parse(message.body);
       });
 
       that.ws.subscribe("/user/queue/chess/update", message => {
@@ -449,7 +455,7 @@ export class ChessMultiplayerComponent implements OnInit {
   addPieces() {
     //  ChessMultiplayerComponent.board = [];
     ChessMultiplayerComponent.isGameFinished = false;
-    this.resetTime();
+    this.setTimer();
     this.blackKingChecked = false;
     this.whiteKingChecked = false;
     if (ChessMultiplayerComponent.currentColor === Color.WHITE) {
@@ -905,7 +911,7 @@ export class ChessMultiplayerComponent implements OnInit {
     setTimeout(() => {
       if (this.socket.readyState === 1) {
         console.log('Connection established')
-        this.ws.send("/app/chess/host", {}, ChessMultiplayerComponent.currentColor === Color.WHITE);
+        this.ws.send("/app/chess/host/" + this.timeChoosen, {}, ChessMultiplayerComponent.currentColor === Color.WHITE);
       } else {
         console.log('Wait for connection')
         this.waitForSocketConnection();
@@ -955,9 +961,9 @@ export class ChessMultiplayerComponent implements OnInit {
     ChessMultiplayerComponent.board = JSON.parse(this.boardClone);
   }
 
-  private resetTime() {
-    this.currentPlayerTime = 15;
-    this.enemyPlayerTime = 15;
+  private setTimer() {
+    this.currentPlayerTime = this.timeChoosen;
+    this.enemyPlayerTime = this.timeChoosen;
     this.currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19);
     this.enemyPlayerTimeString = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
   }

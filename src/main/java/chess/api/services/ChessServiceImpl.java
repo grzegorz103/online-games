@@ -20,14 +20,15 @@ public class ChessServiceImpl implements ChessService {
     private Map<String, Chess> games = new ConcurrentHashMap<>();
 
     @Override
-    public Chess addGame(String gameUri, boolean whiteStarts, String sessionId) {
+    public Chess addGame(String gameUri, boolean whiteStarts, String sessionId, Integer time) {
         if (StringUtils.isNotBlank(gameUri)) {
             Chess chess = new Chess(
                     whiteStarts ? new Player(sessionId, null, false) : null,
                     whiteStarts ? null : new Player(sessionId, null, false),
                     new ArrayList<>(),
                     whiteStarts,
-                    State.RUNNING
+                    State.RUNNING,
+                    time
             );
             games.put(gameUri, chess);
             return chess;
