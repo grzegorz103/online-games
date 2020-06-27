@@ -27,12 +27,13 @@ public class ChessSocketController {
         this.sendingOperations = sendingOperations;
     }
 
-    @MessageMapping("/chess/host")
+    @MessageMapping("/chess/host/{time}")
     public void createGame(@Payload boolean whiteStarts,
+                           @DestinationVariable("time") Integer time,
                            @Header("simpSessionId") String sessionId) {
         String uri = URIGenerator.getAvailableURI(chessService.getGames());
         log.info("Creating game with uri " + uri);
-        Chess chess = chessService.addGame(uri, whiteStarts, sessionId);
+        Chess chess = chessService.addGame(uri, whiteStarts, sessionId, time);
         sendingOperations.convertAndSendToUser(sessionId, "/queue/chess/uri", uri, WebSocketUtils.getMessageHeaders(sessionId));
         sendingOperations.convertAndSendToUser(sessionId, "/queue/chess/create", chess, WebSocketUtils.getMessageHeaders(sessionId));
     }
@@ -43,6 +44,7 @@ public class ChessSocketController {
         log.info("Joining game with uri " + uri);
         Chess chess = chessService.joinGame(uri, sessionId);
 
+        sendingOperations.convertAndSendToUser(sessionId, "/queue/chess/time", chess.getTime(), WebSocketUtils.getMessageHeaders(sessionId));
         sendingOperations.convertAndSendToUser(chess.getWhitePlayer().getSessionId(), "/queue/chess/start", true, WebSocketUtils.getMessageHeaders(chess.getWhitePlayer().getSessionId()));
         sendingOperations.convertAndSendToUser(chess.getBlackPlayer().getSessionId(), "/queue/chess/start", false, WebSocketUtils.getMessageHeaders(chess.getBlackPlayer().getSessionId()));
     }

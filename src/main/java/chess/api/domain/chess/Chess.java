@@ -22,6 +22,8 @@ public class Chess {
 
     private State state;
 
+    private Integer time;
+
     @JsonIgnore
     public String getLastMoveHistory() {
         return moveHistory.get(moveHistory.size() - 1);

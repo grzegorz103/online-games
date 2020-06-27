@@ -19,6 +19,15 @@
         <mat-button-toggle (click)="changeColor(3)" id="randomButton"><span class="blackWhite">Losowo</span>
         </mat-button-toggle>
       </mat-button-toggle-group>
+      <div class="h2 mt-3">Wybierz czas</div>
+      <mat-form-field>
+        <mat-label>Czas</mat-label>
+        <mat-select [(ngModel)]="timeChoosen">
+          <mat-option *ngFor="let time of availableTimes" [value]="time">
+            {{time / 60}} min.
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
       <div class="row">
         <button class="btn btn-success my-3 mx-auto"
                 (click)="sendCreateGameRequest()"
@@ -79,6 +88,8 @@
         </div>
       </div>
     </div>
+    <!-- <button (click)="restore()">asd</button>
+    -->
     <div *ngIf="isMobileView()">
       <div class="h-100" style="display: inline">
         <div class="h-50">
