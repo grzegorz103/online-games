@@ -56,10 +56,11 @@ export class ChessMultiplayerComponent implements OnInit {
   abandoned: boolean = false;
   private destMove: string;
   private sourceMove: string;
-  currentPlayerTime: number = 300;
-  enemyPlayerTime: number = 300;
+  currentPlayerTime: number = 15;
+  enemyPlayerTime: number = 15;
   currentPlayerTimeString: string = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19);
   enemyPlayerTimeString: string = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
+  boardClone: string;
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -109,7 +110,6 @@ export class ChessMultiplayerComponent implements OnInit {
         ChessMultiplayerComponent.currentColor = (JSON.parse(message.body)) ? Color.WHITE : Color.BLACK;
         that.addPieces();
         that.calculateAdvantage();
-        that.startTimer();
       });
 
       that.ws.send("/app/chess/" + ChessMultiplayerComponent.uri + '/join', {}, true);
@@ -119,6 +119,7 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   movePiece(coords0: string) {
+    this.boardClone = JSON.stringify(ChessMultiplayerComponent.board);
     let srcPiece = this.coordsToPoint(coords0.substring(0, 2));
     if (srcPiece) {
       if (coords0.length > 3) {
@@ -239,7 +240,6 @@ export class ChessMultiplayerComponent implements OnInit {
         ChessMultiplayerComponent.currentColor = (JSON.parse(message.body)) ? Color.WHITE : Color.BLACK;
         that.addPieces();
         that.calculateAdvantage();
-        that.startTimer();
       });
 
       that.ws.subscribe("/user/queue/chess/move", message => {
@@ -449,6 +449,7 @@ export class ChessMultiplayerComponent implements OnInit {
   addPieces() {
     //  ChessMultiplayerComponent.board = [];
     ChessMultiplayerComponent.isGameFinished = false;
+    this.resetTime();
     this.blackKingChecked = false;
     this.whiteKingChecked = false;
     if (ChessMultiplayerComponent.currentColor === Color.WHITE) {
@@ -547,6 +548,7 @@ export class ChessMultiplayerComponent implements OnInit {
     }
 
     this.calculateAdvantage();
+    this.startTimer();
 
   }
 
@@ -925,13 +927,19 @@ export class ChessMultiplayerComponent implements OnInit {
     if (!this.getIsGameFinished()) {
       if (this.isCurrentPlayer) {
         this.currentPlayerTime--;
-        this.currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19)
+        this.currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19);
       } else {
         this.enemyPlayerTime--;
         this.enemyPlayerTimeString = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
       }
+      if (this.currentPlayerTime === 0 || this.enemyPlayerTime === 0) {
+        alert('Koniec czasu');
+        ChessMultiplayerComponent.isGameFinished = true;
+      }
+
       setTimeout(() => this.startTimer(), 1000);
     }
+
   }
 
   isMobileView() {
@@ -941,6 +949,17 @@ export class ChessMultiplayerComponent implements OnInit {
 
   private checkForPat(color: Color) {
     this.checkForMate(color, 'Pat');
+  }
+
+  restore() {
+    ChessMultiplayerComponent.board = JSON.parse(this.boardClone);
+  }
+
+  private resetTime() {
+    this.currentPlayerTime = 15;
+    this.enemyPlayerTime = 15;
+    this.currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19);
+    this.enemyPlayerTimeString = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
   }
 
 }
