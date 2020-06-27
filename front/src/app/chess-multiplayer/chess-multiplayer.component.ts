@@ -58,8 +58,8 @@ export class ChessMultiplayerComponent implements OnInit {
   private sourceMove: string;
   currentPlayerTime: number = 300;
   enemyPlayerTime: number = 300;
-  currentPlayerTimeString: string = new Date(this.currentPlayerTime * 1000).toISOString().substring(11,19);
-  enemyPlayerTimeString: string = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11,19);
+  currentPlayerTimeString: string = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19);
+  enemyPlayerTimeString: string = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -153,14 +153,18 @@ export class ChessMultiplayerComponent implements OnInit {
       this.whiteKingChecked = this.isKingInCheck(Color.WHITE);
       if (this.whiteKingChecked) {
         // mat biale
-        this.checkForMate(Color.WHITE);
+        this.checkForMate(Color.WHITE, 'Szach mat! Czarne wygrały');
+      } else {
+        this.checkForPat(Color.WHITE);
       }
 
       this.blackKingChecked = this.isKingInCheck(Color.BLACK);
 
       if (this.blackKingChecked) {
         //  mat czarne
-        this.checkForMate(Color.BLACK);
+        this.checkForMate(Color.BLACK, 'Szach mat! Białe wygrały');
+      } else {
+        this.checkForPat(Color.BLACK);
       }
 
       this.calculateAdvantage();
@@ -208,7 +212,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
   private createGame() {
     let that = this;
-    console.log('create')
+
     this.ws.connect({}, function (frame) {
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
@@ -217,7 +221,6 @@ export class ChessMultiplayerComponent implements OnInit {
       that.ws.subscribe("/user/queue/chess/uri", message => {
         ChessMultiplayerComponent.uri = message.body;
         that.isLoading = false;
-        log(that.isLoading)
         that.playersReady = false;
       });
 
@@ -226,10 +229,8 @@ export class ChessMultiplayerComponent implements OnInit {
       });
 
       that.ws.subscribe("/user/queue/chess/update", message => {
-        console.log('kolor bialy przed ' + (ChessMultiplayerComponent.currentColor === Color.WHITE ? 'tak' : 'nie'));
         ChessMultiplayerComponent.currentColor = ChessMultiplayerComponent.currentColor === Color.BLACK ? Color.WHITE : Color.BLACK;
         that.addPieces();
-        console.log('kolor bialy po ' + (ChessMultiplayerComponent.currentColor === Color.WHITE ? 'tak' : 'nie'));
       });
 
       that.ws.subscribe("/user/queue/chess/start", message => {
@@ -257,7 +258,6 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   async onMouseDown(event) {
-    console.log('przed')
     if (!this.isCurrentPlayer) {
       return;
     }
@@ -291,8 +291,6 @@ export class ChessMultiplayerComponent implements OnInit {
       this.possibleMoves = [];
     } else {
       let pieceClicked = pointClicked.piece;
-      console.log('piececlick')
-      console.log(ChessMultiplayerComponent.currentColor === Color.WHITE)
       if (pieceClicked) {
         if (pieceClicked.color !== ChessMultiplayerComponent.currentColor) {
           return;
@@ -310,7 +308,6 @@ export class ChessMultiplayerComponent implements OnInit {
             this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
             this.possibleMoves = pieceClicked.getPossibleMoves().filter(e =>
               !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
-            console.log(this.possibleMoves)
 
           } else if (this.whiteKingChecked && !(pieceClicked instanceof King)) {
             this.selected = true;
@@ -772,7 +769,7 @@ export class ChessMultiplayerComponent implements OnInit {
     this.calculation = whitePoints / (whitePoints + blackPoints) * 100;
   }
 
-  private checkForMate(color: Color) {
+  private checkForMate(color: Color, text: string) {
     let arr: Point[] = [];
     for (var i = 0; i < 8; ++i) {
       for (var j = 0; j < 8; ++j) {
@@ -786,11 +783,10 @@ export class ChessMultiplayerComponent implements OnInit {
     }
 
     if (arr.every(point => {
-      console.log(point.pointChar)
       return point.piece.getPossibleMoves().every(e => this.willMoveCauseCheck(point.piece.color, point.row, point.col, e.row, e.col))
         && point.piece.getPossibleCaptures().every(e => this.willMoveCauseCheck(point.piece.color, point.row, point.col, e.row, e.col))
     })) {
-      alert('Szach mat!');
+      alert(text);
       ChessMultiplayerComponent.isGameFinished = true;
     }
 
@@ -826,15 +822,12 @@ export class ChessMultiplayerComponent implements OnInit {
         } else {
           this.promotionResult = 1;
         }
-        console.log(result);
       });
   }
 
   private isPawnPromoting(srcPoint: Point, destPoint: Point, promotionChose: number) {
-    console.log('match' + promotionChose)
     if (srcPoint.piece instanceof Pawn && (destPoint.row === 0 || destPoint.row === 7)) {
       let isWhite = srcPoint.piece.color === Color.WHITE;
-      console.log(promotionChose + ' wybor')
       switch (promotionChose) {
         case 1:
           srcPoint.piece = new Queen(srcPoint.piece.color, isWhite ? 'queen-white.png' : 'queen-black.png');
@@ -869,7 +862,6 @@ export class ChessMultiplayerComponent implements OnInit {
         ChessMultiplayerComponent.board[i][j].row = i;
       }
     }
-    console.log(ChessMultiplayerComponent.board);
     this.calculateAdvantage();
   }
 
@@ -904,7 +896,19 @@ export class ChessMultiplayerComponent implements OnInit {
   sendCreateGameRequest() {
     this.colorChoosen = true;
     this.isLoading = true;
-    this.ws.send("/app/chess/host", {}, ChessMultiplayerComponent.currentColor === Color.WHITE);
+    this.waitForSocketConnection();
+  }
+
+  waitForSocketConnection() {
+    setTimeout(() => {
+      if (this.socket.readyState === 1) {
+        console.log('Connection established')
+        this.ws.send("/app/chess/host", {}, ChessMultiplayerComponent.currentColor === Color.WHITE);
+      } else {
+        console.log('Wait for connection')
+        this.waitForSocketConnection();
+      }
+    }, 500);
   }
 
   isXYInSourceMove(i: number, j: number) {
@@ -921,19 +925,22 @@ export class ChessMultiplayerComponent implements OnInit {
     if (!this.getIsGameFinished()) {
       if (this.isCurrentPlayer) {
         this.currentPlayerTime--;
-        this.currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11,19)
+        this.currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19)
       } else {
         this.enemyPlayerTime--;
-        this.enemyPlayerTimeString = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11,19);
-        console.log(this.enemyPlayerTimeString)
+        this.enemyPlayerTimeString = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
       }
       setTimeout(() => this.startTimer(), 1000);
     }
   }
 
   isMobileView() {
-      const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-      return width < 768;
+    const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    return width < 768;
+  }
+
+  private checkForPat(color: Color) {
+    this.checkForMate(color, 'Pat');
   }
 
 }
