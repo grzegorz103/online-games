@@ -931,4 +931,9 @@ export class ChessMultiplayerComponent implements OnInit {
     }
   }
 
+  isMobileView() {
+      const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+      return width < 768;
+  }
+
 }

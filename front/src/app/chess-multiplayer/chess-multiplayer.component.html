@@ -79,6 +79,18 @@
         </div>
       </div>
     </div>
+    <div *ngIf="isMobileView()">
+      <div class="h-100" style="display: inline">
+        <div class="h-50">
+          <div style="font-size: 10px">Przeciwnik</div>
+          <span style="font-size: 12px">{{enemyPlayerTimeString}}</span>
+        </div>
+        <div class="">
+          <div style="font-size:10px">Gracz</div>
+          <span style="font-size: 12px">{{currentPlayerTimeString}}</span>
+        </div>
+      </div>
+    </div>
     <div class="col-md-1" style="margin-top: auto;
     margin-bottom: auto;">
       <button (click)="rotateBoard()" class="btn btn-success">Obróć
