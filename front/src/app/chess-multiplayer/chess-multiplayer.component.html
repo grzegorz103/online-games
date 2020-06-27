@@ -14,9 +14,10 @@
     <div class="mx-auto text-center">
       <div class="h2">Wybierz kolor</div>
       <mat-button-toggle-group name="color" aria-label="Color">
-        <mat-button-toggle (click)="changeColor(1)" id="blackButton" >Czarne</mat-button-toggle>
-        <mat-button-toggle (click)="changeColor(2)"id="whiteButton">Białe</mat-button-toggle>
-        <mat-button-toggle (click)="changeColor(3)" id="randomButton"><span class="blackWhite">Losowo</span></mat-button-toggle>
+        <mat-button-toggle (click)="changeColor(1)" id="blackButton">Czarne</mat-button-toggle>
+        <mat-button-toggle (click)="changeColor(2)" id="whiteButton">Białe</mat-button-toggle>
+        <mat-button-toggle (click)="changeColor(3)" id="randomButton"><span class="blackWhite">Losowo</span>
+        </mat-button-toggle>
       </mat-button-toggle-group>
       <div class="row">
         <button class="btn btn-success my-3 mx-auto"
@@ -42,10 +43,10 @@
   <div class="row" *ngIf="!isLoading && playersReady && !abandoned">
     <div class="col-2 info" style="font-size: 25px">
       <div class="row" style="height:50%;">
-        Przeciwnik
+        Przeciwnik {{enemyPlayerTimeString}}
       </div>
       <div class="row">
-        Gracz
+        Gracz <br/>{{currentPlayerTimeString}}
       </div>
     </div>
     <!--
@@ -67,7 +68,7 @@
              (mousedown)="onMouseDown($event)" #dragRef [rzMaxHeight]="2400" [rzAspectRatio]="aspectRatio">
           <div *ngFor="let row of getBoard(); let i = index" class="board-row">
             <div *ngFor="let col of row; let j = index" class="board-col"
-                 [ngClass]="[((i + j) %2 === 0 ) ?  'bg-black' : 'bg-shine', isXYInPossibleMoves(i,j) ? 'possible-point' : '', isXYInPossibleCaptures(i,j) ? 'possible-capture' : '']">
+                 [ngClass]="[((i + j) %2 === 0 ) ?  'bg-black' : 'bg-shine', isXYInSourceMove(i,j) ? 'source-move' : '', isXYInDestMove(i,j) ? 'dest-move' : '' ,isXYInPossibleMoves(i,j) ? 'possible-point' : '', isXYInPossibleCaptures(i,j) ? 'possible-capture' : '']">
               <div *ngIf="getPieceByPoint(i, j)" style="height:100%; width:100%">
                 <div [style.background-image]="'url(assets/'+getPieceByPoint(i,j).image + ')'"
                      [ngClass]="isKingChecked(getPieceByPoint(i,j)) ? 'king-check' : ''" class="piece">
@@ -75,6 +76,18 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="isMobileView()">
+      <div class="h-100" style="display: inline">
+        <div class="h-50">
+          <div style="font-size: 10px">Przeciwnik</div>
+          <span style="font-size: 12px">{{enemyPlayerTimeString}}</span>
+        </div>
+        <div class="">
+          <div style="font-size:10px">Gracz</div>
+          <span style="font-size: 12px">{{currentPlayerTimeString}}</span>
         </div>
       </div>
     </div>
