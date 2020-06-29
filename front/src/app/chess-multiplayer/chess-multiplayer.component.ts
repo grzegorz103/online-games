@@ -63,6 +63,8 @@ export class ChessMultiplayerComponent implements OnInit {
   boardClone: string;
   availableTimes = [60, 180, 300];
   timeChoosen: number;
+  isRotated: boolean = false;
+  timeInterval: any;
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -554,8 +556,8 @@ export class ChessMultiplayerComponent implements OnInit {
     }
 
     this.calculateAdvantage();
-    this.startTimer();
-
+    //  this.startTimer();
+    this.timeInterval = setInterval(() => this.startTimer(), 1000);
   }
 
   static isFieldTakenByEnemy(row: number, col: number, enemyColor: Color): boolean {
@@ -858,6 +860,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
   rotateBoard() {
     ChessMultiplayerComponent.isWhiteBottom = !ChessMultiplayerComponent.isWhiteBottom;
+    this.isRotated = !this.isRotated;
 
     ChessMultiplayerComponent.board = ChessMultiplayerComponent.board.reverse();
     for (let i = 0; i < 8; ++i) {
@@ -940,10 +943,10 @@ export class ChessMultiplayerComponent implements OnInit {
       }
       if (this.currentPlayerTime === 0 || this.enemyPlayerTime === 0) {
         alert('Koniec czasu');
+        clearInterval(this.timeInterval);
         ChessMultiplayerComponent.isGameFinished = true;
       }
 
-      setTimeout(() => this.startTimer(), 1000);
     }
 
   }
