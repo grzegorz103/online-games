@@ -74,14 +74,14 @@ export class BoardComponent implements OnInit {
     for (let i = 0; i < 8; ++i) {
       BoardComponent.pieces.push(new Pawn(new Point(1, i), Color.BLACK, 'pawn-black.png'));
     }
-    BoardComponent.pieces.push(new Rook(new Point(0, 0), Color.BLACK, 'rook-black.jpg'));
+    BoardComponent.pieces.push(new Rook(new Point(0, 0), Color.BLACK, 'rook-black.png'));
     BoardComponent.pieces.push(new Knight(new Point(0, 1), Color.BLACK, 'knight-black.png'));
     BoardComponent.pieces.push(new Bishop(new Point(0, 2), Color.BLACK, 'bishop-black.png'));
     BoardComponent.pieces.push(new Queen(new Point(0, 3), Color.BLACK, 'queen-black.png'));
     BoardComponent.pieces.push(new King(new Point(0, 4), Color.BLACK, 'king-black.png'));
     BoardComponent.pieces.push(new Bishop(new Point(0, 5), Color.BLACK, 'bishop-black.png'));
     BoardComponent.pieces.push(new Knight(new Point(0, 6), Color.BLACK, 'knight-black.png'));
-    BoardComponent.pieces.push(new Rook(new Point(0, 7), Color.BLACK, 'rook-black.jpg'));
+    BoardComponent.pieces.push(new Rook(new Point(0, 7), Color.BLACK, 'rook-black.png'));
 
 
     // piony biale
