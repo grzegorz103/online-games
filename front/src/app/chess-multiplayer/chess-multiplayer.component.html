@@ -52,10 +52,10 @@
   <div class="row" *ngIf="!isLoading && playersReady && !abandoned">
     <div class="col-2 info" style="font-size: 25px">
       <div class="row" style="height:50%;">
-        Przeciwnik {{enemyPlayerTimeString}}
+        {{ isRotated ? ('Gracz ' + currentPlayerTimeString) : ('Przeciwnik ' + enemyPlayerTimeString)}}
       </div>
       <div class="row">
-        Gracz <br/>{{currentPlayerTimeString}}
+        {{ !isRotated ? ('Gracz ' + currentPlayerTimeString) : ('Przeciwnik ' + enemyPlayerTimeString)}}
       </div>
     </div>
     <!--
