@@ -115,7 +115,7 @@
             <div id="send-box" class="col-12">
               <mat-form-field class="col-8">
                 <mat-label>Wyślij wiadomość</mat-label>
-                <input matInput placeholder="Wyślij wiadomość">
+                <input matInput [(ngModel)]="message" placeholder="Wyślij wiadomość">
               </mat-form-field>
               <button (click)="sendMessage()" class="btn btn-primary">Wyślij
               </button>
