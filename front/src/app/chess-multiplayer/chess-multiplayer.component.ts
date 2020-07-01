@@ -110,6 +110,10 @@ export class ChessMultiplayerComponent implements OnInit {
         that.abandoned = true;
       });
 
+      that.ws.subscribe("/user/queue/chess/resign", message => {
+        ChessMultiplayerComponent.isGameFinished = true;
+      });
+
       that.ws.subscribe("/user/queue/chess/time", message => {
         that.timeChoosen = JSON.parse(message.body);
       });
@@ -249,6 +253,10 @@ export class ChessMultiplayerComponent implements OnInit {
         that.abandoned = true;
       });
 
+      that.ws.subscribe("/user/queue/chess/resign", message => {
+        ChessMultiplayerComponent.isGameFinished = true;
+      });
+
       that.ws.subscribe("/user/queue/chess/update", message => {
         ChessMultiplayerComponent.currentColor = ChessMultiplayerComponent.currentColor === Color.BLACK ? Color.WHITE : Color.BLACK;
         that.addPieces();
@@ -278,7 +286,7 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   async onMouseDown(event) {
-    if (!this.isCurrentPlayer) {
+    if (!this.isCurrentPlayer || ChessMultiplayerComponent.isGameFinished) {
       return;
     }
     let pointClicked = this.getClickPoint(event);
@@ -472,6 +480,8 @@ export class ChessMultiplayerComponent implements OnInit {
     this.setTimer();
     this.blackKingChecked = false;
     this.whiteKingChecked = false;
+    this.sourceMove = '';
+    this.destMove = '';
     if (ChessMultiplayerComponent.currentColor === Color.WHITE) {
       this.isCurrentPlayer = true;
       ChessMultiplayerComponent.isWhiteBottom = true;
@@ -917,7 +927,7 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   sendCreateGameRequest() {
-    if (!this.timeChoosen || !ChessMultiplayerComponent.currentColor) {
+    if (!this.timeChoosen || !ChessMultiplayerComponent.currentColor === undefined) {
       let config = new MatSnackBarConfig();
       config.verticalPosition = 'bottom';
       config.horizontalPosition = 'center';
@@ -967,7 +977,6 @@ export class ChessMultiplayerComponent implements OnInit {
         clearInterval(this.timeInterval);
         ChessMultiplayerComponent.isGameFinished = true;
       }
-
     }
 
   }
@@ -986,6 +995,7 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   private setTimer() {
+    clearInterval(this.timeInterval);
     this.currentPlayerTime = this.timeChoosen;
     this.enemyPlayerTime = this.timeChoosen;
     this.currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19);
@@ -997,6 +1007,10 @@ export class ChessMultiplayerComponent implements OnInit {
       this.ws.send("/app/chess/message/" + this.getUri(), {}, this.message);
       this.message = '';
     }
+  }
+
+  resign() {
+    this.ws.send("/app/chess/resign/" + this.getUri(), {}, this.message);
   }
 
 }
