@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container-fluid">
   <div class="row" *ngIf="isLoading">
     <div class="col-12 w-100">
       <mat-spinner class="mx-auto"></mat-spinner>
@@ -16,7 +16,7 @@
       <mat-button-toggle-group name="color" aria-label="Color">
         <mat-button-toggle (click)="changeColor(1)" id="blackButton">Czarne</mat-button-toggle>
         <mat-button-toggle (click)="changeColor(2)" id="whiteButton">Białe</mat-button-toggle>
-        <mat-button-toggle (click)="changeColor(3)" id="randomButton"><span class="blackWhite">Losowo</span>
+        <mat-button-toggle  (click)="changeColor(3)" id="randomButton"><span class="blackWhite">Losowo</span>
         </mat-button-toggle>
       </mat-button-toggle-group>
       <div class="h2 mt-3">Wybierz czas</div>
@@ -102,12 +102,30 @@
         </div>
       </div>
     </div>
-    <div class="col-md-1" style="margin-top: auto;
+
+    <div class="col-sm-12 col-md-3 ml-3 infos">
+      <div class="h-100" style="margin-top: auto;
     margin-bottom: auto;">
-      <button (click)="rotateBoard()" class="btn btn-success">Obróć
-      </button>
-      <button (click)="sendRematchOffer()" *ngIf="getIsGameFinished()" class="btn btn-primary mt-2 blinking">Rewanż
-      </button>
+        <button (click)="rotateBoard()" class="btn btn-success">Obróć
+        </button>
+        <button (click)="sendRematchOffer()" *ngIf="getIsGameFinished()" class="btn btn-primary mt-2 blinking">Rewanż
+        </button>
+        <div id="chat-box" class="col-12">
+          <div class="row">
+            <ul class="col-12">
+              <li *ngFor="let message of messages">{{message}}</li>
+            </ul>
+            <div id="send-box" class="col-12">
+              <mat-form-field class="col-8">
+                <mat-label>Wyślij wiadomość</mat-label>
+                <input matInput [(ngModel)]="message" placeholder="Wyślij wiadomość">
+              </mat-form-field>
+              <button (click)="sendMessage()" class="btn btn-primary">Wyślij
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

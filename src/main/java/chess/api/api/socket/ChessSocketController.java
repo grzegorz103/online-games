@@ -60,7 +60,7 @@ public class ChessSocketController {
 
     @MessageMapping("/chess/{uri}/rematch")
     public void rematch(@Header("simpSessionId") String sessionId,
-                         @DestinationVariable String uri){
+                        @DestinationVariable String uri) {
         Chess game = chessService.rematch(uri, sessionId);
         log.info("Receive rematch request url " + uri);
         if (game.getBlackPlayer().isRematchSent() && game.getWhitePlayer().isRematchSent()) {
@@ -68,6 +68,18 @@ public class ChessSocketController {
             log.info("Reseting game with url " + uri);
             sendingOperations.convertAndSendToUser(game.getWhitePlayer().getSessionId(), "/queue/chess/update", true, WebSocketUtils.getMessageHeaders(game.getWhitePlayer().getSessionId()));
             sendingOperations.convertAndSendToUser(game.getBlackPlayer().getSessionId(), "/queue/chess/update", true, WebSocketUtils.getMessageHeaders(game.getBlackPlayer().getSessionId()));
+        }
+    }
+
+    @MessageMapping("/chess/message/{uri}")
+    public void sendMessage(@Header("simpSessionId") String sessionId,
+                            @Payload String message,
+                            @DestinationVariable String uri) {
+        log.info("Sending message to game " + uri);
+        Chess game = chessService.getGameBySessionId(sessionId);
+        if (game != null) {
+            sendingOperations.convertAndSendToUser(game.getWhitePlayer().getSessionId(), "/queue/chess/message", message, WebSocketUtils.getMessageHeaders(game.getWhitePlayer().getSessionId()));
+            sendingOperations.convertAndSendToUser(game.getBlackPlayer().getSessionId(), "/queue/chess/message", message, WebSocketUtils.getMessageHeaders(game.getBlackPlayer().getSessionId()));
         }
     }
 

@@ -65,6 +65,8 @@ export class ChessMultiplayerComponent implements OnInit {
   timeChoosen: number;
   isRotated: boolean = false;
   timeInterval: any;
+  message: string;
+  messages: string[] = [];
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -92,6 +94,11 @@ export class ChessMultiplayerComponent implements OnInit {
     this.ws.connect({}, function (frame) {
       that.ws.subscribe("/errors", function (message) {
         alert("Error " + message.body);
+      });
+
+      that.ws.subscribe("/user/queue/chess/message", message => {
+        console.log(message.body);
+        that.messages.push(message.body)
       });
 
       that.ws.subscribe("/user/queue/chess/move", message => {
@@ -231,6 +238,11 @@ export class ChessMultiplayerComponent implements OnInit {
         ChessMultiplayerComponent.uri = message.body;
         that.isLoading = false;
         that.playersReady = false;
+      });
+
+      that.ws.subscribe("/user/queue/chess/message", message => {
+        console.log(message.body);
+        that.messages.push(message.body)
       });
 
       that.ws.subscribe("/user/queue/chess/abandon", message => {
@@ -905,6 +917,15 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   sendCreateGameRequest() {
+    if (!this.timeChoosen || !ChessMultiplayerComponent.currentColor) {
+      let config = new MatSnackBarConfig();
+      config.verticalPosition = 'bottom';
+      config.horizontalPosition = 'center';
+      config.duration = 2000;
+      config.panelClass = ['warning-bar'];
+      this.snackBar.open('Wybierz kolor i czas!', null, config);
+      return;
+    }
     this.colorChoosen = true;
     this.isLoading = true;
     this.waitForSocketConnection();
@@ -969,6 +990,13 @@ export class ChessMultiplayerComponent implements OnInit {
     this.enemyPlayerTime = this.timeChoosen;
     this.currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19);
     this.enemyPlayerTimeString = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
+  }
+
+  sendMessage() {
+    if (this.message) {
+      this.ws.send("/app/chess/message/" + this.getUri(), {}, this.message);
+      this.message = '';
+    }
   }
 
 }
