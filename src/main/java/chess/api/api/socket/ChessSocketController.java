@@ -83,4 +83,15 @@ public class ChessSocketController {
         }
     }
 
+    @MessageMapping("/chess/resign/{uri}")
+    public void resign(@DestinationVariable String uri,
+                       @Header("simpSessionId") String sessionId) {
+        log.info("Resign game at URI " + uri);
+        Chess game = chessService.getGameBySessionId(sessionId);
+        if (game != null) {
+            sendingOperations.convertAndSendToUser(game.getWhitePlayer().getSessionId(), "/queue/chess/resign", true, WebSocketUtils.getMessageHeaders(game.getWhitePlayer().getSessionId()));
+            sendingOperations.convertAndSendToUser(game.getBlackPlayer().getSessionId(), "/queue/chess/resign", true, WebSocketUtils.getMessageHeaders(game.getBlackPlayer().getSessionId()));
+        }
+    }
+
 }
