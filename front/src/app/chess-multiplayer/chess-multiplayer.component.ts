@@ -917,6 +917,15 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   sendCreateGameRequest() {
+    if (!this.timeChoosen || !ChessMultiplayerComponent.currentColor) {
+      let config = new MatSnackBarConfig();
+      config.verticalPosition = 'bottom';
+      config.horizontalPosition = 'center';
+      config.duration = 2000;
+      config.panelClass = ['warning-bar'];
+      this.snackBar.open('Wybierz kolor i czas!', null, config);
+      return;
+    }
     this.colorChoosen = true;
     this.isLoading = true;
     this.waitForSocketConnection();
