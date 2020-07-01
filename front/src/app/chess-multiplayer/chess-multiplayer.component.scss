@@ -140,7 +140,7 @@
 }
 
 #send-box {
-  border-top:1px solid gray;
+  border-top: 1px solid gray;
   bottom: 0;
   position: absolute;
 }
@@ -156,4 +156,16 @@
     min-height: 100%;
     max-height: 100%;
   }
+}
+
+ul {
+  list-style-type: none;
+}
+
+li {
+  border-bottom: 1px dotted grey;
+  word-wrap: break-word;
+}
+li:last-child {
+  border:none;
 }

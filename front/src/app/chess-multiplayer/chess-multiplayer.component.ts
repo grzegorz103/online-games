@@ -66,7 +66,7 @@ export class ChessMultiplayerComponent implements OnInit {
   isRotated: boolean = false;
   timeInterval: any;
   message: string;
-  messages: string[];
+  messages: string[] = [];
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
