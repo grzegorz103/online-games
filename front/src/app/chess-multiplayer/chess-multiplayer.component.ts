@@ -16,6 +16,7 @@ import {ChessPromoteDialogComponent} from "../chess-promote-dialog/chess-promote
 import {MatDialog} from "@angular/material/dialog";
 import {log} from "util";
 import {Timer} from "./models/timer";
+import {MessageproviderService} from "./services/messageprovider.service";
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -63,11 +64,12 @@ export class ChessMultiplayerComponent implements OnInit {
   isRotated: boolean = false;
   timeInterval: any;
   message: string;
-  messages: string[] = [];
   timer: Timer;
+  sessionId: string;
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
+              public messageproviderService: MessageproviderService,
               private snackBar: MatSnackBar) {
   }
 
@@ -96,7 +98,11 @@ export class ChessMultiplayerComponent implements OnInit {
 
       that.ws.subscribe("/user/queue/chess/message", message => {
         console.log(message.body);
-        that.messages.push(message.body)
+        that.messageproviderService.addMessage(JSON.parse(message.body))
+      });
+
+      that.ws.subscribe("/user/queue/chess/sessionId", message => {
+        that.sessionId = message.body;
       });
 
       that.ws.subscribe("/user/queue/chess/move", message => {
@@ -242,9 +248,13 @@ export class ChessMultiplayerComponent implements OnInit {
         that.playersReady = false;
       });
 
+      that.ws.subscribe("/user/queue/chess/sessionId", message => {
+        that.sessionId = message.body;
+      });
+
       that.ws.subscribe("/user/queue/chess/message", message => {
         console.log(message.body);
-        that.messages.push(message.body)
+        that.messageproviderService.addMessage(JSON.parse(message.body))
       });
 
       that.ws.subscribe("/user/queue/chess/abandon", message => {

@@ -2,6 +2,7 @@ package chess.api.api.socket;
 
 import chess.api.api.utils.WebSocketUtils;
 import chess.api.domain.chess.Chess;
+import chess.api.domain.chess.Message;
 import chess.api.services.declarations.ChessService;
 import chess.api.utils.URIGenerator;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
+
+import java.time.Instant;
 
 @Controller
 @Slf4j
@@ -36,6 +39,7 @@ public class ChessSocketController {
         Chess chess = chessService.addGame(uri, whiteStarts, sessionId, time);
         sendingOperations.convertAndSendToUser(sessionId, "/queue/chess/uri", uri, WebSocketUtils.getMessageHeaders(sessionId));
         sendingOperations.convertAndSendToUser(sessionId, "/queue/chess/create", chess, WebSocketUtils.getMessageHeaders(sessionId));
+        sendingOperations.convertAndSendToUser(sessionId, "/queue/chess/sessionId", sessionId, WebSocketUtils.getMessageHeaders(sessionId));
     }
 
     @MessageMapping("/chess/{uri}/join")
@@ -47,6 +51,7 @@ public class ChessSocketController {
         sendingOperations.convertAndSendToUser(sessionId, "/queue/chess/time", chess.getTime(), WebSocketUtils.getMessageHeaders(sessionId));
         sendingOperations.convertAndSendToUser(chess.getWhitePlayer().getSessionId(), "/queue/chess/start", true, WebSocketUtils.getMessageHeaders(chess.getWhitePlayer().getSessionId()));
         sendingOperations.convertAndSendToUser(chess.getBlackPlayer().getSessionId(), "/queue/chess/start", false, WebSocketUtils.getMessageHeaders(chess.getBlackPlayer().getSessionId()));
+        sendingOperations.convertAndSendToUser(sessionId, "/queue/chess/sessionId", sessionId, WebSocketUtils.getMessageHeaders(sessionId));
     }
 
     @MessageMapping("/chess/{uri}/move/{move}")
@@ -78,8 +83,9 @@ public class ChessSocketController {
         log.info("Sending message to game " + uri);
         Chess game = chessService.getGameBySessionId(sessionId);
         if (game != null) {
-            sendingOperations.convertAndSendToUser(game.getWhitePlayer().getSessionId(), "/queue/chess/message", message, WebSocketUtils.getMessageHeaders(game.getWhitePlayer().getSessionId()));
-            sendingOperations.convertAndSendToUser(game.getBlackPlayer().getSessionId(), "/queue/chess/message", message, WebSocketUtils.getMessageHeaders(game.getBlackPlayer().getSessionId()));
+            Message msg = new Message(message, sessionId, Instant.now());
+            sendingOperations.convertAndSendToUser(game.getWhitePlayer().getSessionId(), "/queue/chess/message", msg, WebSocketUtils.getMessageHeaders(game.getWhitePlayer().getSessionId()));
+            sendingOperations.convertAndSendToUser(game.getBlackPlayer().getSessionId(), "/queue/chess/message", msg, WebSocketUtils.getMessageHeaders(game.getBlackPlayer().getSessionId()));
         }
     }
 
