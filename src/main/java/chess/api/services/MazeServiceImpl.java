@@ -5,20 +5,23 @@ import chess.api.domain.maze.Player;
 import chess.api.domain.maze.Point;
 import chess.api.services.declarations.MazeService;
 import chess.api.utils.Constants;
-import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
 public class MazeServiceImpl implements MazeService {
 
-    private final Map<String, Maze> games = new ConcurrentHashMap<>();
+    private final Map<String, Maze> games;
+
+    public MazeServiceImpl(Map<String, Maze> games) {
+        this.games = games;
+    }
 
     public Maze addGame(String uri, Point[][] map, String sessionId, int row, int col, String username) {
         Maze maze = new Maze(map);
