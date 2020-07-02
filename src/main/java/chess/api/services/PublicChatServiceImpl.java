@@ -5,6 +5,7 @@ import chess.api.domain.publicChat.Message;
 import chess.api.domain.publicChat.MessageType;
 import chess.api.services.declarations.PublicChatService;
 import chess.api.utils.MemberComparator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -18,12 +19,13 @@ import java.util.Objects;
 @Service
 public class PublicChatServiceImpl implements PublicChatService {
 
-    private List<Member> members = Collections.synchronizedList(new LinkedList<>());
+    private final List<Member> members;
 
     private final MemberComparator memberComparator;
 
-    public PublicChatServiceImpl(MemberComparator memberComparator) {
+    public PublicChatServiceImpl(MemberComparator memberComparator, List<Member> members) {
         this.memberComparator = memberComparator;
+        this.members = members;
     }
 
     public List<Member> addMember(Member member) {

@@ -6,6 +6,7 @@ import chess.api.domain.chess.State;
 import chess.api.domain.ticTacToe.Game;
 import chess.api.services.declarations.ChessService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,7 +18,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class ChessServiceImpl implements ChessService {
 
-    private Map<String, Chess> games = new ConcurrentHashMap<>();
+    private final Map<String, Chess> games;
+
+    public ChessServiceImpl(Map<String, Chess> games) {
+        this.games = games;
+    }
 
     @Override
     public Chess addGame(String gameUri, boolean whiteStarts, String sessionId, Integer time) {
