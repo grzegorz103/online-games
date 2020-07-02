@@ -145,6 +145,7 @@
   position: absolute;
 }
 
+
 @media screen and (max-height: 768px) {
   .infos {
     height: 200px;
@@ -163,7 +164,7 @@ ul {
 }
 
 li {
-  border-bottom: 1px dotted grey;
+  border-bottom: 1px solid grey;
   word-wrap: break-word;
 }
 li:last-child {

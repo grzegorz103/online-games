@@ -109,14 +109,15 @@
         <div class="row mt-2">
           <button (click)="rotateBoard()" class="btn btn-success">Obróć
           </button>
-          <button (click)="sendRematchOffer()" *ngIf="getIsGameFinished()" class="btn btn-primary blinking ml-auto">Rewanż
+          <button (click)="sendRematchOffer()" *ngIf="getIsGameFinished()" class="btn btn-primary blinking ml-auto">
+            Rewanż
           </button>
           <button (click)="resign()" *ngIf="!getIsGameFinished()" class="btn btn-danger ml-auto">Rezygnuj
           </button>
         </div>
         <div id="chat-box" class="col-12">
-          <div class="row">
-            <ul class="col-12">
+          <div class="row h-100">
+            <ul class="col-12 h-75" style="overflow-y: auto">
               <li *ngFor="let message of messages">{{message}}</li>
             </ul>
             <div id="send-box" class="col-12">
