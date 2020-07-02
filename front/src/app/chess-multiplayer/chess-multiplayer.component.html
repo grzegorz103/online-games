@@ -52,10 +52,10 @@
   <div class="row" *ngIf="!isLoading && playersReady && !abandoned">
     <div class="col-2 info" style="font-size: 25px">
       <div class="row" style="height:50%;">
-        {{ isRotated ? ('Gracz ' + currentPlayerTimeString) : ('Przeciwnik ' + enemyPlayerTimeString)}}
+        {{ isRotated ? ('Gracz ' + timer.currentPlayerTimeString) : ('Przeciwnik ' + timer.enemyPlayerTimeString)}}
       </div>
       <div class="row">
-        {{ !isRotated ? ('Gracz ' + currentPlayerTimeString) : ('Przeciwnik ' + enemyPlayerTimeString)}}
+        {{ !isRotated ? ('Gracz ' + timer.currentPlayerTimeString) : ('Przeciwnik ' + timer.enemyPlayerTimeString)}}
       </div>
     </div>
     <!--
@@ -94,11 +94,11 @@
       <div class="h-100" style="display: inline">
         <div class="h-50">
           <div style="font-size: 10px">Przeciwnik</div>
-          <span style="font-size: 12px">{{enemyPlayerTimeString}}</span>
+          <span style="font-size: 12px">{{timer.enemyPlayerTimeString}}</span>
         </div>
         <div class="">
           <div style="font-size:10px">Gracz</div>
-          <span style="font-size: 12px">{{currentPlayerTimeString}}</span>
+          <span style="font-size: 12px">{{timer.currentPlayerTimeString}}</span>
         </div>
       </div>
     </div>

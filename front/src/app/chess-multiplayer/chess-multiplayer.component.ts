@@ -15,6 +15,7 @@ import {environment} from "../../environments/environment";
 import {ChessPromoteDialogComponent} from "../chess-promote-dialog/chess-promote-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {log} from "util";
+import {Timer} from "./models/timer";
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -41,7 +42,7 @@ export class ChessMultiplayerComponent implements OnInit {
   static currentColor: Color;
   private selected: any;
 
-  isCurrentPlayer = false;
+  static isCurrentPlayer = false;
   private whiteKingChecked: boolean;
   private blackKingChecked: boolean;
   isLoading: boolean = false;
@@ -56,10 +57,6 @@ export class ChessMultiplayerComponent implements OnInit {
   abandoned: boolean = false;
   private destMove: string;
   private sourceMove: string;
-  currentPlayerTime: number;
-  enemyPlayerTime: number;
-  currentPlayerTimeString: string
-  enemyPlayerTimeString: string
   boardClone: string;
   availableTimes = [60, 180, 300];
   timeChoosen: number;
@@ -67,6 +64,7 @@ export class ChessMultiplayerComponent implements OnInit {
   timeInterval: any;
   message: string;
   messages: string[] = [];
+  timer: Timer;
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -102,7 +100,7 @@ export class ChessMultiplayerComponent implements OnInit {
       });
 
       that.ws.subscribe("/user/queue/chess/move", message => {
-        that.isCurrentPlayer = !that.isCurrentPlayer;
+        ChessMultiplayerComponent.isCurrentPlayer = !ChessMultiplayerComponent.isCurrentPlayer;
         that.movePiece(message.body);
       });
 
@@ -271,7 +269,7 @@ export class ChessMultiplayerComponent implements OnInit {
       });
 
       that.ws.subscribe("/user/queue/chess/move", message => {
-        that.isCurrentPlayer = !that.isCurrentPlayer;
+        ChessMultiplayerComponent.isCurrentPlayer = !ChessMultiplayerComponent.isCurrentPlayer;
         that.movePiece(message.body);
       });
 
@@ -286,7 +284,7 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   async onMouseDown(event) {
-    if (!this.isCurrentPlayer || ChessMultiplayerComponent.isGameFinished) {
+    if (!ChessMultiplayerComponent.isCurrentPlayer || ChessMultiplayerComponent.isGameFinished) {
       return;
     }
     let pointClicked = this.getClickPoint(event);
@@ -477,21 +475,21 @@ export class ChessMultiplayerComponent implements OnInit {
   addPieces() {
     //  ChessMultiplayerComponent.board = [];
     ChessMultiplayerComponent.isGameFinished = false;
-    this.setTimer();
+    this.timer = new Timer(this.timeChoosen);
     this.blackKingChecked = false;
     this.whiteKingChecked = false;
     this.sourceMove = '';
     this.destMove = '';
     if (ChessMultiplayerComponent.currentColor === Color.WHITE) {
-      this.isCurrentPlayer = true;
+      ChessMultiplayerComponent.isCurrentPlayer = true;
       ChessMultiplayerComponent.isWhiteBottom = true;
     } else {
-      this.isCurrentPlayer = false;
+      ChessMultiplayerComponent.isCurrentPlayer = false;
       ChessMultiplayerComponent.isWhiteBottom = false;
     }
     if (ChessMultiplayerComponent.currentColor === Color.BLACK) {
       let c = 1;
-      this.isCurrentPlayer = false;
+      ChessMultiplayerComponent.isCurrentPlayer = false;
       for (var i: number = 0; i < 8; ++i) {
         let d = 104;
         ChessMultiplayerComponent.board[i] = [];
@@ -532,7 +530,7 @@ export class ChessMultiplayerComponent implements OnInit {
       ChessMultiplayerComponent.getPointByCoords(7, 7).piece = new Rook(Color.BLACK, 'rook-black.png');
 
     } else {
-      this.isCurrentPlayer = true;
+      ChessMultiplayerComponent.isCurrentPlayer = true;
       let c = 8;
       for (var i: number = 0; i < 8; ++i) {
         let d = 97;
@@ -579,7 +577,8 @@ export class ChessMultiplayerComponent implements OnInit {
 
     this.calculateAdvantage();
     //  this.startTimer();
-    this.timeInterval = setInterval(() => this.startTimer(), 1000);
+    this.timer.start();
+    // this.timeInterval = setInterval(() => this.startTimer(), 1000);
   }
 
   static isFieldTakenByEnemy(row: number, col: number, enemyColor: Color): boolean {
@@ -944,7 +943,7 @@ export class ChessMultiplayerComponent implements OnInit {
   waitForSocketConnection() {
     setTimeout(() => {
       if (this.socket.readyState === 1) {
-        console.log('Connection established')
+        console.log('Connection established');
         this.ws.send("/app/chess/host/" + this.timeChoosen, {}, ChessMultiplayerComponent.currentColor === Color.WHITE);
       } else {
         console.log('Wait for connection')
@@ -963,23 +962,6 @@ export class ChessMultiplayerComponent implements OnInit {
     return destMove.pointChar === this.destMove;
   }
 
-  startTimer() {
-    if (!this.getIsGameFinished()) {
-      if (this.isCurrentPlayer) {
-        this.currentPlayerTime--;
-        this.currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19);
-      } else {
-        this.enemyPlayerTime--;
-        this.enemyPlayerTimeString = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
-      }
-      if (this.currentPlayerTime === 0 || this.enemyPlayerTime === 0) {
-        alert('Koniec czasu');
-        clearInterval(this.timeInterval);
-        ChessMultiplayerComponent.isGameFinished = true;
-      }
-    }
-
-  }
 
   isMobileView() {
     const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -992,14 +974,6 @@ export class ChessMultiplayerComponent implements OnInit {
 
   restore() {
     ChessMultiplayerComponent.board = JSON.parse(this.boardClone);
-  }
-
-  private setTimer() {
-    clearInterval(this.timeInterval);
-    this.currentPlayerTime = this.timeChoosen;
-    this.enemyPlayerTime = this.timeChoosen;
-    this.currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19);
-    this.enemyPlayerTimeString = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
   }
 
   sendMessage() {
