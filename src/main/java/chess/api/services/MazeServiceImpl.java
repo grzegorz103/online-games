@@ -32,7 +32,7 @@ public class MazeServiceImpl implements MazeService {
     }
 
     public Maze getByURI(String uri) {
-        return games.get("uri");
+        return games.get(uri);
     }
 
     public Maze joinGame(String uri, String sessionId, String username) {
