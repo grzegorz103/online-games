@@ -1,15 +1,15 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
-import {Color} from "./models/color";
-import {King} from "./models/king";
+import {Color} from "./models/pieces/color";
+import {King} from "./models/pieces/king";
 import {Point} from "./models/point";
-import {Piece} from "./models/piece";
-import {Pawn} from "./models/pawn";
-import {Rook} from "./models/rook";
-import {Knight} from "./models/knight";
-import {Bishop} from "./models/bishop";
-import {Queen} from "./models/queen";
+import {Piece} from "./models/pieces/piece";
+import {Pawn} from "./models/pieces/pawn";
+import {Rook} from "./models/pieces/rook";
+import {Knight} from "./models/pieces/knight";
+import {Bishop} from "./models/pieces/bishop";
+import {Queen} from "./models/pieces/queen";
 import * as Stomp from 'stompjs';
 import {environment} from "../../environments/environment";
 import {ChessPromoteDialogComponent} from "../chess-promote-dialog/chess-promote-dialog.component";
@@ -17,6 +17,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {log} from "util";
 import {Timer} from "./models/timer";
 import {MessageproviderService} from "./services/messageprovider.service";
+import {AvailableMoveDecoratorImpl} from "./models/pieces/decorator/available-move-decorator-impl";
+import {MoveUtils} from "./utils/move-utils";
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -174,7 +176,7 @@ export class ChessMultiplayerComponent implements OnInit {
         rook.piece = null;
       }
 
-      this.whiteKingChecked = this.isKingInCheck(Color.WHITE);
+      this.whiteKingChecked = ChessMultiplayerComponent.isKingInCheck(Color.WHITE);
       if (this.whiteKingChecked) {
         // mat biale
         this.checkForMate(Color.WHITE, 'Szach mat! Czarne wygrały');
@@ -182,7 +184,7 @@ export class ChessMultiplayerComponent implements OnInit {
         this.checkForPat(Color.WHITE);
       }
 
-      this.blackKingChecked = this.isKingInCheck(Color.BLACK);
+      this.blackKingChecked = ChessMultiplayerComponent.isKingInCheck(Color.BLACK);
 
       if (this.blackKingChecked) {
         //  mat czarne
@@ -197,7 +199,7 @@ export class ChessMultiplayerComponent implements OnInit {
     }
   }
 
-  isKingInCheck(color: Color): boolean {
+ static isKingInCheck(color: Color): boolean {
     let kingPiece;
 
     for (var i = 0; i < 8; ++i) {
@@ -334,17 +336,17 @@ export class ChessMultiplayerComponent implements OnInit {
         if (ChessMultiplayerComponent.currentColor === Color.WHITE) {
           if (this.whiteKingChecked && (pieceClicked instanceof King)) {
             this.activePoint = pointClicked;
-            this.possibleCaptures = this.getPossibleCapturesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
-            this.possibleMoves = this.getPossibleMovesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
+            this.possibleCaptures = new AvailableMoveDecoratorImpl(pointClicked.piece, pointClicked).getPossibleCaptures();
+            this.possibleMoves = new AvailableMoveDecoratorImpl(pointClicked.piece, pointClicked).getPossibleMoves();
+           // this.possibleCaptures = this.getPossibleCapturesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
+          //  this.possibleMoves = this.getPossibleMovesForKingInCheck(Color.WHITE).filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
 
             this.selected = true;
           } else if (!this.whiteKingChecked) {
             this.activePoint = pointClicked;
             this.selected = true;
-            this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
-            this.possibleMoves = pieceClicked.getPossibleMoves().filter(e =>
-              !this.willMoveCauseCheck(Color.WHITE, pointClicked.row, pointClicked.col, e.row, e.col));
-
+            this.possibleCaptures = new AvailableMoveDecoratorImpl(pointClicked.piece, pointClicked).getPossibleCaptures();
+            this.possibleMoves = new AvailableMoveDecoratorImpl(pointClicked.piece, pointClicked).getPossibleMoves();
           } else if (this.whiteKingChecked && !(pieceClicked instanceof King)) {
             this.selected = true;
             this.activePoint = pointClicked;
@@ -355,16 +357,16 @@ export class ChessMultiplayerComponent implements OnInit {
         } else {
           if (this.blackKingChecked && (pieceClicked instanceof King)) {
             this.activePoint = pointClicked;
-            this.possibleCaptures = this.getPossibleCapturesForKingInCheck(Color.BLACK).filter(e => !this.willMoveCauseCheck(Color.BLACK, pointClicked.row, pointClicked.col, e.row, e.col));
-            this.possibleMoves = this.getPossibleMovesForKingInCheck(Color.BLACK).filter(e => !this.willMoveCauseCheck(Color.BLACK, pointClicked.row, pointClicked.col, e.row, e.col));
 
+            this.possibleCaptures = new AvailableMoveDecoratorImpl(pointClicked.piece, pointClicked).getPossibleCaptures();
+            this.possibleMoves = new AvailableMoveDecoratorImpl(pointClicked.piece, pointClicked).getPossibleMoves();
             this.selected = true;
           } else if (!this.blackKingChecked) {
             this.activePoint = pointClicked;
             this.selected = true;
-            this.possibleCaptures = pieceClicked.getPossibleCaptures().filter(e => !this.willMoveCauseCheck(Color.BLACK, pointClicked.row, pointClicked.col, e.row, e.col));
-            this.possibleMoves = pieceClicked.getPossibleMoves().filter(e => !this.willMoveCauseCheck(Color.BLACK, pointClicked.row, pointClicked.col, e.row, e.col));
 
+            this.possibleCaptures = new AvailableMoveDecoratorImpl(pointClicked.piece, pointClicked).getPossibleCaptures();
+            this.possibleMoves = new AvailableMoveDecoratorImpl(pointClicked.piece, pointClicked).getPossibleMoves();
           } else if (this.blackKingChecked && !(pieceClicked instanceof King)) {
             this.selected = true;
             this.activePoint = pointClicked;
@@ -383,7 +385,7 @@ export class ChessMultiplayerComponent implements OnInit {
     this.activePoint.piece.getPossibleMoves().forEach(piece => {
       piece.piece = this.activePoint.piece;
       this.activePoint.piece = null;
-      if (!this.isKingInCheck(color)) {
+      if (!ChessMultiplayerComponent.isKingInCheck(color)) {
         tempPossibleMoves.push(piece);
       }
       this.activePoint.piece = piece.piece;
@@ -402,7 +404,7 @@ export class ChessMultiplayerComponent implements OnInit {
       let removedPiece = removedPoint.piece;
       removedPoint.piece = null;
       this.activePoint = piece;
-      if (!this.isKingInCheck(color)) {
+      if (!ChessMultiplayerComponent.isKingInCheck(color)) {
         tempPossibleCaptures.push(this.activePoint);
       }
       removedPoint.piece = removedPiece;
@@ -733,37 +735,6 @@ export class ChessMultiplayerComponent implements OnInit {
     return possiblePoints;
   }
 
-  public willMoveCauseCheck(currentColor: Color, row: number, col: number, destRow: number, destCol: number) {
-    let tempBoard = ChessMultiplayerComponent.board;
-    /*  BoardComponent.pieces = BoardComponent.pieces.filter(piece =>
-        (piece.point.col !== col) || (piece.point.row !== row)
-      );*/
-    let srcPiece = ChessMultiplayerComponent.getPointByCoords(row, col);
-    let destPiece = ChessMultiplayerComponent.getPointByCoords(destRow, destCol);
-
-    let tempPiece = null;
-    if (destPiece.piece) {
-      tempPiece = destPiece.piece;
-    }
-
-    if (srcPiece) {
-      destPiece.piece = srcPiece.piece;
-      srcPiece.piece = null;
-    }
-
-    let isBound = this.isKingInCheck(currentColor);
-
-    if (srcPiece) {
-      srcPiece.piece = destPiece.piece;
-    }
-
-    if (destPiece.piece) {
-      destPiece.piece = tempPiece;
-    }
-
-    return isBound;
-  }
-
   apiUrl() {
     return environment.appUrl;
   }
@@ -824,8 +795,8 @@ export class ChessMultiplayerComponent implements OnInit {
     }
 
     if (arr.every(point => {
-      return point.piece.getPossibleMoves().every(e => this.willMoveCauseCheck(point.piece.color, point.row, point.col, e.row, e.col))
-        && point.piece.getPossibleCaptures().every(e => this.willMoveCauseCheck(point.piece.color, point.row, point.col, e.row, e.col))
+      return point.piece.getPossibleMoves().every(e => MoveUtils.willMoveCauseCheck(point.piece.color, point.row, point.col, e.row, e.col))
+        && point.piece.getPossibleCaptures().every(e => MoveUtils.willMoveCauseCheck(point.piece.color, point.row, point.col, e.row, e.col))
     })) {
       alert(text);
       ChessMultiplayerComponent.isGameFinished = true;

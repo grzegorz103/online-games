@@ -1,7 +1,8 @@
-import { Point } from './point';
+import { Point } from '../point';
 import { Color } from './color';
+import {AbstractPiece} from "./abstract-piece";
 
-export abstract class Piece {
+export abstract class Piece implements AbstractPiece{
  //   point: Point;
     color: Color;
     image: string;
