@@ -1,7 +1,7 @@
 import {Piece} from './piece';
-import {Point} from './point';
+import {Point} from '../point';
 import {Color} from './color';
-import {ChessMultiplayerComponent} from "../chess-multiplayer.component";
+import {ChessMultiplayerComponent} from "../../chess-multiplayer.component";
 
 export class Knight extends Piece {
 

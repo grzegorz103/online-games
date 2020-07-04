@@ -1,7 +1,7 @@
 import { Piece } from './piece';
 import { Color } from './color';
-import { Point } from './point';
-import {ChessMultiplayerComponent} from "../chess-multiplayer.component";
+import { Point } from '../point';
+import {ChessMultiplayerComponent} from "../../chess-multiplayer.component";
 import { King } from './king';
 
 export class Bishop extends Piece {
