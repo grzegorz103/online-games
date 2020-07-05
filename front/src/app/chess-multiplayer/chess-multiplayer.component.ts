@@ -20,6 +20,7 @@ import {MessageproviderService} from "./services/messageprovider.service";
 import {AvailableMoveDecoratorImpl} from "./models/pieces/decorator/available-move-decorator-impl";
 import {MoveUtils} from "./utils/move-utils";
 import {PieceFactoryService} from "./services/piece-factory.service";
+import {WebsocketManager} from "./websocket/websocket-manager";
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -69,6 +70,7 @@ export class ChessMultiplayerComponent implements OnInit {
   message: string;
   timer: Timer;
   sessionId: string;
+  webSocketManager: WebsocketManager;
 
   constructor(private route: ActivatedRoute,
               public dialog: MatDialog,
@@ -96,42 +98,21 @@ export class ChessMultiplayerComponent implements OnInit {
   private joinGame() {
     let that = this;
     this.ws.connect({}, function (frame) {
-      that.ws.subscribe("/errors", function (message) {
-        alert("Error " + message.body);
-      });
 
-      that.ws.subscribe("/user/queue/chess/message", message => {
-        console.log(message.body);
-        that.messageproviderService.addMessage(JSON.parse(message.body))
-      });
+      that.webSocketManager = new WebsocketManager(that.ws);
 
-      that.ws.subscribe("/user/queue/chess/sessionId", message => {
-        that.sessionId = message.body;
-      });
-
-      that.ws.subscribe("/user/queue/chess/move", message => {
-        ChessMultiplayerComponent.isCurrentPlayer = !ChessMultiplayerComponent.isCurrentPlayer;
-        that.movePiece(message.body);
-      });
-
-      that.ws.subscribe("/user/queue/chess/abandon", message => {
-        that.abandoned = true;
-      });
-
-      that.ws.subscribe("/user/queue/chess/resign", message => {
-        ChessMultiplayerComponent.isGameFinished = true;
-      });
-
-      that.ws.subscribe("/user/queue/chess/time", message => {
-        that.timeChoosen = JSON.parse(message.body);
-      });
-
-      that.ws.subscribe("/user/queue/chess/update", message => {
-        ChessMultiplayerComponent.currentColor = ChessMultiplayerComponent.currentColor === Color.BLACK ? Color.WHITE : Color.BLACK;
-        that.addPieces();
-      });
-
-      that.ws.subscribe("/user/queue/chess/start", message => {
+      that.webSocketManager
+        .register("/errors", (message) => alert("Error " + message.body))
+        .register("/user/queue/chess/message", (message) => that.messageproviderService.addMessage(JSON.parse(message.body)))
+        .register("/user/queue/chess/sessionId", (message) => that.sessionId = message.body)
+        .register("/user/queue/chess/move", (message) => that.movePiece(message.body))
+        .register("/user/queue/chess/abandon", (message) => that.abandoned = true)
+        .register("/user/queue/chess/resign", message => ChessMultiplayerComponent.isGameFinished = true)
+        .register("/user/queue/chess/time", message => that.timeChoosen = JSON.parse(message.body))
+        .register("/user/queue/chess/update", message => {
+          ChessMultiplayerComponent.currentColor = ChessMultiplayerComponent.currentColor === Color.BLACK ? Color.WHITE : Color.BLACK;
+          that.addPieces();
+        }).register("/user/queue/chess/start", message => {
         that.isLoading = false;
         that.playersReady = true;
         ChessMultiplayerComponent.currentColor = (JSON.parse(message.body)) ? Color.WHITE : Color.BLACK;
@@ -146,6 +127,7 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   movePiece(coords0: string) {
+    ChessMultiplayerComponent.isCurrentPlayer = !ChessMultiplayerComponent.isCurrentPlayer;
     this.boardClone = JSON.stringify(ChessMultiplayerComponent.board);
     let srcPiece = this.coordsToPoint(coords0.substring(0, 2));
     if (srcPiece) {
@@ -242,51 +224,29 @@ export class ChessMultiplayerComponent implements OnInit {
     let that = this;
 
     this.ws.connect({}, function (frame) {
-      that.ws.subscribe("/errors", function (message) {
-        alert("Error " + message.body);
-      });
 
-      that.ws.subscribe("/user/queue/chess/uri", message => {
-        ChessMultiplayerComponent.uri = message.body;
-        that.isLoading = false;
-        that.playersReady = false;
-      });
+      that.webSocketManager = new WebsocketManager(that.ws);
 
-      that.ws.subscribe("/user/queue/chess/sessionId", message => {
-        that.sessionId = message.body;
-      });
-
-      that.ws.subscribe("/user/queue/chess/message", message => {
-        console.log(message.body);
-        that.messageproviderService.addMessage(JSON.parse(message.body))
-      });
-
-      that.ws.subscribe("/user/queue/chess/abandon", message => {
-        that.abandoned = true;
-      });
-
-      that.ws.subscribe("/user/queue/chess/resign", message => {
-        ChessMultiplayerComponent.isGameFinished = true;
-      });
-
-      that.ws.subscribe("/user/queue/chess/update", message => {
-        ChessMultiplayerComponent.currentColor = ChessMultiplayerComponent.currentColor === Color.BLACK ? Color.WHITE : Color.BLACK;
-        that.addPieces();
-      });
-
-      that.ws.subscribe("/user/queue/chess/start", message => {
+      that.webSocketManager
+        .register("/errors", (message) => alert("Error " + message.body))
+        .register("/user/queue/chess/uri", message => {
+          ChessMultiplayerComponent.uri = message.body;
+          that.isLoading = false;
+          that.playersReady = false;
+        }).register("/user/queue/chess/sessionId", message => that.sessionId = message.body)
+        .register("/user/queue/chess/message", message => that.messageproviderService.addMessage(JSON.parse(message.body)))
+        .register("/user/queue/chess/abandon", message => that.abandoned = true)
+        .register("/user/queue/chess/resign", message => ChessMultiplayerComponent.isGameFinished = true)
+        .register("/user/queue/chess/update", message => {
+          ChessMultiplayerComponent.currentColor = ChessMultiplayerComponent.currentColor === Color.BLACK ? Color.WHITE : Color.BLACK;
+          that.addPieces();
+        }).register("/user/queue/chess/start", message => {
         that.isLoading = false;
         that.playersReady = true;
         ChessMultiplayerComponent.currentColor = (JSON.parse(message.body)) ? Color.WHITE : Color.BLACK;
         that.addPieces();
         that.calculateAdvantage();
-      });
-
-      that.ws.subscribe("/user/queue/chess/move", message => {
-        ChessMultiplayerComponent.isCurrentPlayer = !ChessMultiplayerComponent.isCurrentPlayer;
-        that.movePiece(message.body);
-      });
-
+      }).register("/user/queue/chess/move", message => that.movePiece(message.body));
 
     }, function (error) {
       that.socket.close();
