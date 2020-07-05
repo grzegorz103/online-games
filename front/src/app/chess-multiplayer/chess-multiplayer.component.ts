@@ -14,7 +14,6 @@ import * as Stomp from 'stompjs';
 import {environment} from "../../environments/environment";
 import {ChessPromoteDialogComponent} from "../chess-promote-dialog/chess-promote-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
-import {log} from "util";
 import {Timer} from "./models/timer";
 import {MessageproviderService} from "./services/messageprovider.service";
 import {AvailableMoveDecoratorImpl} from "./models/pieces/decorator/available-move-decorator-impl";
@@ -45,23 +44,24 @@ export class ChessMultiplayerComponent implements OnInit {
   boardRef: ElementRef;
 
   static currentColor: Color;
-  private selected: any;
-
+  static enPassantPoint: Point = null;
+  static enPassantable: Point = null;
+  static isWhiteBottom: boolean;
+  static isGameFinished: boolean = false;
   static isCurrentPlayer = false;
+
+  private selected: any;
   private whiteKingChecked: boolean;
   private blackKingChecked: boolean;
+  private promotionResult: number;
+  private destMove: string;
+  private sourceMove: string;
+
   isLoading: boolean = false;
   playersReady: boolean = false;
   calculation: number;
-  static enPassantPoint: Point = null;
-  static enPassantable: Point = null;
-  private promotionResult: number;
-  static isWhiteBottom: boolean;
-  static isGameFinished: boolean = false;
   colorChoosen: boolean = false;
   abandoned: boolean = false;
-  private destMove: string;
-  private sourceMove: string;
   boardClone: string;
   availableTimes = [60, 180, 300];
   timeChoosen: number;
@@ -303,42 +303,6 @@ export class ChessMultiplayerComponent implements OnInit {
     }
   }
 
-  getPossibleMovesForKingInCheck2(color: Color) {
-    let currentActivePiece = this.activePoint.piece;
-    let tempPossibleMoves = [];
-    this.activePoint.piece.getPossibleMoves().forEach(piece => {
-      piece.piece = this.activePoint.piece;
-      this.activePoint.piece = null;
-      if (!ChessMultiplayerComponent.isKingInCheck(color)) {
-        tempPossibleMoves.push(piece);
-      }
-      this.activePoint.piece = piece.piece;
-      piece.piece = null
-    });
-
-    return tempPossibleMoves;
-  }
-
-
-  getPossibleCapturesForKingInCheck2(color: Color) {
-    let currentActivePoint = this.activePoint;
-    let tempPossibleCaptures = [];
-    this.activePoint.piece.getPossibleCaptures().forEach(piece => {
-      let removedPoint = ChessMultiplayerComponent.getPointByCoords(piece.row, piece.col);
-      let removedPiece = removedPoint.piece;
-      removedPoint.piece = null;
-      this.activePoint = piece;
-      if (!ChessMultiplayerComponent.isKingInCheck(color)) {
-        tempPossibleCaptures.push(this.activePoint);
-      }
-      removedPoint.piece = removedPiece;
-    });
-    this.activePoint = currentActivePoint;
-
-    return tempPossibleCaptures;
-  }
-
-
   static isFieldUnderAttack(row: number, col: number, color: Color) {
     let found = false;
 
@@ -514,7 +478,6 @@ export class ChessMultiplayerComponent implements OnInit {
     this.calculateAdvantage();
     //  this.startTimer();
     this.timer.start();
-    // this.timeInterval = setInterval(() => this.startTimer(), 1000);
   }
 
   static isFieldTakenByEnemy(row: number, col: number, enemyColor: Color): boolean {
