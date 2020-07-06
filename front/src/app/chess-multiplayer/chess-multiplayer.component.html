@@ -39,16 +39,25 @@
   </div>
 
   <div *ngIf="!isLoading && colorChoosen && !playersReady" class="col-12 w-100">
-    <div class="text-center w-100">
-      <button class="btn btn-info my-3 mx-auto"
-              (click)="copyMessage(apiUrl() + 'chess/' + getUri())"
-              value="Zaproś znajomego">
-        Zaproś drugiego gracza, aby rozpocząć grę (naciśnij)
-      </button>
-
-
+    <div class="mx-auto text-center">
+      <div class="h3">
+        Udostępnij znajomemu poniższy link, aby rozpocząć grę.
+      </div>
+      <mat-divider class="mx-auto col-md-6 my-3"></mat-divider>
+      <div class="input-group justify-content-center">
+        <input type="text" class="form-control col-sm-12 col-md-4" [disabled]="true"
+               [value]="apiUrl() + 'chess/' + getUri()"/>
+        <span class="input-group-append">
+        <button id="copy-button" class="btn btn-default" (click)="copyMessage(apiUrl() + 'chess/' + getUri())"
+                type="button">KOPIUJ</button>
+      </span>
+      </div>
+      <div class="h6 mt-3">
+        Pierwsza osoba która dołączy zostanie Twoim przeciwnikiem!
+      </div>
     </div>
   </div>
+
   <div class="row" *ngIf="!isLoading && playersReady && !abandoned">
     <div class="col-2 info" style="font-size: 25px">
       <div class="row" style="height:50%;">
