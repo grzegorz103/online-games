@@ -22,6 +22,8 @@ Live demo available at https://online-games-69bcf.firebaseapp.com/
 - Angular 8
 - Auth0
 - CircleCI
+- JUnit / Mockito
+- Groovy / Spock
 
 ## Features:
 
