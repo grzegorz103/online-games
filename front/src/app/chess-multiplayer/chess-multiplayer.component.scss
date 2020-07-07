@@ -167,8 +167,9 @@ li {
   border-bottom: 1px solid grey;
   word-wrap: break-word;
 }
+
 li:last-child {
-  border:none;
+  border: none;
 }
 
 
@@ -182,6 +183,7 @@ li:last-child {
   align-items: stretch;
   width: 100%;
 }
+
 .form-control {
   position: relative;
   -ms-flex: 1 1 auto;
@@ -200,6 +202,7 @@ li:last-child {
   border-radius: 0.25rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
 #copy-button {
   display: inline-block;
   font-weight: 400;
@@ -222,7 +225,15 @@ li:last-child {
   margin: 0;
 }
 
-#history-box{
+#history-box {
   border: 3px solid red;
   height: 40%;
+}
+
+.history-item {
+  display: inline-block;
+}
+
+#history-info {
+  background-color: #4e555b;
 }
