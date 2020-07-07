@@ -150,6 +150,7 @@ export class ChessMultiplayerComponent implements OnInit {
           this.isPawnPromoting(srcPiece, destPoint, Number(coords0.substring(coords0.length - 1, coords0.length)));
         }
 
+        this.moveHistoryProviderService.addMove(new MoveHistory(this.moveHistoryFormatter.format(coords0, srcPiece.piece)));
         this.checkIfPawnEnPassant(srcPiece, destPoint);
         this.checkIfPawnFirstMove(srcPiece.piece);
         // this.checkIfPawnCaptuerEnPassant(srcPiece, destPoint);
@@ -166,7 +167,6 @@ export class ChessMultiplayerComponent implements OnInit {
         rook.piece = null;
       }
 
-      this.moveHistoryProviderService.addMove(new MoveHistory(this.moveHistoryFormatter.format(coords0)));
 
       this.whiteKingChecked = ChessMultiplayerComponent.isKingInCheck(Color.WHITE);
       if (this.whiteKingChecked) {
