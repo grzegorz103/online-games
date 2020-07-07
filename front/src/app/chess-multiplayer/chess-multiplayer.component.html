@@ -141,6 +141,16 @@
             </div>
           </div>
         </div>
+
+        <div id="history-box" class="col-12 px-0">
+          <div id="history-info" class="mx-0">
+            <div style="display: inline-block" class="col-6">Białe</div>
+            <div style="display: inline-block" class="col-6">Czarne</div>
+          </div>
+          <div *ngFor="let moveHistory of moveHistoryProviderService.moveHistories" class="history-item col-6"
+               [innerHTML]="moveHistory.move"></div>
+        </div>
+
       </div>
     </div>
   </div>

@@ -8,9 +8,9 @@ export class Rook extends Piece {
 
   isMovedAlready = false;
 
-  constructor( color: Color, image: string) {
-        super( color, image, 5);
-    }
+  constructor(color: Color, image: string, unicode: string) {
+    super(color, image, 5, unicode);
+  }
 
     getPossibleMoves(): Point[] {
         let possiblePoints = [];

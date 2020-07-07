@@ -6,9 +6,9 @@ import { King } from './king';
 
 export class Bishop extends Piece {
 
-    constructor( color: Color, image: string) {
-        super( color, image, 3);
-    }
+  constructor(color: Color, image: string, unicode: string) {
+    super(color, image, 3, unicode);
+  }
 
     getPossibleMoves(): Point[] {
         let possiblePoints = [];
