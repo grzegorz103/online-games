@@ -6,8 +6,11 @@ import {AbstractPiece} from "../abstract-piece";
 
 export class AvailableMoveDecoratorImpl extends AbstractPieceDecorator {
 
+  pointClicked: Point;
+
   constructor(piece: AbstractPiece, pointClicked: Point) {
-    super(piece, pointClicked);
+    super(piece);
+    this.pointClicked = pointClicked;
   }
 
   getPossibleCaptures(): Point[] {
