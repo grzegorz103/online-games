@@ -141,6 +141,11 @@
             </div>
           </div>
         </div>
+
+        <div id="history-box" class="col-12">
+          <span *ngFor="let moveHistory of moveHistoryProviderService.moveHistories">{{moveHistory.move}}</span>
+        </div>
+
       </div>
     </div>
   </div>

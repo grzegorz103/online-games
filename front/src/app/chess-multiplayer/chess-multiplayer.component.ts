@@ -20,6 +20,9 @@ import {AvailableMoveDecoratorImpl} from "./models/pieces/decorator/available-mo
 import {MoveUtils} from "./utils/move-utils";
 import {PieceFactoryService} from "./services/piece-factory.service";
 import {WebsocketManager} from "./websocket/websocket-manager";
+import {MoveHistoryProviderService} from "./services/move-history-provider.service";
+import {MoveHistory} from "./models/move-history";
+import {MoveHistoryFormatterService} from "./services/move-history-formatter.service";
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -76,6 +79,8 @@ export class ChessMultiplayerComponent implements OnInit {
               public dialog: MatDialog,
               private pieceFactory: PieceFactoryService,
               public messageproviderService: MessageproviderService,
+              public moveHistoryProviderService: MoveHistoryProviderService,
+              private moveHistoryFormatter: MoveHistoryFormatterService,
               private snackBar: MatSnackBar) {
   }
 
@@ -159,6 +164,8 @@ export class ChessMultiplayerComponent implements OnInit {
         newPointForRook.piece = rook.piece;
         rook.piece = null;
       }
+
+      this.moveHistoryProviderService.addMove(new MoveHistory(this.moveHistoryFormatter.format(coords0)));
 
       this.whiteKingChecked = ChessMultiplayerComponent.isKingInCheck(Color.WHITE);
       if (this.whiteKingChecked) {
