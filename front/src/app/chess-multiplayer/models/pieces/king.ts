@@ -12,8 +12,8 @@ export class King extends Piece {
   isMovedAlready = false;
   isCastling = false;
 
-  constructor(color: Color, image: string) {
-    super(color, image, 0);
+  constructor(color: Color, image: string, unicode: string) {
+    super(color, image, 0, unicode);
   }
 
   getPossibleMoves(): Point[] {

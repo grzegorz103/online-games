@@ -23,6 +23,7 @@ import {WebsocketManager} from "./websocket/websocket-manager";
 import {MoveHistoryProviderService} from "./services/move-history-provider.service";
 import {MoveHistory} from "./models/move-history";
 import {MoveHistoryFormatterService} from "./services/move-history-formatter.service";
+import {UnicodeConstants} from "./utils/unicode-constants";
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -410,31 +411,31 @@ export class ChessMultiplayerComponent implements OnInit {
 
       let cw = 104;
       for (let i = 0; i < 8; ++i) {
-        ChessMultiplayerComponent.getPointByCoords(1, i).piece = new Pawn(Color.WHITE, 'pawn-white.png');
+        ChessMultiplayerComponent.getPointByCoords(1, i).piece = new Pawn(Color.WHITE, 'pawn-white.png', UnicodeConstants.WHITE_PAWN);
         --cw;
       }
-      ChessMultiplayerComponent.getPointByCoords(0, 0).piece = new Rook(Color.WHITE, 'rook-white.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 1).piece = new Knight(Color.WHITE, 'knight-white.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 2).piece = new Bishop(Color.WHITE, 'bishop-white.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 3).piece = new King(Color.WHITE, 'king-white.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 4).piece = new Queen(Color.WHITE, 'queen-white.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 5).piece = new Bishop(Color.WHITE, 'bishop-white.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 6).piece = new Knight(Color.WHITE, 'knight-white.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 7).piece = new Rook(Color.WHITE, 'rook-white.png');
+      ChessMultiplayerComponent.getPointByCoords(0, 0).piece = new Rook(Color.WHITE, 'rook-white.png',UnicodeConstants.WHITE_ROOK);
+      ChessMultiplayerComponent.getPointByCoords(0, 1).piece = new Knight(Color.WHITE, 'knight-white.png', UnicodeConstants.WHITE_KNIGHT);
+      ChessMultiplayerComponent.getPointByCoords(0, 2).piece = new Bishop(Color.WHITE, 'bishop-white.png', UnicodeConstants.WHITE_BISHOP);
+      ChessMultiplayerComponent.getPointByCoords(0, 3).piece = new King(Color.WHITE, 'king-white.png', UnicodeConstants.WHITE_KING);
+      ChessMultiplayerComponent.getPointByCoords(0, 4).piece = new Queen(Color.WHITE, 'queen-white.png', UnicodeConstants.WHITE_QUEEN);
+      ChessMultiplayerComponent.getPointByCoords(0, 5).piece = new Bishop(Color.WHITE, 'bishop-white.png', UnicodeConstants.WHITE_BISHOP);
+      ChessMultiplayerComponent.getPointByCoords(0, 6).piece = new Knight(Color.WHITE, 'knight-white.png', UnicodeConstants.WHITE_KNIGHT);
+      ChessMultiplayerComponent.getPointByCoords(0, 7).piece = new Rook(Color.WHITE, 'rook-white.png', UnicodeConstants.WHITE_ROOK);
 
       let cz = 104;
       for (let i = 0; i < 8; ++i) {
-        ChessMultiplayerComponent.getPointByCoords(6, i).piece = new Pawn(Color.BLACK, 'pawn-black.png');
+        ChessMultiplayerComponent.getPointByCoords(6, i).piece = new Pawn(Color.BLACK, 'pawn-black.png', UnicodeConstants.BLACK_PAWN);
         --cz;
       }
-      ChessMultiplayerComponent.getPointByCoords(7, 0).piece = new Rook(Color.BLACK, 'rook-black.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 1).piece = new Knight(Color.BLACK, 'knight-black.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 2).piece = new Bishop(Color.BLACK, 'bishop-black.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 3).piece = new King(Color.BLACK, 'king-black.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 4).piece = new Queen(Color.BLACK, 'queen-black.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 5).piece = new Bishop(Color.BLACK, 'bishop-black.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 6).piece = new Knight(Color.BLACK, 'knight-black.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 7).piece = new Rook(Color.BLACK, 'rook-black.png');
+      ChessMultiplayerComponent.getPointByCoords(7, 0).piece = new Rook(Color.BLACK, 'rook-black.png', UnicodeConstants.BLACK_ROOK);
+      ChessMultiplayerComponent.getPointByCoords(7, 1).piece = new Knight(Color.BLACK, 'knight-black.png', UnicodeConstants.BLACK_KNIGHT);
+      ChessMultiplayerComponent.getPointByCoords(7, 2).piece = new Bishop(Color.BLACK, 'bishop-black.png', UnicodeConstants.BLACK_BISHOP);
+      ChessMultiplayerComponent.getPointByCoords(7, 3).piece = new King(Color.BLACK, 'king-black.png', UnicodeConstants.BLACK_KING);
+      ChessMultiplayerComponent.getPointByCoords(7, 4).piece = new Queen(Color.BLACK, 'queen-black.png', UnicodeConstants.BLACK_QUEEN);
+      ChessMultiplayerComponent.getPointByCoords(7, 5).piece = new Bishop(Color.BLACK, 'bishop-black.png', UnicodeConstants.BLACK_KNIGHT);
+      ChessMultiplayerComponent.getPointByCoords(7, 6).piece = new Knight(Color.BLACK, 'knight-black.png', UnicodeConstants.BLACK_KNIGHT);
+      ChessMultiplayerComponent.getPointByCoords(7, 7).piece = new Rook(Color.BLACK, 'rook-black.png', UnicodeConstants.BLACK_ROOK);
 
     } else {
       ChessMultiplayerComponent.isCurrentPlayer = true;
@@ -453,33 +454,33 @@ export class ChessMultiplayerComponent implements OnInit {
       let cx = 97;
       // piony czarne
       for (let i = 0; i < 8; ++i) {
-        ChessMultiplayerComponent.getPointByCoords(1, i).piece = new Pawn(Color.BLACK, 'pawn-black.png');
+        ChessMultiplayerComponent.getPointByCoords(1, i).piece = new Pawn(Color.BLACK, 'pawn-black.png', UnicodeConstants.BLACK_PAWN);
         ++cx;
       }
 
-      ChessMultiplayerComponent.getPointByCoords(0, 0).piece = new Rook(Color.BLACK, 'rook-black.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 1).piece = new Knight(Color.BLACK, 'knight-black.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 2).piece = new Bishop(Color.BLACK, 'bishop-black.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 3).piece = new Queen(Color.BLACK, 'queen-black.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 4).piece = new King(Color.BLACK, 'king-black.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 5).piece = new Bishop(Color.BLACK, 'bishop-black.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 6).piece = new Knight(Color.BLACK, 'knight-black.png');
-      ChessMultiplayerComponent.getPointByCoords(0, 7).piece = new Rook(Color.BLACK, 'rook-black.png');
+      ChessMultiplayerComponent.getPointByCoords(0, 0).piece = new Rook(Color.BLACK, 'rook-black.png', UnicodeConstants.BLACK_ROOK);
+      ChessMultiplayerComponent.getPointByCoords(0, 1).piece = new Knight(Color.BLACK, 'knight-black.png', UnicodeConstants.BLACK_KNIGHT);
+      ChessMultiplayerComponent.getPointByCoords(0, 2).piece = new Bishop(Color.BLACK, 'bishop-black.png', UnicodeConstants.BLACK_BISHOP);
+      ChessMultiplayerComponent.getPointByCoords(0, 3).piece = new Queen(Color.BLACK, 'queen-black.png', UnicodeConstants.BLACK_QUEEN);
+      ChessMultiplayerComponent.getPointByCoords(0, 4).piece = new King(Color.BLACK, 'king-black.png', UnicodeConstants.BLACK_KING);
+      ChessMultiplayerComponent.getPointByCoords(0, 5).piece = new Bishop(Color.BLACK, 'bishop-black.png', UnicodeConstants.BLACK_BISHOP);
+      ChessMultiplayerComponent.getPointByCoords(0, 6).piece = new Knight(Color.BLACK, 'knight-black.png', UnicodeConstants.BLACK_KNIGHT);
+      ChessMultiplayerComponent.getPointByCoords(0, 7).piece = new Rook(Color.BLACK, 'rook-black.png', UnicodeConstants.BLACK_ROOK);
 
       let x = 97;
       for (let i = 0; i < 8; ++i) {
-        ChessMultiplayerComponent.getPointByCoords(6, i).piece = new Pawn(Color.WHITE, 'pawn-white.png');
+        ChessMultiplayerComponent.getPointByCoords(6, i).piece = new Pawn(Color.WHITE, 'pawn-white.png', UnicodeConstants.WHITE_PAWN);
         ++x;
       }
 
-      ChessMultiplayerComponent.getPointByCoords(7, 0).piece = new Rook(Color.WHITE, 'rook-white.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 1).piece = new Knight(Color.WHITE, 'knight-white.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 2).piece = new Bishop(Color.WHITE, 'bishop-white.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 3).piece = new Queen(Color.WHITE, 'queen-white.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 4).piece = new King(Color.WHITE, 'king-white.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 5).piece = new Bishop(Color.WHITE, 'bishop-white.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 6).piece = new Knight(Color.WHITE, 'knight-white.png');
-      ChessMultiplayerComponent.getPointByCoords(7, 7).piece = new Rook(Color.WHITE, 'rook-white.png');
+      ChessMultiplayerComponent.getPointByCoords(7, 0).piece = new Rook(Color.WHITE, 'rook-white.png', UnicodeConstants.WHITE_ROOK);
+      ChessMultiplayerComponent.getPointByCoords(7, 1).piece = new Knight(Color.WHITE, 'knight-white.png', UnicodeConstants.WHITE_KNIGHT);
+      ChessMultiplayerComponent.getPointByCoords(7, 2).piece = new Bishop(Color.WHITE, 'bishop-white.png', UnicodeConstants.WHITE_BISHOP);
+      ChessMultiplayerComponent.getPointByCoords(7, 3).piece = new Queen(Color.WHITE, 'queen-white.png', UnicodeConstants.WHITE_QUEEN);
+      ChessMultiplayerComponent.getPointByCoords(7, 4).piece = new King(Color.WHITE, 'king-white.png', UnicodeConstants.WHITE_KING);
+      ChessMultiplayerComponent.getPointByCoords(7, 5).piece = new Bishop(Color.WHITE, 'bishop-white.png', UnicodeConstants.WHITE_BISHOP);
+      ChessMultiplayerComponent.getPointByCoords(7, 6).piece = new Knight(Color.WHITE, 'knight-white.png', UnicodeConstants.WHITE_KNIGHT);
+      ChessMultiplayerComponent.getPointByCoords(7, 7).piece = new Rook(Color.WHITE, 'rook-white.png', UnicodeConstants.WHITE_ROOK);
     }
 
     this.calculateAdvantage();

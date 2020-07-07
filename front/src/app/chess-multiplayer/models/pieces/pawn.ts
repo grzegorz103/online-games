@@ -7,8 +7,8 @@ export class Pawn extends Piece {
 
   isMovedAlready = false;
 
-  constructor(color: Color, image: string) {
-    super(color, image, 1);
+  constructor(color: Color, image: string, unicode: string) {
+    super(color, image, 1, unicode);
   }
 
   getPossibleMoves(): Point[] {
