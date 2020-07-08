@@ -140,6 +140,7 @@ export class ChessMultiplayerComponent implements OnInit {
 
     if (this.moveHistoryProviderService.getLast()) {
       ChessMultiplayerComponent.board = cloneDeep(this.moveHistoryProviderService.getLast().boardCopy);
+      this.isNewestMove = true;
     }
 
     this.boardClone = JSON.stringify(ChessMultiplayerComponent.board);
@@ -391,6 +392,8 @@ export class ChessMultiplayerComponent implements OnInit {
   addPieces() {
     //  ChessMultiplayerComponent.board = [];
     ChessMultiplayerComponent.isGameFinished = false;
+    this.moveHistoryProviderService.clear();
+    this.isNewestMove = true;
     this.timer = new Timer(this.timeChoosen);
     this.blackKingChecked = false;
     this.whiteKingChecked = false;
