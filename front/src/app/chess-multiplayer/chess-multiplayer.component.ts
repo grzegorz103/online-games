@@ -138,10 +138,9 @@ export class ChessMultiplayerComponent implements OnInit {
     ChessMultiplayerComponent.isCurrentPlayer = !ChessMultiplayerComponent.isCurrentPlayer;
 
     if (this.moveHistoryProviderService.getLast()) {
-      console.log('wchodzi')
-      let points: Point[][] = this.moveHistoryProviderService.getLast().boardCopy;
-      ChessMultiplayerComponent.board = points;
+      ChessMultiplayerComponent.board = cloneDeep(this.moveHistoryProviderService.getLast().boardCopy);
     }
+
     this.boardClone = JSON.stringify(ChessMultiplayerComponent.board);
     let srcPiece = this.coordsToPoint(coords0.substring(0, 2));
     if (srcPiece) {
@@ -163,9 +162,9 @@ export class ChessMultiplayerComponent implements OnInit {
         // this.checkIfPawnCaptuerEnPassant(srcPiece, destPoint);
         destPoint.piece = srcPiece.piece;
         srcPiece.piece = null;
-        this.moveHistoryProviderService.addMove(new MoveHistory(this.moveHistoryFormatter.format(coords0, destPoint.piece), cloneDeep(ChessMultiplayerComponent.board)));
         this.sourceMove = coords0.substring(0, 2);
         this.destMove = coords0.substring(2, 4);
+        this.moveHistoryProviderService.addMove(new MoveHistory(this.moveHistoryFormatter.format(coords0, destPoint.piece), cloneDeep(ChessMultiplayerComponent.board), this.sourceMove, this.destMove));
       }
 
       if (coords0.length > 7) {
@@ -741,7 +740,10 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   switchBoard(i: number) {
+    console.log(i + " index");
     ChessMultiplayerComponent.board = this.moveHistoryProviderService.getMove(i).boardCopy;
+    this.destMove = this.moveHistoryProviderService.getMove(i).destMove;
+    this.sourceMove = this.moveHistoryProviderService.getMove(i).sourceMove;
   }
 
 }

@@ -24,7 +24,6 @@ export class MoveHistoryProviderService {
   }
 
   getLast() {
-    console.log(this.moveHistories.length)
     return this.moveHistories[this.moveHistories.length - 1];
   }
 
