@@ -237,6 +237,11 @@ li:last-child {
   display: inline-block;
 }
 
+.history-item:hover {
+  background-color: #5a6268;
+  cursor: pointer;
+}
+
 #history-info {
   background-color: #4e555b;
 }
