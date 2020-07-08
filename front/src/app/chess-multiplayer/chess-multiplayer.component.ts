@@ -24,6 +24,7 @@ import {MoveHistoryProviderService} from "./services/move-history-provider.servi
 import {MoveHistory} from "./models/move-history";
 import {MoveHistoryFormatterService} from "./services/move-history-formatter.service";
 import {UnicodeConstants} from "./utils/unicode-constants";
+import {cloneDeep} from 'lodash';
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -92,6 +93,7 @@ export class ChessMultiplayerComponent implements OnInit {
     this.possibleCaptures = [];
     this.socket = new WebSocket(environment.wsUrl);
     this.ws = Stomp.over(this.socket);
+    this.moveHistoryProviderService.clear();
 
     if (ChessMultiplayerComponent.uri) {
       this.joinGame();
@@ -134,6 +136,12 @@ export class ChessMultiplayerComponent implements OnInit {
 
   movePiece(coords0: string) {
     ChessMultiplayerComponent.isCurrentPlayer = !ChessMultiplayerComponent.isCurrentPlayer;
+
+    if (this.moveHistoryProviderService.getLast()) {
+      console.log('wchodzi')
+      let points: Point[][] = this.moveHistoryProviderService.getLast().boardCopy;
+      ChessMultiplayerComponent.board = points;
+    }
     this.boardClone = JSON.stringify(ChessMultiplayerComponent.board);
     let srcPiece = this.coordsToPoint(coords0.substring(0, 2));
     if (srcPiece) {
@@ -150,12 +158,12 @@ export class ChessMultiplayerComponent implements OnInit {
           this.isPawnPromoting(srcPiece, destPoint, Number(coords0.substring(coords0.length - 1, coords0.length)));
         }
 
-        this.moveHistoryProviderService.addMove(new MoveHistory(this.moveHistoryFormatter.format(coords0, srcPiece.piece)));
         this.checkIfPawnEnPassant(srcPiece, destPoint);
         this.checkIfPawnFirstMove(srcPiece.piece);
         // this.checkIfPawnCaptuerEnPassant(srcPiece, destPoint);
         destPoint.piece = srcPiece.piece;
         srcPiece.piece = null;
+        this.moveHistoryProviderService.addMove(new MoveHistory(this.moveHistoryFormatter.format(coords0, destPoint.piece), cloneDeep(ChessMultiplayerComponent.board)));
         this.sourceMove = coords0.substring(0, 2);
         this.destMove = coords0.substring(2, 4);
       }
@@ -414,7 +422,7 @@ export class ChessMultiplayerComponent implements OnInit {
         ChessMultiplayerComponent.getPointByCoords(1, i).piece = new Pawn(Color.WHITE, 'pawn-white.png', UnicodeConstants.WHITE_PAWN);
         --cw;
       }
-      ChessMultiplayerComponent.getPointByCoords(0, 0).piece = new Rook(Color.WHITE, 'rook-white.png',UnicodeConstants.WHITE_ROOK);
+      ChessMultiplayerComponent.getPointByCoords(0, 0).piece = new Rook(Color.WHITE, 'rook-white.png', UnicodeConstants.WHITE_ROOK);
       ChessMultiplayerComponent.getPointByCoords(0, 1).piece = new Knight(Color.WHITE, 'knight-white.png', UnicodeConstants.WHITE_KNIGHT);
       ChessMultiplayerComponent.getPointByCoords(0, 2).piece = new Bishop(Color.WHITE, 'bishop-white.png', UnicodeConstants.WHITE_BISHOP);
       ChessMultiplayerComponent.getPointByCoords(0, 3).piece = new King(Color.WHITE, 'king-white.png', UnicodeConstants.WHITE_KING);
@@ -730,6 +738,10 @@ export class ChessMultiplayerComponent implements OnInit {
 
   resign() {
     this.ws.send("/app/chess/resign/" + this.getUri(), {}, this.message);
+  }
+
+  switchBoard(i: number) {
+    ChessMultiplayerComponent.board = this.moveHistoryProviderService.getMove(i).boardCopy;
   }
 
 }
