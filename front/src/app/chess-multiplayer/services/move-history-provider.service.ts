@@ -6,7 +6,7 @@ import {MoveHistory} from "../models/move-history";
 })
 export class MoveHistoryProviderService {
 
-  private moveHistories: MoveHistory[] = [];
+  public moveHistories: MoveHistory[] = [];
 
   constructor() {
   }
