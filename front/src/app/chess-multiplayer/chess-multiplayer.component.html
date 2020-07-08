@@ -144,11 +144,12 @@
 
         <div id="history-box" class="col-12 px-0">
           <div id="history-info" class="mx-0">
-            <div style="display: inline-block" class="col-6">Białe</div>
-            <div style="display: inline-block" class="col-6">Czarne</div>
+            <div style="display: inline-block" class="col-6 text-center">Białe</div>
+            <div style="display: inline-block" class="col-6 text-center">Czarne</div>
           </div>
           <div *ngFor="let moveHistory of moveHistoryProviderService.moveHistories; let i = index" class="history-item col-6"
             (click)="switchBoard(i)"   [innerHTML]="moveHistory.move"></div>
+          <div id="history-back" class="blinking" *ngIf="!isNewestMove" (click)="backToNewestMove()">Powrót</div>
         </div>
 
       </div>
