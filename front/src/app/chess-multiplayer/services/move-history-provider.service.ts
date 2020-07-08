@@ -6,7 +6,7 @@ import {MoveHistory} from "../models/move-history";
 })
 export class MoveHistoryProviderService {
 
-  moveHistories: MoveHistory[] = [];
+  public moveHistories: MoveHistory[] = [];
 
   constructor() {
   }
@@ -17,6 +17,18 @@ export class MoveHistoryProviderService {
 
   clear() {
     this.moveHistories = [];
+  }
+
+  getMove(index: number) {
+    return this.moveHistories[index];
+  }
+
+  getLast() {
+    return this.moveHistories[this.moveHistories.length - 1];
+  }
+
+  getSize() {
+    return this.moveHistories.length;
   }
 
 }
