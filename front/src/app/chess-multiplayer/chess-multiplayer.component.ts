@@ -44,6 +44,7 @@ export class ChessMultiplayerComponent implements OnInit {
   // static pieces: Piece[];
   possibleMoves: Point[];
   possibleCaptures: Point[];
+  isNewestMove: boolean = true;
 
   @ViewChild('dragRef', {static: false})
   boardRef: ElementRef;
@@ -273,7 +274,7 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   async onMouseDown(event) {
-    if (!ChessMultiplayerComponent.isCurrentPlayer || ChessMultiplayerComponent.isGameFinished) {
+    if (!ChessMultiplayerComponent.isCurrentPlayer || ChessMultiplayerComponent.isGameFinished || !this.isNewestMove) {
       return;
     }
     let pointClicked = this.getClickPoint(event);
@@ -740,10 +741,11 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   switchBoard(i: number) {
-    console.log(i + " index");
     ChessMultiplayerComponent.board = this.moveHistoryProviderService.getMove(i).boardCopy;
     this.destMove = this.moveHistoryProviderService.getMove(i).destMove;
     this.sourceMove = this.moveHistoryProviderService.getMove(i).sourceMove;
+
+    this.isNewestMove = this.moveHistoryProviderService.getSize() === (i + 1);
   }
 
 }

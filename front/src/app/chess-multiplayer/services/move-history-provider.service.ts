@@ -27,4 +27,8 @@ export class MoveHistoryProviderService {
     return this.moveHistories[this.moveHistories.length - 1];
   }
 
+  getSize() {
+    return this.moveHistories.length;
+  }
+
 }
