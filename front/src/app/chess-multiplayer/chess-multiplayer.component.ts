@@ -25,6 +25,8 @@ import {MoveHistory} from "./models/move-history";
 import {MoveHistoryFormatterService} from "./services/move-history-formatter.service";
 import {UnicodeConstants} from "./utils/unicode-constants";
 import {cloneDeep} from 'lodash';
+import {AudioService} from "./services/audio.service";
+import {SoundConstants} from "./utils/sound-constants";
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -84,6 +86,7 @@ export class ChessMultiplayerComponent implements OnInit {
               public messageproviderService: MessageproviderService,
               public moveHistoryProviderService: MoveHistoryProviderService,
               private moveHistoryFormatter: MoveHistoryFormatterService,
+              private audioService: AudioService,
               private snackBar: MatSnackBar) {
   }
 
@@ -142,17 +145,17 @@ export class ChessMultiplayerComponent implements OnInit {
       ChessMultiplayerComponent.board = cloneDeep(this.moveHistoryProviderService.getLast().boardCopy);
       this.isNewestMove = true;
     }
+    this.audioService.play(SoundConstants.MOVE);
 
     this.boardClone = JSON.stringify(ChessMultiplayerComponent.board);
     let srcPiece = this.coordsToPoint(coords0.substring(0, 2));
+
     if (srcPiece) {
       if (coords0.length > 3) {
         let destPoint = this.coordsToPoint(coords0.substring(2, 4));
 
         if (coords0.endsWith('@')) {
-          ChessMultiplayerComponent.enPassantPoint = null;
-          if (ChessMultiplayerComponent.enPassantable != null)
-            ChessMultiplayerComponent.enPassantable.piece = null;
+          this.removeEnPassantedPiece();
         }
 
         if (coords0.match('[a-z0-9]*#\\d')) {
@@ -749,6 +752,25 @@ export class ChessMultiplayerComponent implements OnInit {
     this.sourceMove = this.moveHistoryProviderService.getMove(i).sourceMove;
 
     this.isNewestMove = this.moveHistoryProviderService.getSize() === (i + 1);
+  }
+
+  backToNewestMove() {
+    let lastMove = this.moveHistoryProviderService.getLast();
+    ChessMultiplayerComponent.board = lastMove.boardCopy;
+    this.destMove = lastMove.destMove;
+    this.sourceMove = lastMove.sourceMove;
+    this.isNewestMove = true;
+  }
+
+  removeEnPassantedPiece() {
+    ChessMultiplayerComponent.enPassantPoint = null;
+    if (ChessMultiplayerComponent.enPassantable != null) {
+      let enPassantedPoint = ChessMultiplayerComponent.getPointByCoords(ChessMultiplayerComponent.enPassantable.row, ChessMultiplayerComponent.enPassantable.col);
+      if (enPassantedPoint) {
+        enPassantedPoint.piece = null;
+      }
+    }
+    ChessMultiplayerComponent.enPassantable.piece = null;
   }
 
 }
