@@ -25,6 +25,8 @@ import {MoveHistory} from "./models/move-history";
 import {MoveHistoryFormatterService} from "./services/move-history-formatter.service";
 import {UnicodeConstants} from "./utils/unicode-constants";
 import {cloneDeep} from 'lodash';
+import {AudioService} from "./services/audio.service";
+import {SoundConstants} from "./utils/sound-constants";
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -84,6 +86,7 @@ export class ChessMultiplayerComponent implements OnInit {
               public messageproviderService: MessageproviderService,
               public moveHistoryProviderService: MoveHistoryProviderService,
               private moveHistoryFormatter: MoveHistoryFormatterService,
+              private audioService: AudioService,
               private snackBar: MatSnackBar) {
   }
 
@@ -142,6 +145,7 @@ export class ChessMultiplayerComponent implements OnInit {
       ChessMultiplayerComponent.board = cloneDeep(this.moveHistoryProviderService.getLast().boardCopy);
       this.isNewestMove = true;
     }
+    this.audioService.play(SoundConstants.MOVE);
 
     this.boardClone = JSON.stringify(ChessMultiplayerComponent.board);
     let srcPiece = this.coordsToPoint(coords0.substring(0, 2));
