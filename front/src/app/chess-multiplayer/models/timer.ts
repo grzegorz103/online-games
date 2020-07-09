@@ -9,7 +9,7 @@ export class Timer {
 
   private readonly timeChoosen: number;
 
-  private timeMsInterval: number = 1000;
+  private timeMsInterval: number = 10;
 
   private timer: any;
 
@@ -30,7 +30,7 @@ export class Timer {
     this.calculateTimeStrings();
   }
 
-  private calculateTimeStrings(){
+  private calculateTimeStrings() {
     this._currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19);
     this._enemyPlayerTimeString = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
   }
@@ -38,10 +38,10 @@ export class Timer {
   private run() {
     if (!ChessMultiplayerComponent.isGameFinished) {
       if (ChessMultiplayerComponent.isCurrentPlayer) {
-        this.currentPlayerTime--;
+        this.currentPlayerTime -= 0.01;
         this._currentPlayerTimeString = new Date(this.currentPlayerTime * 1000).toISOString().substring(11, 19);
       } else {
-        this.enemyPlayerTime--;
+        this.enemyPlayerTime -= 0.01;
         this._enemyPlayerTimeString = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
       }
       if (this.currentPlayerTime === 0 || this.enemyPlayerTime === 0) {
