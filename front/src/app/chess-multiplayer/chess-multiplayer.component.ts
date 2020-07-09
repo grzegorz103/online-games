@@ -145,14 +145,13 @@ export class ChessMultiplayerComponent implements OnInit {
 
     this.boardClone = JSON.stringify(ChessMultiplayerComponent.board);
     let srcPiece = this.coordsToPoint(coords0.substring(0, 2));
+
     if (srcPiece) {
       if (coords0.length > 3) {
         let destPoint = this.coordsToPoint(coords0.substring(2, 4));
 
         if (coords0.endsWith('@')) {
-          ChessMultiplayerComponent.enPassantPoint = null;
-          if (ChessMultiplayerComponent.enPassantable != null)
-            ChessMultiplayerComponent.enPassantable.piece = null;
+          this.removeEnPassantedPiece();
         }
 
         if (coords0.match('[a-z0-9]*#\\d')) {
@@ -749,6 +748,17 @@ export class ChessMultiplayerComponent implements OnInit {
     this.sourceMove = this.moveHistoryProviderService.getMove(i).sourceMove;
 
     this.isNewestMove = this.moveHistoryProviderService.getSize() === (i + 1);
+  }
+
+  removeEnPassantedPiece() {
+    ChessMultiplayerComponent.enPassantPoint = null;
+    if (ChessMultiplayerComponent.enPassantable != null) {
+      let enPassantedPoint = ChessMultiplayerComponent.getPointByCoords(ChessMultiplayerComponent.enPassantable.row, ChessMultiplayerComponent.enPassantable.col);
+      if (enPassantedPoint) {
+        enPassantedPoint.piece = null;
+      }
+    }
+    ChessMultiplayerComponent.enPassantable.piece = null;
   }
 
 }
