@@ -750,6 +750,14 @@ export class ChessMultiplayerComponent implements OnInit {
     this.isNewestMove = this.moveHistoryProviderService.getSize() === (i + 1);
   }
 
+  backToNewestMove() {
+    let lastMove = this.moveHistoryProviderService.getLast();
+    ChessMultiplayerComponent.board = lastMove.boardCopy;
+    this.destMove = lastMove.destMove;
+    this.sourceMove = lastMove.sourceMove;
+    this.isNewestMove = true;
+  }
+
   removeEnPassantedPiece() {
     ChessMultiplayerComponent.enPassantPoint = null;
     if (ChessMultiplayerComponent.enPassantable != null) {
