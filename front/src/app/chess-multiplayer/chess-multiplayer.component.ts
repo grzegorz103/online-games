@@ -142,7 +142,11 @@ export class ChessMultiplayerComponent implements OnInit {
     ChessMultiplayerComponent.isCurrentPlayer = !ChessMultiplayerComponent.isCurrentPlayer;
 
     if (this.moveHistoryProviderService.getLast()) {
-      ChessMultiplayerComponent.board = cloneDeep(this.moveHistoryProviderService.getLast().boardCopy);
+      let clonedBoard = cloneDeep(this.moveHistoryProviderService.getLast().boardCopy);
+      if (this.isRotated) {
+        clonedBoard = this.getRotatedBoard(clonedBoard)
+      }
+      ChessMultiplayerComponent.board = clonedBoard;
       this.isNewestMove = true;
     }
     this.audioService.play(SoundConstants.MOVE);
@@ -169,7 +173,12 @@ export class ChessMultiplayerComponent implements OnInit {
         srcPiece.piece = null;
         this.sourceMove = coords0.substring(0, 2);
         this.destMove = coords0.substring(2, 4);
-        this.moveHistoryProviderService.addMove(new MoveHistory(this.moveHistoryFormatter.format(coords0, destPoint.piece), cloneDeep(ChessMultiplayerComponent.board), this.sourceMove, this.destMove));
+        this.moveHistoryProviderService.addMove(new MoveHistory(this.moveHistoryFormatter.format(
+          coords0,
+          destPoint.piece),
+          this.isRotated ? this.getRotatedBoard(cloneDeep(ChessMultiplayerComponent.board)) : cloneDeep(ChessMultiplayerComponent.board),
+          this.sourceMove, this.destMove)
+        );
       }
 
       if (coords0.length > 7) {
@@ -199,7 +208,6 @@ export class ChessMultiplayerComponent implements OnInit {
 
       this.calculateAdvantage();
 
-    } else {
     }
   }
 
@@ -324,8 +332,6 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   static isFieldUnderAttack(row: number, col: number, color: Color) {
-    let found = false;
-
     let field = ChessMultiplayerComponent.board[row][col];
 
     return field.piece && field.piece.getCoveredFields().some(e => e === field);
@@ -638,22 +644,27 @@ export class ChessMultiplayerComponent implements OnInit {
     }
   }
 
-  rotateBoard() {
+  rotate() {
     ChessMultiplayerComponent.isWhiteBottom = !ChessMultiplayerComponent.isWhiteBottom;
     this.isRotated = !this.isRotated;
+    ChessMultiplayerComponent.board = this.getRotatedBoard(ChessMultiplayerComponent.board);
+    this.calculateAdvantage();
+  }
 
-    ChessMultiplayerComponent.board = ChessMultiplayerComponent.board.reverse();
+  getRotatedBoard(board: Point[][]) {
+    board = board.reverse();
     for (let i = 0; i < 8; ++i) {
-      ChessMultiplayerComponent.board[i] = ChessMultiplayerComponent.board[i].reverse()
+      board[i] = board[i].reverse()
     }
 
     for (let i = 0; i < 8; ++i) {
       for (let j = 0; j < 8; ++j) {
-        ChessMultiplayerComponent.board[i][j].col = j;
-        ChessMultiplayerComponent.board[i][j].row = i;
+        board[i][j].col = j;
+        board[i][j].row = i;
       }
     }
-    this.calculateAdvantage();
+
+    return board;
   }
 
   isWhiteBottom() {
@@ -747,7 +758,12 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   switchBoard(i: number) {
-    ChessMultiplayerComponent.board = this.moveHistoryProviderService.getMove(i).boardCopy;
+    let boardCopy = this.moveHistoryProviderService.getMove(i).boardCopy;
+
+    if (this.isRotated) {
+      boardCopy = this.getRotatedBoard(boardCopy);
+    }
+    ChessMultiplayerComponent.board = boardCopy;
     this.destMove = this.moveHistoryProviderService.getMove(i).destMove;
     this.sourceMove = this.moveHistoryProviderService.getMove(i).sourceMove;
 
@@ -756,6 +772,11 @@ export class ChessMultiplayerComponent implements OnInit {
 
   backToNewestMove() {
     let lastMove = this.moveHistoryProviderService.getLast();
+
+    if (this.isRotated) {
+      lastMove.boardCopy = this.getRotatedBoard(lastMove.boardCopy);
+    }
+
     ChessMultiplayerComponent.board = lastMove.boardCopy;
     this.destMove = lastMove.destMove;
     this.sourceMove = lastMove.sourceMove;
