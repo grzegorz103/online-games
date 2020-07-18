@@ -45,6 +45,7 @@ public class ChessSocketController {
     @MessageMapping("/chess/{uri}/join")
     public void joinGame(@Header("simpSessionId") String sessionId,
                          @DestinationVariable String uri) {
+        uri = uri.toUpperCase();
         log.info("Joining game with uri " + uri);
         Chess chess = chessService.joinGame(uri, sessionId);
 
@@ -58,6 +59,7 @@ public class ChessSocketController {
     public void makeMove(@Header("simpSessionId") String sessionId,
                          @DestinationVariable String uri,
                          @DestinationVariable String move) {
+        uri = uri.toUpperCase();
         Chess chess = chessService.makeMove(uri, sessionId, move);
         sendingOperations.convertAndSendToUser(chess.getWhitePlayer().getSessionId(), "/queue/chess/move", chess.getLastMoveHistory(), WebSocketUtils.getMessageHeaders(chess.getWhitePlayer().getSessionId()));
         sendingOperations.convertAndSendToUser(chess.getBlackPlayer().getSessionId(), "/queue/chess/move", chess.getLastMoveHistory(), WebSocketUtils.getMessageHeaders(chess.getBlackPlayer().getSessionId()));
@@ -66,6 +68,7 @@ public class ChessSocketController {
     @MessageMapping("/chess/{uri}/rematch")
     public void rematch(@Header("simpSessionId") String sessionId,
                         @DestinationVariable String uri) {
+        uri = uri.toUpperCase();
         Chess game = chessService.rematch(uri, sessionId);
         log.info("Receive rematch request url " + uri);
         if (game.getBlackPlayer().isRematchSent() && game.getWhitePlayer().isRematchSent()) {
@@ -80,6 +83,7 @@ public class ChessSocketController {
     public void sendMessage(@Header("simpSessionId") String sessionId,
                             @Payload String message,
                             @DestinationVariable String uri) {
+        uri = uri.toUpperCase();
         log.info("Sending message to game " + uri);
         Chess game = chessService.getGameBySessionId(sessionId);
         if (game != null) {
@@ -92,6 +96,7 @@ public class ChessSocketController {
     @MessageMapping("/chess/resign/{uri}")
     public void resign(@DestinationVariable String uri,
                        @Header("simpSessionId") String sessionId) {
+        uri = uri.toUpperCase();
         log.info("Resign game at URI " + uri);
         Chess game = chessService.getGameBySessionId(sessionId);
         if (game != null) {
