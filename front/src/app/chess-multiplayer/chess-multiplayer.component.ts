@@ -1,5 +1,5 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {MatSnackBar, MatSnackBarConfig} from "@angular/material/snack-bar";
 import {Color} from "./models/pieces/color";
 import {King} from "./models/pieces/king";
@@ -87,6 +87,7 @@ export class ChessMultiplayerComponent implements OnInit {
               public moveHistoryProviderService: MoveHistoryProviderService,
               private moveHistoryFormatter: MoveHistoryFormatterService,
               private audioService: AudioService,
+              private router : Router,
               private snackBar: MatSnackBar) {
   }
 
@@ -114,7 +115,7 @@ export class ChessMultiplayerComponent implements OnInit {
       that.webSocketManager = new WebsocketManager(that.ws);
 
       that.webSocketManager
-        .register("/errors", (message) => alert("Error " + message.body))
+        .register("/user/queue/errors", (message) => that.router.navigateByUrl('/chess'))
         .register("/user/queue/chess/message", (message) => that.messageproviderService.addMessage(JSON.parse(message.body)))
         .register("/user/queue/chess/sessionId", (message) => that.sessionId = message.body)
         .register("/user/queue/chess/move", (message) => that.movePiece(message.body))

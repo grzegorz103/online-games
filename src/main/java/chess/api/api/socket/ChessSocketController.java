@@ -47,7 +47,15 @@ public class ChessSocketController {
                          @DestinationVariable String uri) {
         uri = uri.toUpperCase();
         log.info("Joining game with uri " + uri);
-        Chess chess = chessService.joinGame(uri, sessionId);
+        Chess chess;
+
+        try {
+            chess = chessService.joinGame(uri, sessionId);
+        } catch (IllegalStateException exception) {
+            log.warn("Invalid game state");
+            sendingOperations.convertAndSendToUser(sessionId, "/queue/errors", true, WebSocketUtils.getMessageHeaders(sessionId));
+            return;
+        }
 
         sendingOperations.convertAndSendToUser(sessionId, "/queue/chess/time", chess.getTime(), WebSocketUtils.getMessageHeaders(sessionId));
         sendingOperations.convertAndSendToUser(chess.getWhitePlayer().getSessionId(), "/queue/chess/start", true, WebSocketUtils.getMessageHeaders(chess.getWhitePlayer().getSessionId()));
