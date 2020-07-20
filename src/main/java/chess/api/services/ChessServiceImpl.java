@@ -46,13 +46,18 @@ public class ChessServiceImpl implements ChessService {
     public Chess joinGame(String gameUri, String sessionId) {
         Chess game = games.get(gameUri);
         if (game != null) {
-            if (game.isWhiteStarts()) {
-                game.setBlackPlayer(new Player(sessionId, null, false));
-            } else {
-                game.setWhitePlayer(new Player(sessionId, null, false));
+            if (game.getWhitePlayer() == null || game.getBlackPlayer() == null) {
+                if (game.isWhiteStarts()) {
+                    game.setBlackPlayer(new Player(sessionId, null, false));
+                } else {
+                    game.setWhitePlayer(new Player(sessionId, null, false));
+                }
+
+                return game;
             }
         }
-        return game;
+
+        throw new IllegalStateException("Invalid URI provided");
     }
 
     @Override
