@@ -27,6 +27,7 @@ import {UnicodeConstants} from "./utils/unicode-constants";
 import {cloneDeep} from 'lodash';
 import {AudioService} from "./services/audio.service";
 import {SoundConstants} from "./utils/sound-constants";
+import {CdkDragEnd, CdkDragRelease, CdkDragStart} from "@angular/cdk/drag-drop";
 
 @Component({
   selector: 'app-chess-multiplayer',
@@ -87,7 +88,7 @@ export class ChessMultiplayerComponent implements OnInit {
               public moveHistoryProviderService: MoveHistoryProviderService,
               private moveHistoryFormatter: MoveHistoryFormatterService,
               private audioService: AudioService,
-              private router : Router,
+              private router: Router,
               private snackBar: MatSnackBar) {
   }
 
@@ -287,10 +288,12 @@ export class ChessMultiplayerComponent implements OnInit {
   }
 
   async onMouseDown(event) {
+    console.log('cccxz')
     if (!ChessMultiplayerComponent.isCurrentPlayer || ChessMultiplayerComponent.isGameFinished || !this.isNewestMove) {
       return;
     }
     let pointClicked = this.getClickPoint(event);
+
     if (this.selected) {
       if (this.isPointInPossibleMoves(pointClicked) || this.isPointInPossibleCaptures(pointClicked)) {
         let params = "/app/chess/" + ChessMultiplayerComponent.uri + '/move/' + this.activePoint.pointChar + this.getCharPointByCoords(pointClicked.row, pointClicked.col)
@@ -795,4 +798,32 @@ export class ChessMultiplayerComponent implements OnInit {
     ChessMultiplayerComponent.enPassantable.piece = null;
   }
 
+
+  async dragEnded(event: CdkDragEnd) {
+    event.source.reset();
+    event.source.element.nativeElement.style.zIndex = '0';
+  }
+
+  dragStart(event: CdkDragStart) {
+    let style = event.source.element.nativeElement.style;
+    style.position = 'relative';
+    style.zIndex = '1000';
+    console.log(Math.floor((event.source.element.nativeElement.getBoundingClientRect().top - this.boardRef.nativeElement.getBoundingClientRect().top) / (this.boardRef.nativeElement.getBoundingClientRect().height / 8)),)
+    let pointClicked = ChessMultiplayerComponent.getPointByCoords(
+      Math.floor((event.source.element.nativeElement.getBoundingClientRect().top - this.boardRef.nativeElement.getBoundingClientRect().top) / (this.boardRef.nativeElement.getBoundingClientRect().height / 8)),
+      Math.floor((event.source.element.nativeElement.getBoundingClientRect().left - this.boardRef.nativeElement.getBoundingClientRect().left) / (this.boardRef.nativeElement.getBoundingClientRect().width / 8))
+    );
+
+    let pieceClicked = pointClicked.piece;
+    if (pieceClicked) {
+      if (pieceClicked.color !== ChessMultiplayerComponent.currentColor) {
+        return;
+      }
+      this.activePoint = pointClicked;
+      this.possibleCaptures = new AvailableMoveDecoratorImpl(pointClicked.piece, pointClicked).getPossibleCaptures();
+      this.possibleMoves = new AvailableMoveDecoratorImpl(pointClicked.piece, pointClicked).getPossibleMoves();
+      this.selected = true;
+    }
+
+  }
 }

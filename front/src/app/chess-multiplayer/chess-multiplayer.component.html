@@ -83,12 +83,14 @@
     <div style="padding-left: 5px">
       <div id="board">
         <div ngResizable id="drag" [rzMinWidth]="240" [rzMaxWidth]="2400" [rzMinHeight]="240"
-             (mousedown)="onMouseDown($event)" #dragRef [rzMaxHeight]="2400" [rzAspectRatio]="aspectRatio">
+             (mouseup)="onMouseDown($event)" (pointerup)="onMouseDown($event)" #dragRef [rzMaxHeight]="2400" [rzAspectRatio]="aspectRatio">
           <div *ngFor="let row of getBoard(); let i = index" class="board-row">
             <div *ngFor="let col of row; let j = index" class="board-col"
                  [ngClass]="[((i + j) %2 === 0 ) ?  'bg-black' : 'bg-shine', isXYInSourceMove(i,j) ? 'source-move' : '', isXYInDestMove(i,j) ? 'dest-move' : '' ,isXYInPossibleMoves(i,j) ? 'possible-point' : '', isXYInPossibleCaptures(i,j) ? 'possible-capture' : '']">
               <div *ngIf="getPieceByPoint(i, j)" style="height:100%; width:100%">
-                <div [style.background-image]="'url(assets/'+getPieceByPoint(i,j).image + ')'"
+                <div [style.background-image]="'url(assets/'+getPieceByPoint(i,j).image + ')'" cdkDrag
+                     (cdkDragStarted)="dragStart($event)"
+                     (cdkDragEnded)="dragEnded($event)"
                      [ngClass]="isKingChecked(getPieceByPoint(i,j)) ? 'king-check' : ''" class="piece">
                 </div>
               </div>
@@ -147,9 +149,12 @@
             <div style="display: inline-block" class="col-6 text-center">Białe</div>
             <div style="display: inline-block" class="col-6 text-center">Czarne</div>
           </div>
-          <div *ngFor="let moveHistory of moveHistoryProviderService.moveHistories; let i = index" class="history-item col-6"
-            (click)="switchBoard(i)"   [innerHTML]="moveHistory.move"></div>
-          <div id="history-back" class="blinking" *ngIf="!isNewestMove" (click)="backToNewestMove()">Wróć do ostatniego ruchu</div>
+          <div *ngFor="let moveHistory of moveHistoryProviderService.moveHistories; let i = index"
+               class="history-item col-6"
+               (click)="switchBoard(i)" [innerHTML]="moveHistory.move"></div>
+          <div id="history-back" class="blinking" *ngIf="!isNewestMove" (click)="backToNewestMove()">Wróć do ostatniego
+            ruchu
+          </div>
         </div>
 
       </div>

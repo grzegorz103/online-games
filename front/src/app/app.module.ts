@@ -15,13 +15,14 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {PublicChatComponent} from './public-chat/public-chat.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {InterceptorService} from "./security/interceptor.service";
-import { PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
-import { TicTacToeComponent } from './tic-tac-toe/tic-tac-toe.component';
-import { MainComponent } from './main/main.component';
-import { MomentModule } from 'ngx-moment';
-import { ChessMultiplayerComponent } from './chess-multiplayer/chess-multiplayer.component';
-import { ChessPromoteDialogComponent } from './chess-promote-dialog/chess-promote-dialog.component';
+import {PERFECT_SCROLLBAR_CONFIG, PerfectScrollbarModule} from 'ngx-perfect-scrollbar';
+import {PerfectScrollbarConfigInterface} from 'ngx-perfect-scrollbar';
+import {TicTacToeComponent} from './tic-tac-toe/tic-tac-toe.component';
+import {MainComponent} from './main/main.component';
+import {MomentModule} from 'ngx-moment';
+import {ChessMultiplayerComponent} from './chess-multiplayer/chess-multiplayer.component';
+import {ChessPromoteDialogComponent} from './chess-promote-dialog/chess-promote-dialog.component';
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -48,6 +49,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     MomentModule,
     AngularMaterialModule,
     NgbModule,
+    DragDropModule,
     AngularDraggableModule,
     MatProgressSpinnerModule,
     PerfectScrollbarModule
@@ -63,7 +65,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     }
   ],
   bootstrap: [AppComponent],
-  entryComponents:[ChessPromoteDialogComponent],
+  entryComponents: [ChessPromoteDialogComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule {
