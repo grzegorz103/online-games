@@ -83,7 +83,7 @@
     <div style="padding-left: 5px">
       <div id="board">
         <div ngResizable id="drag" [rzMinWidth]="240" [rzMaxWidth]="2400" [rzMinHeight]="240"
-             (mouseup)="onMouseDown($event)" (pointerup)="onMouseDown($event)" #dragRef [rzMaxHeight]="2400" [rzAspectRatio]="aspectRatio">
+             (pointerup)="onMouseDown($event)" #dragRef [rzMaxHeight]="2400" [rzAspectRatio]="aspectRatio">
           <div *ngFor="let row of getBoard(); let i = index" class="board-row">
             <div *ngFor="let col of row; let j = index" class="board-col"
                  [ngClass]="[((i + j) %2 === 0 ) ?  'bg-black' : 'bg-shine', isXYInSourceMove(i,j) ? 'source-move' : '', isXYInDestMove(i,j) ? 'dest-move' : '' ,isXYInPossibleMoves(i,j) ? 'possible-point' : '', isXYInPossibleCaptures(i,j) ? 'possible-capture' : '']">
