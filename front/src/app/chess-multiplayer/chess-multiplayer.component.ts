@@ -175,6 +175,12 @@ export class ChessMultiplayerComponent implements OnInit {
         srcPiece.piece = null;
         this.sourceMove = coords0.substring(0, 2);
         this.destMove = coords0.substring(2, 4);
+        if (coords0.length > 7) {
+          let rook = this.coordsToPoint(coords0.substring(4, 6));
+          let newPointForRook = this.coordsToPoint(coords0.substring(6, 8));
+          newPointForRook.piece = rook.piece;
+          rook.piece = null;
+        }
         this.moveHistoryProviderService.addMove(new MoveHistory(this.moveHistoryFormatter.format(
           coords0,
           destPoint.piece),
@@ -182,14 +188,6 @@ export class ChessMultiplayerComponent implements OnInit {
           this.sourceMove, this.destMove)
         );
       }
-
-      if (coords0.length > 7) {
-        let rook = this.coordsToPoint(coords0.substring(4, 6));
-        let newPointForRook = this.coordsToPoint(coords0.substring(6, 8));
-        newPointForRook.piece = rook.piece;
-        rook.piece = null;
-      }
-
 
       this.whiteKingChecked = ChessMultiplayerComponent.isKingInCheck(Color.WHITE);
       if (this.whiteKingChecked) {
@@ -709,6 +707,7 @@ export class ChessMultiplayerComponent implements OnInit {
       this.snackBar.open('Wybierz kolor i czas!', null, config);
       return;
     }
+
     this.colorChoosen = true;
     this.isLoading = true;
     this.waitForSocketConnection();

@@ -44,9 +44,9 @@ export class Timer {
         this.enemyPlayerTime -= 0.01;
         this._enemyPlayerTimeString = new Date(this.enemyPlayerTime * 1000).toISOString().substring(11, 19);
       }
-      if (this.currentPlayerTime === 0 || this.enemyPlayerTime === 0) {
-        alert('Koniec czasu');
+      if (this.currentPlayerTime <= 0 || this.enemyPlayerTime <= 0) {
         clearInterval(this.timer);
+        alert('Koniec czasu');
         ChessMultiplayerComponent.isGameFinished = true;
       }
     }
