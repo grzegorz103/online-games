@@ -405,6 +405,9 @@ export class ChessMultiplayerComponent implements OnInit {
     ChessMultiplayerComponent.isGameFinished = false;
     this.moveHistoryProviderService.clear();
     this.isNewestMove = true;
+    if (this.timer) {
+      this.timer.clear();
+    }
     this.timer = new Timer(this.timeChoosen);
     this.blackKingChecked = false;
     this.whiteKingChecked = false;
