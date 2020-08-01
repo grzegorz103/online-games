@@ -25,6 +25,7 @@ export class Timer {
   }
 
   clear() {
+    clearTimeout(this.timer);
     this.currentPlayerTime = this.timeChoosen;
     this.enemyPlayerTime = this.timeChoosen;
     this.calculateTimeStrings();
