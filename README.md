@@ -4,6 +4,7 @@
 ## Table of contents
 * [General info](#general-info)
 * [Live demo](#live-demo)
+* [Screen shots](#screenshots)
 * [Technologies](#technologies)
 * [Features](#features)
 * [Setup](#setup)
@@ -14,6 +15,13 @@ Online games is an application which contains several multi-player based feature
 
 ## Live demo
 Live demo available at https://online-games-69bcf.firebaseapp.com/
+
+## Screen shots
+<p>
+ <img src="https://i.imgur.com/T2h64GJ.png" width="800">
+  <img src="https://i.imgur.com/bgvN4Hh.png" width="800">
+ <img src="https://i.imgur.com/xbDvcLL.png" width="800"> 
+ </p>
 
 ## Technologies
 
